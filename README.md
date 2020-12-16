@@ -48,9 +48,9 @@ $ make amd64  2>&1 | tee  onl.log
   
 ```   
 $ cd ~/NOS/OpenNetworkLinux
-$ mkdir Redfish
-$ git clone https://gitlab.edge-core.com/root/Redfish.git ./Redfish
-$ cd Redfish/PSME/build/
+$ mkdir DM-Redfish-PSME
+$ git clone https://github.com/opencomputeproject/DM-Redfish-PSME.git ./DM-Redfish-PSME
+$ cd DM-Redfish-PSME/PSME/build/
 ```  
  Install necessary packages only at first time and start build
 ```  
@@ -61,14 +61,7 @@ $ ./pre-inst-X86-pkgs.sh
 ```  
 $ ./Build_all.sh
 ``` 
- Output file will be in ~/NOS/OpenNetworkLinux/Redfish/PSME/build/install/allinone-deb/bin/psme-allinone.deb
-
- If want to partial build for any modification for PSME source.
-``` 
-$ cd ~/NOS/OpenNetworkLinux/Redfish/PSME/build/
-$ make all; psme_release.sh;
-``` 
- then will create new psme-allinone.deb
+ Output file will be in ~/NOS/OpenNetworkLinux/DM-Redfish-PSME/PSME/build/install/allinone-deb/bin/psme-allinone.deb
 
  Clean Build
 ``` 
