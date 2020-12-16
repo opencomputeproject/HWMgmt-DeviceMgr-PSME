@@ -1,0 +1,41 @@
+{
+  "Mode": "RM",
+  "Sleep": 7,
+  "Cir": 1000000,
+  "Pir": 1000000,
+  "Burst": 8000,
+  "ONUs": [
+  {
+  	"onu_id": 1,
+	"interface_id": 0,
+	"nni_id": 0,
+	"vendor_id": "ISKT",
+	"vendor_specific": "428DA323"
+  }
+  ,
+  {
+	"onu_id": 2,
+	"interface_id": 1,
+	"nni_id": 0,
+	"vendor_id": "ISKT",
+	"vendor_specific": "428DA268"
+  }
+  ,
+  {
+	"onu_id": 3,
+	"interface_id": 2,
+	"nni_id": 0,
+	"vendor_id": "ISKT",
+	"vendor_specific": "428DA0E7"
+  }
+  ,
+  {
+	"onu_id": 3,
+	"interface_id": 3,
+	"nni_id": 0,
+	"vendor_id": "CIGG",
+	"vendor_specific": "F85AF40A"
+  }
+
+ ]
+}

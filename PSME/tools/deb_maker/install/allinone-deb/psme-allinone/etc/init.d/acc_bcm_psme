@@ -1,0 +1,195 @@
+#!/bin/sh
+### BEGIN INIT INFO 
+# Provides:          acc_psme_brcm
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Run all of psme service if it exist
+### END INIT INFO
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+
+
+#Added for acc_sw psme module
+EC_PSME_BRCM_INIT=/etc/bcm_sdk/init.sh
+EC_PSME_BRCM_UNINIT=/etc/bcm_sdk/un-init.sh
+LLDPD_DAEMON=/usr/local/sbin/lldpd
+LLDPD_NAME=lldpd
+
+
+
+
+force_kill() {
+	pid=`ps axu|grep $1|grep -v grep|awk '{print $2}'`
+	if [ $pid ]
+	then
+		kill -9 $pid
+	fi
+}
+
+permission_check() {
+    uid=`id|awk '{print $1}'|awk -F= '{print $2}'|awk -F\( '{print $1}'`
+    if [ $uid -eq 0 ]; then
+        return
+    else
+        echo "Operation not permitted"
+        exit 0
+    fi
+}
+
+start_daemon() {
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            lname=$(readlink /proc/$RUNNING/exe)
+            pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
+            if [ $pname = $1 ]; then
+                echo "$2 already is running"
+                return;
+            fi
+        fi
+    fi
+   
+    echo -n "Starting daemon server: $2 \n"
+    start-stop-daemon --start --quiet --make-pidfile --pidfile /var/run/$2.pid --background --exec $1
+}
+
+start_daemon_with_param() {
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            lname=$(readlink /proc/$RUNNING/exe)
+            pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
+            if [ $pname = $1 ]; then
+                echo "$2 already is running"
+                return;
+            fi
+        fi
+    fi
+   
+    echo -n "Starting daemon server: $2 \n"
+    start-stop-daemon --start --quiet --make-pidfile --pidfile /var/run/$2.pid --background --exec $1 -- $3
+}
+
+start_daemon_no_pid() {
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            lname=$(readlink /proc/$RUNNING/exe)
+            pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
+            if [ $pname = $1 ]; then
+                echo "$2 already is running"
+                return;
+            fi
+        fi
+    fi
+   
+    echo -n "Starting daemon server: $2 \n"
+    start-stop-daemon --start --quiet --make-pidfile --pidfile --background --exec $1 -- $3
+}
+
+
+stop_daemon() {
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            if [ $(readlink /proc/$RUNNING/exe) = $1 ]; then
+                echo -n "Stopping daemon server: $2\n"
+                start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$2.pid --exec $1 
+                if [ -f /var/run/$2.pid ]
+                then
+                    rm -f /var/run/$2.pid
+                fi
+                return;
+            fi
+        fi
+    fi
+	force_kill $2
+    echo "$2 is not running"
+}
+
+stop_daemon_no_output() {
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+	    kill $RUNNING
+            if [ -f /var/run/$2.pid ]
+            then
+                rm -f /var/run/$2.pid
+            fi
+            return;
+        fi
+    fi
+	force_kill $2
+}
+
+
+get_status(){
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            lname=$(readlink /proc/$RUNNING/exe)
+            pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
+            if [ $pname = $1 ]; then
+                echo "$2 is running"
+                return;
+            fi
+        fi
+
+        # No such PID, or executables don't match
+        echo "$2 is not running."
+    else
+        if [ -f /var/run/$2.pid ]
+        then 
+            rm -f /var/run/$2.pid
+        fi
+            echo "$2 is not running."
+    fi
+}
+
+do_start() {
+    #start load broadcom ko module start bcm shell 
+    . $EC_PSME_BRCM_INIT
+    #start lldpd
+    if [ -f "/usr/local/bin/lldpM.sh" ];then
+        chown root:root /root/.ssh/id_dsa
+        start_daemon $LLDPD_DAEMON $LLDPD_NAME;
+        sleep 2
+        /usr/local/sbin/lldpcli configure lldp tx-interval 10 
+        /usr/local/sbin/lldpcli configure lldp tx-hold 1 
+        lldpM.sh &
+    fi
+}
+
+do_stop() {
+    #unload broadcom ko module and stop bcm  shell 
+    . $EC_PSME_BRCM_UNINIT
+    killall lldpd > /dev/null 2>&1
+    killall lldpM.sh > /dev/null 2>&1
+}
+
+do_status(){
+    get_status $EC_PSME_BRCM_INIT ;
+}
+
+case "$1" in
+    start)
+        do_start
+        ;;
+    restart|reload|force-reload)
+        do_stop
+        do_start
+        ;;
+    stop)
+        do_stop
+        ;;
+    status)
+        do_status
+        ;;
+
+    *)
+        echo "Usage: $0 start|stop|status" >&2
+        exit 3
+        ;;
+esac

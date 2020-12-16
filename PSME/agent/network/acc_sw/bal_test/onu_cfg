@@ -1,0 +1,17 @@
+{
+  "Mode": "SM",
+  "Sleep": 7,
+  "Cir": 1000000,
+  "Pir": 1000000,
+  "Burst": 8000,
+  "ONUs": [
+  {
+	  "onu_id": 1,
+	  "interface_id": 0,
+	  "nni_id": 0,
+	  "vendor_id": "ISKT",
+	  "vendor_specific": "71E83268"
+  }
+  ]
+}
+

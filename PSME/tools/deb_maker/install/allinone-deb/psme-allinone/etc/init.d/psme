@@ -1,0 +1,218 @@
+#!/bin/bash
+### BEGIN INIT INFO 
+# Provides:          psme      
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Run all of psme service if it exist
+### END INIT INFO
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+USER="root"
+GROUP="root"
+
+#Added for acc_sw psme module
+PSMED_REST_DAEMON=/usr/local/bin/psme-rest-server 
+PSMED_REST_DAEMON_OPTS='/etc/psme/psme.conf'
+CHASSIS_EC_DAEMON_OPTS='/etc/psme/platform_info.conf'
+PSMED_REST_NAME=psme-rest-server 
+PSMED_NETWORK_STUB_DAEMON=/usr/local/bin/psme-network-stubs 
+PSMED_NETWORK_STUB_NAME=psme-network-stubs 
+PSMED_CHASSIS_EC_DAEMON=/usr/local/bin/psme-chassis
+PSMED_CHASSIS_EC_NAME=psme-chassis
+C_PINFO=/etc/psme/C_PINFO
+C_CERT=/etc/psme/C_CERT
+
+
+force_kill() {
+	pid=`ps axu|grep $1|grep -v grep|awk '{print $2}'`
+	if [ $pid ]
+	then
+		kill -9 $pid
+	fi
+}
+
+permission_check() {
+    uid=`id|awk '{print $1}'|awk -F= '{print $2}'|awk -F\( '{print $1}'`
+    if [ $uid -eq 0 ]; then
+        return
+    else
+        echo "Operation not permitted"
+        exit 0
+    fi
+}
+
+start_daemon() {
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            lname=$(readlink /proc/$RUNNING/exe)
+            pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
+            if [ $pname = $1 ]; then
+                echo "$2 already is running"
+                return;
+            fi
+        fi
+    fi
+   
+    export USER=$USER
+    start-stop-daemon --start --quiet --make-pidfile --pidfile /var/run/$2.pid --background --exec $1
+}
+
+start_daemon_with_param() {
+    echo "start_daemon!!"
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            lname=$(readlink /proc/$RUNNING/exe)
+            pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
+            if [ $pname = $1 ]; then
+                echo "$2 already is running"
+                return;
+            fi
+        fi
+    fi
+   
+    export USER=$USER
+    start-stop-daemon --start --make-pidfile --pidfile /var/run/$2.pid --background --exec $1 -- $3
+}
+
+start_daemon_no_pid() {
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            lname=$(readlink /proc/$RUNNING/exe)
+            pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
+            if [ $pname = $1 ]; then
+                echo "$2 already is running"
+                return;
+            fi
+        fi
+    fi
+    start-stop-daemon --start --quiet --make-pidfile --pidfile --background --exec $1 -- $3
+}
+
+
+stop_daemon() {
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            if [ $(readlink /proc/$RUNNING/exe) = $1 ]; then
+                start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$2.pid --exec $1 
+                if [ -f /var/run/$2.pid ]
+                then
+                    rm -f /var/run/$2.pid
+                fi
+		sleep 2
+                return;
+            fi
+        fi
+    fi
+	force_kill $2
+    echo "$2 is not running"
+}
+
+stop_daemon_no_output() {
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+	    kill $RUNNING
+            if [ -f /var/run/$2.pid ]
+            then
+                rm -f /var/run/$2.pid
+            fi
+            return;
+        fi
+    fi
+	force_kill $2
+}
+
+
+get_status(){
+    if [ -s /var/run/$2.pid ]; then
+        RUNNING=$(cat /var/run/$2.pid)
+        if [ -d /proc/$RUNNING ]; then
+            lname=$(readlink /proc/$RUNNING/exe)
+            pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
+            if [ $pname = $1 ]; then
+                echo "$2 is running"
+                return;
+            fi
+        fi
+
+        # No such PID, or executables don't match
+        echo "$2 is not running."
+    else
+        if [ -f /var/run/$2.pid ]
+        then 
+            rm -f /var/run/$2.pid
+        fi
+            echo "$2 is not running."
+    fi
+}
+
+do_start() {
+    PlatformPath="/etc/onl/platform"
+    if [ ! -f "${PlatformPath}" ];then
+        #SONiC platform need wait sonic-cfggen can get HW_type
+        count=120
+        while [ $count != "0" ];do
+            HW_type=`/usr/local/bin/sonic-cfggen -d --print-data | grep "platform" | awk '{print $2}' |awk -F '"' '{print $2}'`
+            echo "[$count][$HW_type]" >> /tmp/PSME_TMP
+            logger "[$count][$HW_type]"
+            sleep 1
+            count=$(($count-1))
+            if [ "$HW_type" != "" ];then
+                echo "Can get HW type !! [$count][$HW_type]" >> /tmp/PSME_TMP
+                logger "Can get HW type !! [$count][$HW_type]" 
+                sleep 5
+                break;
+            fi
+       done
+    fi
+
+    if [ ! -f /etc/psme/platform_info.conf ];then
+    . ${C_PINFO}
+    fi
+    . ${C_CERT}
+    touch /etc/psme/debug.log
+    touch /var/log/psme_rf.log
+    start_daemon_with_param $PSMED_REST_DAEMON $PSMED_REST_NAME $PSMED_REST_DAEMON_OPTS;
+    start_daemon_with_param $PSMED_CHASSIS_EC_DAEMON $PSMED_CHASSIS_EC_NAME $CHASSIS_EC_DAEMON_OPTS;
+}
+
+do_stop() {
+#Add for acc_sw psme
+    stop_daemon $PSMED_REST_DAEMON $PSMED_REST_NAME;
+    stop_daemon $PSMED_CHASSIS_EC_DAEMON $PSMED_CHASSIS_EC_NAME;
+}
+
+do_status(){
+    get_status $PSMED_REST_DAEMON $PSMED_REST_NAME;
+}
+
+case "$1" in
+    start)
+        permission_check
+        do_start
+        ;;
+    restart|reload|force-reload)
+        permission_check
+        do_stop
+        do_start
+        ;;
+    stop)
+        permission_check
+        do_stop
+        ;;
+    status)
+        permission_check
+        do_status
+        ;;
+
+    *)
+        echo "Usage: $0 start|stop|status" >&2
+        exit 3
+        ;;
+esac

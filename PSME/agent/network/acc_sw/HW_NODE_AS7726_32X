@@ -1,0 +1,100 @@
+# Edgecore DeviceManager
+# Copyright 2020-2021 Edgecore Networks, Inc.
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#  KIND, either express or implied.  See the License for the
+#  specific language governing permissions and limitations
+#  under the License.
+###########################################################################################################
+# Support Platform type
+###########################################################################################################
+fans_type=("S" "S" "S" "S" "S" "S" "P" "P")
+thermals_type=("C" "S" "S" "S" "S" "S" "P" "P")
+psus_type=("S" "S")
+mapping=("QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
+"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
+"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
+"QSFP" "QSFP" )
+
+###########################################################################################################
+# cpu core temp path
+###########################################################################################################
+cpu_core_prefix=("/sys/devices/platform/coretemp.0/hwmon/hwmon1/")
+
+###########################################################################################################
+# i2c bus path
+###########################################################################################################
+i2c_prefix=("/sys/bus/i2c/devices")
+i2c_bus_fan=("54-0066")
+i2c_bus_thermal=("54-004c/hwmon/hwmon*" "55-0049/hwmon/hwmon*" "55-0048/hwmon/hwmon*" "55-004a/hwmon/hwmon*" "55-004b/hwmon/hwmon*")
+i2c_bus_psu_basic=("50-0053" "49-0050")
+i2c_bus_psu_ym2651=("50-005b" "49-0058")
+i2c_bus_sfp=("11-0060")
+i2c_bus_sfp_tx_map=("")
+
+###########################################################################################################
+# FAN sysfs node
+###########################################################################################################
+i2c_nodes_fan_name=("")
+i2c_nodes_fan_serial=("")
+i2c_nodes_fan_present=("present")
+i2c_nodes_fan_front_speed=("front_speed_rpm")
+i2c_nodes_fan_rear_speed=("rear_speed_rpm")
+i2c_nodes_fan_front_percentage=("")
+i2c_nodes_fan_rear_percentage=("")
+
+###########################################################################################################
+# Thermal sysfs node
+###########################################################################################################
+i2c_nodes_thermal_temp=("temp1_input")
+
+###########################################################################################################
+# CPU core temp node
+###########################################################################################################
+cpu_core_temp_node=("temp1_input" "temp2_input" "temp3_input" "temp4_input" "temp5_input")
+
+###########################################################################################################
+# PSU basic sysfs node
+###########################################################################################################
+i2c_nodes_psu_basic_name=("psu_model_name")
+i2c_nodes_psu_basic_present=("psu_present")
+i2c_nodes_psu_basic_power_good=("psu_power_good")
+i2c_nodes_psu_basic_serial=("")
+
+###########################################################################################################
+# PSU ym2651 sysfs node
+###########################################################################################################
+i2c_nodes_psu_v_out=("psu_v_out")
+i2c_nodes_psu_i_out=("psu_i_out")
+i2c_nodes_psu_p_out=("psu_p_out")
+i2c_nodes_psu_type=("psu_mfr_model")
+i2c_nodes_psu_fan_name=("")
+i2c_nodes_psu_fan_serial=("")
+i2c_nodes_psu_fan_dir=("psu_fan_dir")
+i2c_nodes_psu_temp=("psu_temp1_input")
+i2c_nodes_psu_fan_speed=("psu_fan1_speed_rpm")
+i2c_nodes_psu_fan_percentage=("")
+i2c_nodes_psu_v_in=("")
+i2c_nodes_psu_i_in=("")
+i2c_nodes_psu_p_in=("")
+
+
+###########################################################################################################
+# SFP(QSFP) sysfs node
+###########################################################################################################
+i2c_nodes_port_present_all=("module_present_all")
+i2c_nodes_port_present=("module_present_")
+i2c_nodes_port_tx_disable=("module_tx_disable_")
+i2c_nodes_port_lp_mode=("")

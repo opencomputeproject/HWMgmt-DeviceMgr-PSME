@@ -1,0 +1,8 @@
+{
+  "49": "/sys/bus/i2c/devices/28-0050/eeprom",
+  "50": "/sys/bus/i2c/devices/29-0050/eeprom",
+  "51": "/sys/bus/i2c/devices/26-0050/eeprom",
+  "52": "/sys/bus/i2c/devices/30-0050/eeprom",
+  "53": "/sys/bus/i2c/devices/31-0050/eeprom",
+  "54": "/sys/bus/i2c/devices/27-0050/eeprom"  
+}

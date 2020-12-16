@@ -1,0 +1,713 @@
+#!/bin/bash
+# Edgecore DeviceManager
+# Copyright 2020-2021 Edgecore Networks, Inc.
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#  KIND, either express or implied.  See the License for the
+#  specific language governing permissions and limitations
+#  under the License.
+PlatformPath="/etc/onl/platform"
+
+if [ -f "${PlatformPath}" ];then
+    #ONL
+    HW_type=`cat  ${PlatformPath}`
+    ONLPDUMP="/lib/platform-config/${HW_type}/onl/bin/onlpdump"
+else
+    #SONIC
+    HW_type=`/usr/local/bin/sonic-cfggen -d --print-data | grep "platform" | awk '{print $2}' |awk -F '"' '{print $2}'`
+    ONLPDUMP="/usr/bin/decode-syseeprom"
+fi
+
+. /etc/psme/HW_TYPE
+
+Config_File="/etc/psme/platform_info.conf"
+ASSET_TAG="/etc/psme/ASSET_TAG"
+
+
+Thermal_Threshold_File="/etc/psme/thermal_threshold"
+Thermal_Default_Shutdown_Value=105000
+Thermal_Default_Error_Value=93000
+Thermal_Default_Warning_Upper_Value=50000
+Thermal_Default_Warning_Lower_Value=10000
+
+
+Fan_Threshold_File="/etc/psme/fan_threshold"
+Fan_Error_Value=93000
+Fan_Shutdown_Value=105000
+Fan_Warning_Value=83000
+
+J_B_START()
+{
+    echo "{" >> ${Config_File}
+}
+J_B_END()
+{
+    echo "}" >> ${Config_File}
+}
+
+J_COMMA()
+{
+    echo "," >> ${Config_File}
+}
+
+J_O_START()
+{
+    echo "\"$1\":[" >> ${Config_File}
+    J_B_START
+}
+
+J_O_END()
+{
+    J_B_END
+    echo "]" >> ${Config_File}
+}
+
+IPV4_ITEMS()
+{
+echo "
+\""ipv4"\" : \""localhost"\",
+\""port"\" : 7788,
+\""slot"\" : 1
+"  >> ${Config_File}
+}
+
+CHASSIS_ITEMS()
+{
+echo "
+\""chassis"\" : {
+\""type"\"             : \""${TYPE}"\",
+\""size"\"             : 1,
+\""locationOffset"\"   : 1,
+\""parentId"\"         : 1,
+\""platform"\"         : \""${PLATFORM}"\",
+\""networkInterface"\" : \""${NINF}"\",
+\""asset_tag"\"        : \""${ASSET_TAG_C}"\",
+\""manufacturer"\"     : \""${MANUFACTURER}"\",
+\""model_number"\"     : \""${MODULE_NUMBER}"\",
+\""serial_number"\"    : \""${SERIAL_NUMBER}"\"
+}"  >> ${Config_File}
+}
+
+ECRF_PAL_PORTS()
+{
+i=0
+pon_i=0
+qsfp_i=0
+sfp_i=0
+echo "
+\"ports\" :{" >> ${Config_File}
+while [ "$i" -lt "${PORT_MAX}" ];do
+    type=${mapping[${i}]}
+    ii=$(($i+1))
+    if [ "$i2c_bus_port" == "" ];then
+        i2c_bus_port_path=${i2c_bus_port_map[$i]}
+    else
+        i2c_bus_port_path=${i2c_bus_port}
+    fi
+
+    if [ "$type" == "E" ];then
+        echo " \"port$ii\":\"Ether\"   " >> ${Config_File} 
+        if [ "$ii" != "${PORT_MAX}" ];then
+            echo "," >> ${Config_File}
+        fi
+    elif [ "$type" == "PON" ];then
+	echo " \"port$ii\":\"PON\"   " >> ${Config_File}
+        echo "," >> ${Config_File}
+        echo " \"port${ii}_node\":{" >> ${Config_File}
+        if [ "$i2c_nodes_port_present" == "" ];then
+        	echo " \"present\":\"\",   " >> ${Config_File}
+        else
+          echo " \"present\":\"${i2c_prefix}/${i2c_bus_port_path}/${i2c_nodes_port_present}${ii}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_port_tx_disable" == "" ];then
+        	echo " \"tx_disable\":\"\"  " >> ${Config_File}
+        else
+          echo " \"tx_disable\":\"${i2c_prefix}/${i2c_bus_port_path}/${i2c_nodes_port_tx_disable}${ii}\"   " >> ${Config_File}
+        fi
+        echo "}" >> ${Config_File}		 
+        if [ "$ii" != "${PORT_MAX}" ];then
+	        echo "," >> ${Config_File}
+        fi
+    elif [ "$type" == "QSFP" ];then
+	echo " \"port$ii\":\"QSFP\"   " >> ${Config_File}
+        echo "," >> ${Config_File}
+        echo " \"port${ii}_node\":{" >> ${Config_File}
+        if [ "$i2c_nodes_port_present" == "" ];then
+        	echo " \"present\":\"\",   " >> ${Config_File}
+        else
+          echo " \"present\":\"${i2c_prefix}/${i2c_bus_port_path}/${i2c_nodes_port_present}${ii}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_port_lp_mode" == "" ];then
+        	echo " \"tx_disable\":\"\"   " >> ${Config_File}
+        else
+          echo " \"tx_disable\":\"${i2c_prefix}/${i2c_bus_port_path}/${i2c_nodes_port_lp_mode}${ii}\"   " >> ${Config_File}
+        fi
+        echo "}" >> ${Config_File}                		 
+        if [ "$ii" != "${PORT_MAX}" ];then
+	        echo "," >> ${Config_File}
+        fi        
+    else
+        echo " \"port$ii\":\"SFP\"   " >> ${Config_File}
+        echo "," >> ${Config_File}
+        echo " \"port${ii}_node\":{" >> ${Config_File}
+        if [ "$i2c_nodes_port_present" == "" ];then
+        	echo " \"present\":\"\",   " >> ${Config_File}
+        else
+          echo " \"present\":\"${i2c_prefix}/${i2c_bus_port_path}/${i2c_nodes_port_present}${ii}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_port_tx_disable" == "" ];then
+        	echo " \"tx_disable\":\"\"   " >> ${Config_File}
+        else
+          echo " \"tx_disable\":\"${i2c_prefix}/${i2c_bus_port_path}/${i2c_nodes_port_tx_disable}${ii}\"   " >> ${Config_File}
+        fi
+        echo "}" >> ${Config_File}                		 
+        if [ "$ii" != "${PORT_MAX}" ];then
+            echo "," >> ${Config_File}
+        fi
+    fi    
+    i=$(($i+1))
+done
+
+echo "}" >> ${Config_File}
+}
+
+ECRF_PAL_FANS()
+{
+i=0
+echo "
+\"fans\" :{" >> ${Config_File}
+echo "{" > ${Fan_Threshold_File} 
+psu_i=0
+while [ "$i" -lt "${FAN_MAX}" ];do
+    type=${fans_type[${i}]}
+    ii=$(($i+1))
+    
+    echo "\"${ii}\" : {" >> ${Fan_Threshold_File}
+    echo "    \"error\" : ${Fan_Error_Value}," >> ${Fan_Threshold_File}
+    echo "    \"shutdown\" : ${Fan_Shutdown_Value}," >> ${Fan_Threshold_File}
+    echo "    \"warning\" : ${Fan_Warning_Value}" >> ${Fan_Threshold_File}
+    echo "}" >> ${Fan_Threshold_File}    
+    
+    if [ "$type" == "S" ];then
+        echo " \"fan$ii\":\"System\"   " >> ${Config_File}
+        echo "," >> ${Config_File}
+        echo " \"fan${ii}_node\":{" >> ${Config_File}
+        if [ "$i2c_nodes_fan_name" == "" ];then
+        	echo " \"name\":\"\",   " >> ${Config_File}
+        elif [ "${i2c_nodes_fan_name:0-1}" == "_" ];then
+        	echo " \"name\":\"${i2c_prefix}/${i2c_bus_fan}/${i2c_nodes_fan_name}${ii}\",   " >> ${Config_File}
+        else
+          echo " \"name\":\"${i2c_prefix}/${i2c_bus_fan}/fan${ii}_${i2c_nodes_fan_name}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_fan_serial" == "" ];then
+        	echo " \"serial\":\"\",   " >> ${Config_File}
+        elif [ "${i2c_nodes_fan_serial:0-1}" == "_" ];then
+        	echo " \"serial\":\"${i2c_prefix}/${i2c_bus_fan}/${i2c_nodes_fan_serial}${ii}\",   " >> ${Config_File}
+        else
+        	echo " \"serial\":\"${i2c_prefix}/${i2c_bus_fan}/fan${ii}_${i2c_nodes_fan_serial}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_fan_present" == "" ];then
+        	echo " \"present\":\"\",   " >> ${Config_File}
+        elif [ "${i2c_nodes_fan_present:0-1}" == "_" ];then
+        	echo " \"present\":\"${i2c_prefix}/${i2c_bus_fan}/${i2c_nodes_fan_present}${ii}\",   " >> ${Config_File}
+        else 
+        	echo " \"present\":\"${i2c_prefix}/${i2c_bus_fan}/fan${ii}_${i2c_nodes_fan_present}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_fan_front_speed" == "" ];then
+        	echo " \"front_speed\":\"\",   " >> ${Config_File}
+        elif [ "${i2c_nodes_fan_front_speed:0-1}" == "_" ];then
+        	echo " \"front_speed\":\"${i2c_prefix}/${i2c_bus_fan}/${i2c_nodes_fan_front_speed}${ii}\",   " >> ${Config_File}
+        else        
+        	echo " \"front_speed\":\"${i2c_prefix}/${i2c_bus_fan}/fan${ii}_${i2c_nodes_fan_front_speed}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_fan_rear_speed" == "" ];then
+        	echo " \"rear_speed\":\"\",   " >> ${Config_File}
+        elif [ "${i2c_nodes_fan_rear_speed:0-1}" == "_" ];then
+        	echo " \"rear_speed\":\"${i2c_prefix}/${i2c_bus_fan}/${i2c_nodes_fan_rear_speed}${ii}\",   " >> ${Config_File}
+        else        
+        	echo " \"rear_speed\":\"${i2c_prefix}/${i2c_bus_fan}/fan${ii}_${i2c_nodes_fan_rear_speed}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_fan_front_percentage" == "" ];then
+        	echo " \"front_percentage\":\"\",   " >> ${Config_File}
+        elif [ "${i2c_nodes_fan_front_percentage:0-1}" == "_" ];then
+        	echo " \"front_percentage\":\"${i2c_prefix}/${i2c_bus_fan}/${i2c_nodes_fan_front_percentage}${ii}\",   " >> ${Config_File}
+        else        
+        	echo " \"front_percentage\":\"${i2c_prefix}/${i2c_bus_fan}/fan${ii}_${i2c_nodes_fan_front_percentage}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_fan_rear_percentage" == "" ];then
+        	echo " \"rear_percentage\":\"\"   " >> ${Config_File}
+        elif [ "${i2c_nodes_fan_rear_percentage:0-1}" == "_" ];then
+        	echo " \"rear_percentage\":\"${i2c_prefix}/${i2c_bus_fan}/${i2c_nodes_fan_rear_percentage}${ii}\"   " >> ${Config_File}
+        else        
+        	echo " \"rear_percentage\":\"${i2c_prefix}/${i2c_bus_fan}/fan${ii}_${i2c_nodes_fan_rear_percentage}\"   " >> ${Config_File}
+        fi                                        
+        echo "}" >> ${Config_File}
+    elif [ "$type" == "P" ];then
+        echo " \"fan$ii\":\"Psu\"   " >> ${Config_File}
+        echo "," >> ${Config_File}        
+        echo " \"fan${ii}_node\":{" >> ${Config_File}
+        if [ "$i2c_nodes_psu_fan_name" == "" ];then
+        	echo " \"name\":\"\",   " >> ${Config_File}
+        else
+          echo " \"name\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_fan_name}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_psu_fan_serial" == "" ];then
+        	echo " \"serial\":\"\",   " >> ${Config_File}
+        else
+        	echo " \"serial\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_fan_serial}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_psu_basic_present" == "" ];then
+        	echo " \"present\":\"\",   " >> ${Config_File}
+        else
+        	echo " \"present\":\"${i2c_prefix}/${i2c_bus_psu_basic[${psu_i}]}/${i2c_nodes_psu_basic_present}\",   " >> ${Config_File}
+        fi
+        if [ "$i2c_nodes_psu_fan_speed" == "" ];then
+        	echo " \"front_speed\":\"\",   " >> ${Config_File}
+        else        
+        	echo " \"front_speed\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_fan_speed}\",   " >> ${Config_File}
+        fi
+        echo " \"rear_speed\":\"\",   " >> ${Config_File}
+        if [ "$i2c_nodes_psu_fan_percentage" == "" ];then
+        	echo " \"front_percentage\":\"\",   " >> ${Config_File}
+        else        
+        	echo " \"front_percentage\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_fan_percentage}\",   " >> ${Config_File}
+        fi
+        echo " \"rear_percentage\":\"\"   " >> ${Config_File}
+        echo "}" >> ${Config_File}        
+        psu_i=$(($psu_i+1))                
+    fi
+    
+    if [ "$ii" != "${FAN_MAX}" ];then
+        echo "," >> ${Fan_Threshold_File}
+        echo "," >> ${Config_File}
+    fi        
+    i=$(($i+1))
+done
+
+echo "}" >> ${Fan_Threshold_File}
+echo "}" >> ${Config_File}
+}
+
+ECRF_PAL_THERMALS()
+{
+i=0
+sys_i=0
+psu_i=0
+create_thermal_theshold_file=1
+echo "
+\"thermals\" :{" >> ${Config_File}
+
+if [ -f "${Thermal_Threshold_File}" ]; then
+    create_thermal_theshold_file=0        
+else
+echo "{" > ${Thermal_Threshold_File}        
+fi
+
+while [ "$i" -lt "${THERMAL_SEN_MAX}" ];do
+    type=${thermals_type[${i}]}
+    ii=$(($i+1))
+   
+    if [ $create_thermal_theshold_file == 1 ];then
+    echo "\"${ii}\" : {" >> ${Thermal_Threshold_File}
+        if [ "${Thermal_Error_Value[$i]}" == "" ];then
+            echo "    \"error\" : ${Thermal_Default_Error_Value}," >> ${Thermal_Threshold_File}
+        else
+            echo "    \"error\" : ${Thermal_Error_Value[$i]}," >> ${Thermal_Threshold_File}
+        fi
+
+        if [ "${Thermal_Shutdown_Value[$i]}" == "" ];then
+            echo "    \"shutdown\" : ${Thermal_Default_Shutdown_Value}," >> ${Thermal_Threshold_File}
+        else
+            echo "    \"shutdown\" : ${Thermal_Shutdown_Value[$i]}," >> ${Thermal_Threshold_File}
+        fi
+
+        if [ "${Thermal_Warning_Upper_Value[$i]}" == "" ];then
+            echo "    \"warning_upper\" : ${Thermal_Default_Warning_Upper_Value}," >> ${Thermal_Threshold_File}
+        else
+            echo "    \"warning_upper\" : ${Thermal_Warning_Upper_Value[$i]}," >> ${Thermal_Threshold_File}
+        fi
+
+        if [ "${Thermal_Warning_Lower_Value[$i]}" == "" ];then
+            echo "    \"warning_lower\" : ${Thermal_Default_Warning_Lower_Value}" >> ${Thermal_Threshold_File}
+        else
+            echo "    \"warning_lower\" : ${Thermal_Warning_Lower_Value[$i]}" >> ${Thermal_Threshold_File}
+        fi
+
+    echo "}" >> ${Thermal_Threshold_File}
+    fi
+                    
+    if [ "$type" == "C" ];then
+        echo " \"thermal$ii\":\"CPU\"   " >> ${Config_File}
+        echo "," >> ${Config_File}
+        echo " \"thermal${ii}_node\":{" >> ${Config_File}
+        echo " \"present\":\"1\",   " >> ${Config_File}        
+        if [ "${cpu_core_temp_node[0]}" == "" ];then
+        	echo " \"temp1\":\"\",   " >> ${Config_File}
+        else
+          echo " \"temp1\":\"${cpu_core_prefix}/${cpu_core_temp_node[0]}\",   " >> ${Config_File}
+        fi
+        if [ "${cpu_core_temp_node[1]}" == "" ];then
+        	echo " \"temp2\":\"\",   " >> ${Config_File}
+        else
+          echo " \"temp2\":\"${cpu_core_prefix}/${cpu_core_temp_node[1]}\",   " >> ${Config_File}
+        fi
+        if [ "${cpu_core_temp_node[2]}" == "" ];then
+        	echo " \"temp3\":\"\",   " >> ${Config_File}
+        else
+          echo " \"temp3\":\"${cpu_core_prefix}/${cpu_core_temp_node[2]}\",   " >> ${Config_File}
+        fi
+        if [ "${cpu_core_temp_node[3]}" == "" ];then
+        	echo " \"temp4\":\"\"   " >> ${Config_File}
+        else
+          echo " \"temp4\":\"${cpu_core_prefix}/${cpu_core_temp_node[3]}\"   " >> ${Config_File}
+        fi                        
+        echo "}" >> ${Config_File}
+    elif [ "$type" == "S" ];then
+        echo " \"thermal$ii\":\"System\"   " >> ${Config_File}
+        echo "," >> ${Config_File}
+        echo " \"thermal${ii}_node\":{" >> ${Config_File}
+        echo " \"present\":\"1\",   " >> ${Config_File}        
+        if [ "${i2c_nodes_thermal_temp}" == "" ];then
+        	echo " \"temp\":\"\"   " >> ${Config_File}
+        else
+          echo " \"temp\":\"${i2c_prefix}/${i2c_bus_thermal[${sys_i}]}/${i2c_nodes_thermal_temp}\"   " >> ${Config_File}
+        fi
+        echo "}" >> ${Config_File}
+        sys_i=$(($sys_i+1))
+    elif [ "$type" == "P" ];then
+        echo " \"thermal$ii\":\"Psu\"   " >> ${Config_File}
+        echo "," >> ${Config_File}
+        echo " \"thermal${ii}_node\":{" >> ${Config_File}
+        if [ "${i2c_nodes_psu_basic_present}" == "" ];then
+        	echo " \"pesent\":\"\",   " >> ${Config_File}
+        else
+          echo " \"present\":\"${i2c_prefix}/${i2c_bus_psu_basic[${psu_i}]}/${i2c_nodes_psu_basic_present}\",   " >> ${Config_File}
+        fi        
+        if [ "${i2c_nodes_psu_temp}" == "" ];then
+        	echo " \"temp\":\"\"   " >> ${Config_File}
+        else
+          echo " \"temp\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_temp}\"   " >> ${Config_File}
+        fi
+        echo "}" >> ${Config_File}
+        psu_i=$(($psu_i+1))
+    fi
+    if [ "$ii" != "${THERMAL_SEN_MAX}" ];then
+        if [ $create_thermal_theshold_file == 1 ];then
+        echo "," >> ${Thermal_Threshold_File}    
+        fi    
+        echo "," >> ${Config_File}
+    fi            
+    i=$(($i+1))
+done
+
+if [ $create_thermal_theshold_file == 1 ];then
+    echo "}" >> ${Thermal_Threshold_File}
+fi
+echo "}" >> ${Config_File}
+}
+
+ECRF_PAL_PSUS()
+{
+i=0
+psu_i=0
+echo "
+\"psus\" :{" >> ${Config_File}
+
+while [ "$i" -lt "${PSU_MAX}" ];do
+    type=${psus_type[${i}]}
+    ii=$(($i+1))
+    if [ "$type" == "S" ];then
+        echo " \"psu$ii\":\"System\"   " >> ${Config_File}
+        echo "," >> ${Config_File}
+        echo " \"psu${ii}_node\":{" >> ${Config_File}
+        if [ "${i2c_nodes_psu_basic_name}" == "" ];then
+        	echo " \"name\":\"\",   " >> ${Config_File}
+        else
+          echo " \"name\":\"${i2c_prefix}/${i2c_bus_psu_basic[${psu_i}]}/${i2c_nodes_psu_basic_name}\",   " >> ${Config_File}
+        fi
+        if [ "${i2c_nodes_psu_basic_present}" == "" ];then
+        	echo " \"present\":\"\",   " >> ${Config_File}
+        else
+          echo " \"present\":\"${i2c_prefix}/${i2c_bus_psu_basic[${psu_i}]}/${i2c_nodes_psu_basic_present}\",   " >> ${Config_File}
+        fi 
+        if [ "${i2c_nodes_psu_basic_serial}" == "" ];then
+        	echo " \"serial\":\"\",   " >> ${Config_File}
+        else
+          echo " \"serial\":\"${i2c_prefix}/${i2c_bus_psu_basic[${psu_i}]}/${i2c_nodes_psu_basic_serial}\",   " >> ${Config_File}
+        fi
+        if [ "${i2c_nodes_psu_v_in}" == "" ];then
+        	echo " \"vin\":\"\",   " >> ${Config_File}
+        else
+          echo " \"vin\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_v_in}\",   " >> ${Config_File}
+        fi      
+        if [ "${i2c_nodes_psu_v_out}" == "" ];then
+        	echo " \"vout\":\"\",   " >> ${Config_File}
+        else
+          echo " \"vout\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_v_out}\",   " >> ${Config_File}
+        fi
+        if [ "${i2c_nodes_psu_i_in}" == "" ];then
+        	echo " \"iin\":\"\",   " >> ${Config_File}
+        else
+          echo " \"iin\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_i_in}\",   " >> ${Config_File}
+        fi
+        if [ "${i2c_nodes_psu_i_out}" == "" ];then
+        	echo " \"iout\":\"\",   " >> ${Config_File}
+        else
+          echo " \"iout\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_i_out}\",   " >> ${Config_File}
+        fi
+        if [ "${i2c_nodes_psu_p_in}" == "" ];then
+        	echo " \"pin\":\"\",   " >> ${Config_File}
+        else
+          echo " \"pin\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_p_in}\",   " >> ${Config_File}
+        fi
+        if [ "${i2c_nodes_psu_p_out}" == "" ];then
+        	echo " \"pout\":\"\",   " >> ${Config_File}
+        else
+          echo " \"pout\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_p_out}\",   " >> ${Config_File}
+        fi
+        if [ "${i2c_nodes_psu_type}" == "" ];then
+        	echo " \"type\":\"\",   " >> ${Config_File}
+        else
+          echo " \"type\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_type}\",   " >> ${Config_File}
+        fi
+        if [ "${i2c_nodes_psu_fan_dir}" == "" ];then
+        	echo " \"fan_dir\":\"\"   " >> ${Config_File}
+        else
+          echo " \"fan_dir\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_fan_dir}\"   " >> ${Config_File}
+        fi                                                                               
+        echo "}" >> ${Config_File}                 
+        if [ "$ii" != "${PSU_MAX}" ];then
+            echo "," >> ${Config_File}
+        fi
+        psu_i=$(($psu_i+1))
+    fi    
+    i=$(($i+1))
+done
+
+echo "}" >> ${Config_File}
+}
+
+ECRF_PAL_ITEMS()
+{
+echo "
+\"ecrf_pal\" :
+                {
+                                \"fan_max_num\" : "${FAN_MAX}", "  >> ${Config_File}
+ECRF_PAL_FANS
+J_COMMA
+
+echo "
+                                \"port_max_num\" : "${PORT_MAX}", "  >> ${Config_File}
+if [ "$i2c_nodes_port_present" == "" ];then
+echo " 													\"present\":\"\",   " >> ${Config_File}
+else
+    if [ "$i2c_bus_port" == "" ];then
+        echo " \"present_all\":\"${i2c_prefix}/${i2c_bus_port_map[0]}/${i2c_nodes_port_present_all}\",   " >> ${Config_File}
+    else
+        echo " \"present_all\":\"${i2c_prefix}/${i2c_bus_port}/${i2c_nodes_port_present_all}\",   " >> ${Config_File}
+fi
+fi
+ECRF_PAL_PORTS
+J_COMMA
+
+echo "
+                                \"thermal_sen_max_num\" : "${THERMAL_SEN_MAX}", "  >> ${Config_File}
+
+ECRF_PAL_THERMALS
+J_COMMA
+
+echo "
+                                \"psu_max_num\" : "${PSU_MAX}", "  >> ${Config_File}
+
+ECRF_PAL_PSUS
+J_COMMA
+
+echo "
+                                \"nos_type\" : \""${NOS_TYPE}"\",
+                                \"plt_type\" : \""${HW_TYPE_R}"\",
+                                \"max_cpu_num\" : "${CPU_MAX}",
+                                \"cpu_manu\" : \""${CPU_MANU}"\",
+                                \"cpu_vid\" : \""${CPU_VID}"\",
+                                \"cpu_stepping\" : "${CPU_STEPPING}",
+                                \"cpu_model_name\" : "\"${CPU_MODEL_NAME}"\",
+                                \"cpu_max_speed\" : "${CPU_MAX_SPEED}",
+                                \"cpu_total_core\" : "${CPU_TOTAL_CORE}",                                                                                    
+                                \"cpu_total_thread\" : "${CPU_TOTAL_THREAD}",
+                                \"memory_total_count\" : "${MEM_TOTAL_C}",
+                                \"drv_total_count\" : "${DRV_TOTAL_C}"
+                        }
+
+
+"  >> ${Config_File}
+}
+
+if [ ! -f "${ASSET_TAG}" ];then
+`echo "N/A" > ${ASSET_TAG} `
+fi
+
+if [ "$HW_type" != "arm-accton-as4610-54-r0" ];then
+#Accton 5081 server
+Product_name=`dmidecode -s system-product-name | grep SAU`
+fi
+
+if [ ! -f "${ONLPDUMP}" ] && [ ! "$Product_name" = "SAU5081" ] ;then
+    # VM environment
+    MANUFACTURER="ACCTON"
+    SERIAL_NUMBER="S1234567890"
+    ASSET_TAG_C=`cat "${ASSET_TAG}"`
+    PLATFORM="BDCR"
+    MODULE_NUMBER="M1234567890"
+    NINF="ma1"
+    TYPE="Drawer"
+    FAN_MAX="8"
+    THERMAL_SEN_MAX="7"
+    PSU_MAX="2"
+    PORT_MAX="54"
+    CPU_MAX="4"
+    CPU_MANU="Intel"   
+    CPU_VID="Intel" 
+    CPU_STEPPING="1" 
+    CPU_MODEL_NAME="Intel"
+    CPU_MAX_SPEED="2700" 
+    CPU_TOTAL_CORE="1"
+    CPU_TOTAL_THREAD="1"
+    MEM_TOTAL_C="1"
+    DRV_TOTAL_C="1"
+    
+else
+    if [ -f "${PlatformPath}" ];then
+    MANUFACTURER=`${ONLPDUMP} | grep -m 1 "Manufacturer" | awk -F':' '{print $2}' | sed -e "s/ //g"`
+    SERIAL_NUMBER=`${ONLPDUMP} | grep -m 1 "Serial Number" | awk -F':' '{print $2}' | sed -e "s/ //g"`
+    ASSET_TAG_C=`cat "${ASSET_TAG}"`
+    PLATFORM="BDCR"
+    MODULE_NUMBER=`${ONLPDUMP} | grep -m 1 "Part Number" | awk -F':' '{print $2}' | sed -e "s/ //g"`
+    else
+    MANUFACTURER=`${ONLPDUMP} | grep -m 1 "Manufacturer" | awk -F' ' '{print $4}' | sed -e "s/ //g"`
+    SERIAL_NUMBER=`${ONLPDUMP} | grep -m 1 "Serial Number" | awk -F' ' '{print $5}' | sed -e "s/ //g"`
+    ASSET_TAG_C=`cat "${ASSET_TAG}"`
+    PLATFORM="BDCR"
+    MODULE_NUMBER=`${ONLPDUMP} | grep -m 1 "Part Number" | awk -F' ' '{print $5}' | sed -e "s/ //g"`    
+    fi
+
+    NOS_TYPE=`psme.sh get nos_type`
+    NINF=`psme.sh get mgmt_port_name`
+    sed -i "s/ma1/$NINF/g" /etc/psme/psme.conf 
+    REST_SERVER_PORT=`psme.sh get rest_server_port`
+    sed -i "s/8888/$REST_SERVER_PORT/g" /etc/psme/psme.conf 
+    TYPE="Drawer"
+    FAN_MAX=`psme.sh get max_fan_num`
+    THERMAL_SEN_MAX=`psme.sh get thermal_sensor_num`
+    PSU_MAX=`psme.sh get max_psu_num`
+    PORT_MAX=`psme.sh get max_port_num`
+    MEM_TOTAL_C=`collect_mem_info.sh MCOUNT`
+    DRV_TOTAL_C=`collect_drv_info.sh MCOUNT`
+
+if [ -f /usr/bin/lscpu ];then    
+    #CPU_MAX=`lscpu | grep 'CPU(s):' -m1 | awk '{print $2}'`
+    # Current CPU board only have 1 CPU (4 cores)
+    CPU_MAX=1
+    CPU_MANU=`lscpu | grep 'Arch'| awk -F'Architecture:' '{print $2}' | sed -e "s/ //g"`    
+    CPU_VID=`lscpu | grep 'Vendor ID'| awk -F'Vendor ID:' '{print $2}' | sed -e "s/ //g"`
+    CPU_STEPPING=`lscpu | grep 'Stepping'| awk -F'Stepping:' '{print $2}' | sed -e "s/ //g"` 
+    CPU_MODEL_NAME=`lscpu | grep 'Model name'| awk -F'Model name:' '{print $2}' | sed -e "s/   //g"` 
+    CPU_MAX_SPEED=`lscpu | grep 'CPU MHz:'| awk -F'CPU MHz:' '{print $2}' | sed -e "s/ //g"` 
+    CPU_MAX_SPEED=${CPU_MAX_SPEED%.*}
+    CPU_TOTAL_CORE=`lscpu | grep 'Core(s)'| awk -F'per socket:' '{print $2}' | sed -e "s/ //g"` 
+    CPU_TOTAL_THREAD=`lscpu | grep 'Thread(s)'| awk -F'per core:' '{print $2}' | sed -e "s/ //g"`    
+
+if [ "$HW_type" = "arm-accton-as4610-54-r0" ];then
+    CPU_MAX="1"
+    CPU_MANU="ARM"   
+    CPU_VID="ARM" 
+    CPU_STEPPING="1" 
+    CPU_MODEL_NAME="ARMv7 Processor rev 0"
+    CPU_MAX_SPEED="1993" 
+    CPU_TOTAL_CORE="1"
+    CPU_TOTAL_THREAD="1"
+    MEM_TOTAL_C="1"
+    DRV_TOTAL_C="1"
+fi
+
+else
+    CPU_MANU="Intel"   
+    CPU_VID="Intel" 
+    CPU_STEPPING="1" 
+    CPU_MODEL_NAME="Intel"
+    CPU_MAX_SPEED="2700" 
+    CPU_TOTAL_CORE="1"
+    CPU_TOTAL_THREAD="1"
+fi
+
+
+fi
+
+make_platform_info()
+{
+	echo "{
+		\"managers\":  [
+		{
+			\""ipv4"\" : \""localhost"\",
+            \""port"\" : 7788,
+			\""slot"\" : 1,
+			\""chassis"\" : {
+			\""type"\"             : \""${TYPE}"\",
+			\""size"\"             : 1,
+			\""locationOffset"\"   : 1,
+			\""parentId"\"         : 1,
+			\""platform"\"         : \""${PLATFORM}"\",
+			\""networkInterface"\" : \""${NINF}"\",
+			\""nos_type"\"         : \""${NOS_TYPE}"\",
+			\""asset_tag"\"        : \""${ASSET_TAG_C}"\",
+			\""manufacturer"\"     : \""${MANUFACTURER}"\",
+			\""model_number"\"     : \""${MODULE_NUMBER}"\",
+			\""serial_number"\"    : \""${SERIAL_NUMBER}"\"
+		}
+		,
+			\"ecrf_pal\" :
+			{
+				\"fan_max_num\" : "${FAN_MAX}",
+				\"port_max_num\" : "${PORT_MAX}",
+				\"thermal_sen_max_num\" : "${THERMAL_SEN_MAX}",
+				\"psu_max_num\" : "${PSU_MAX}",
+				\"max_cpu_num\" : "${CPU_MAX}",
+				\"cpu_manu\" : \""${CPU_MANU}"\",	
+				\"cpu_vid\" : \""${CPU_VID}"\",		
+				\"cpu_stepping\" : "${CPU_STEPPING}",
+				\"cpu_model_name\" : "\"${CPU_MODEL_NAME}"\",
+                                \"cpu_max_speed\" : "${CPU_MAX_SPEED}",
+				\"cpu_total_core\" : "${CPU_TOTAL_CORE}",												
+				\"cpu_total_thread\" : "${CPU_TOTAL_THREAD}",
+				\"memory_total_count\" : "${MEM_TOTAL_C}",
+				\"drv_total_count\" : "${DRV_TOTAL_C}"
+			}
+		}
+	]
+}" > ${Config_File}
+}
+
+if [ -f "${Config_File}" ];then
+`rm ${Config_File}`
+fi
+J_B_START
+J_O_START managers
+IPV4_ITEMS
+J_COMMA
+CHASSIS_ITEMS
+J_COMMA
+ECRF_PAL_ITEMS
+J_O_END
+J_B_END
+
+#make_platform_info

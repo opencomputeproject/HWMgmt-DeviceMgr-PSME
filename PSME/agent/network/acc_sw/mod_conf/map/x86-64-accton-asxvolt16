@@ -1,0 +1,22 @@
+{
+  "1":"/sys/bus/i2c/devices/47-0050/sfp_eeprom",
+  "2":"/sys/bus/i2c/devices/48-0050/sfp_eeprom",
+  "3":"/sys/bus/i2c/devices/37-0050/sfp_eeprom",
+  "4":"/sys/bus/i2c/devices/38-0050/sfp_eeprom",
+  "5":"/sys/bus/i2c/devices/35-0050/sfp_eeprom",
+  "6":"/sys/bus/i2c/devices/36-0050/sfp_eeprom",  
+  "7":"/sys/bus/i2c/devices/33-0050/sfp_eeprom",
+  "8":"/sys/bus/i2c/devices/34-0050/sfp_eeprom",
+  "9":"/sys/bus/i2c/devices/39-0050/sfp_eeprom",
+  "10":"/sys/bus/i2c/devices/40-0050/sfp_eeprom",
+  "11":"/sys/bus/i2c/devices/41-0050/sfp_eeprom", 
+  "12":"/sys/bus/i2c/devices/42-0050/sfp_eeprom",
+  "13":"/sys/bus/i2c/devices/43-0050/sfp_eeprom",
+  "14":"/sys/bus/i2c/devices/44-0050/sfp_eeprom",
+  "15":"/sys/bus/i2c/devices/45-0050/sfp_eeprom",  
+  "16":"/sys/bus/i2c/devices/46-0050/sfp_eeprom",
+  "17":"/sys/bus/i2c/devices/49-0050/sfp_eeprom",
+  "18":"/sys/bus/i2c/devices/50-0050/sfp_eeprom",
+  "19":"/sys/bus/i2c/devices/51-0050/sfp_eeprom", 
+  "20":"/sys/bus/i2c/devices/52-0050/sfp_eeprom"   
+}

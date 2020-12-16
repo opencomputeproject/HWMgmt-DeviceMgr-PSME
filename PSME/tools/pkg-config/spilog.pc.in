@@ -1,0 +1,10 @@
+prefix=@CMAKE_BINARY_DIR@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: spdlog 
+Description: spdlog library
+Version: @SPDLOG_VERSION@
+Libs: -L${libdir} -lspdlog
+Cflags: -I${includedir}

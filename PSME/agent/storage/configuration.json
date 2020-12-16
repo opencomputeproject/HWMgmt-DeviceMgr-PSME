@@ -1,0 +1,48 @@
+{
+    "agent" : {
+        "vendor" : "Intel Corporation",
+        "capabilities" : [ "Storage" ]
+    },
+    "server" : {
+        "port" : 7777
+    },
+    "registration" : {
+        "ipv4" : "localhost",
+        "port" : 8383,
+        "interval" : 3
+    },
+    "managers" : [
+        {
+            "serialConsoleEnabled": true,
+            "StorageServices" : [
+                {
+                    "iscsi" : {
+                        "config-path" : "/etc/tgt/conf.d",
+                        "portal-interface" : "eth0",
+                        "port" : 3260,
+                        "username" : "",
+                        "password" : "",
+                        "initiator" : "psme-storage"
+                    }
+                }
+            ]
+        }
+    ],
+    "service-uuid-file" : "/var/opt/psme/storage-service-uuid.json",
+    "tgt-socket": "/var/run/tgtd/socket.0",
+    "logger" : {
+        "agent" : {
+            "level" : "WARNING",
+            "timeformat" : "DATE_NS",
+            "color" : true,
+            "output" : true,
+            "tagging" : true,
+            "moredebug" : false,
+            "streams" : [
+                {
+                    "type": "STDOUT"
+                }
+            ]
+        }
+    }
+}

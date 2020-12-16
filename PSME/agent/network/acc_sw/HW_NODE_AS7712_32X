@@ -1,0 +1,114 @@
+# Edgecore DeviceManager
+# Copyright 2020-2021 Edgecore Networks, Inc.
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#  KIND, either express or implied.  See the License for the
+#  specific language governing permissions and limitations
+#  under the License.
+###########################################################################################################
+# Support Platform type
+###########################################################################################################
+fans_type=("S" "S" "S" "S" "S" "S" "P" "P")
+thermals_type=("C" "S" "S" "S" "S" "P" "P")
+psus_type=("S" "S")
+mapping=("QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
+"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
+"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
+"QSFP" "QSFP")
+
+###########################################################################################################
+# cpu core temp path
+###########################################################################################################
+cpu_core_prefix=("/sys/devices/platform/coretemp.0/hwmon/hwmon0")
+
+###########################################################################################################
+# i2c bus path
+###########################################################################################################
+i2c_prefix=("/sys/bus/i2c/devices")
+i2c_bus_fan=("2-0066")
+i2c_bus_thermal=("3-0048/hwmon/hwmon*" "3-0049/hwmon/hwmon*" "3-004a/hwmon/hwmon*" "3-004b/hwmon/hwmon*")
+i2c_bus_psu_basic=("10-0050" "11-0053")
+i2c_bus_psu_ym2651=("10-0058" "11-005b")
+i2c_bus_port=("4-0060")
+i2c_bus_port_map=("")
+
+###########################################################################################################
+# FAN sysfs node
+###########################################################################################################
+i2c_nodes_fan_name=("")
+i2c_nodes_fan_serial=("")
+i2c_nodes_fan_present=("present")
+i2c_nodes_fan_front_speed=("front_speed_rpm")
+i2c_nodes_fan_rear_speed=("rear_speed_rpm")
+i2c_nodes_fan_front_percentage=("")
+i2c_nodes_fan_rear_percentage=("")
+
+###########################################################################################################
+# Thermal sysfs node
+###########################################################################################################
+i2c_nodes_thermal_temp=("temp1_input")
+
+###########################################################################################################
+# CPU core temp node
+###########################################################################################################
+cpu_core_temp_node=("temp2_input" "temp3_input" "temp4_input" "temp5_input")
+
+###########################################################################################################
+# PSU basic sysfs node
+###########################################################################################################
+i2c_nodes_psu_basic_name=("psu_model_name")
+i2c_nodes_psu_basic_present=("psu_present")
+i2c_nodes_psu_basic_power_good=("psu_power_good")
+i2c_nodes_psu_basic_serial=("")
+
+###########################################################################################################
+# PSU ym2651 sysfs node
+###########################################################################################################
+i2c_nodes_psu_v_out=("psu_v_out")
+i2c_nodes_psu_i_out=("psu_i_out")
+i2c_nodes_psu_p_out=("psu_p_out")
+i2c_nodes_psu_type=("psu_mfr_model")
+i2c_nodes_psu_fan_name=("")
+i2c_nodes_psu_fan_serial=("")
+i2c_nodes_psu_fan_dir=("psu_fan_dir")
+i2c_nodes_psu_temp=("psu_temp1_input")
+i2c_nodes_psu_fan_speed=("psu_fan1_speed_rpm")
+i2c_nodes_psu_fan_percentage=("")
+i2c_nodes_psu_v_in=("")
+i2c_nodes_psu_i_in=("")
+i2c_nodes_psu_p_in=("")
+
+
+###########################################################################################################
+# SFP(QSFP) sysfs node
+###########################################################################################################
+i2c_nodes_port_present_all=("module_present_all")
+i2c_nodes_port_present=("module_present_")
+i2c_nodes_port_tx_disable=("")
+i2c_nodes_port_lp_mode=("")
+
+###########################################################################################################
+# Thermal threshold setting
+# index of each value = CPU, MAIN-BOARSD1, MAIN-BOARD2,..., MAIN-BOARDN, PSU1,PSU2
+#
+# HW will provide this information then please refer the ONLP source code of github
+# Ex. ASGvOLT64 ONLP source code as below
+# https://github.com/opencomputeproject/OpenNetworkLinux/pull/805/commits/8f456873a2e9dab7402503efb3d97bda78081db4
+###########################################################################################################
+
+#Thermal_Shutdown_Value=()
+#Thermal_Error_Value=()
+#Thermal_Warning_Upper_Value=()
+#Thermal_Warning_Lower_Value=()

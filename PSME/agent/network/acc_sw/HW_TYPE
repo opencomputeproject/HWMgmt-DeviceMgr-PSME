@@ -1,0 +1,85 @@
+if [ ! -z "${HW_type}" ];then
+    #Real Platform
+    ssize=`echo "${#HW_type}"`
+    nsize=$(($ssize-3))
+    HW_TYPE_R_T=${HW_type:0:$nsize}
+    HW_TYPE_R=`echo $HW_TYPE_R_T | sed -e s/_/-/g`
+
+    case "${HW_TYPE_R}" in
+        "x86"[-_]"64-accton"[-_]"as7712"[-_]"32x")
+        . /etc/psme/HW_NODE_AS7712_32X
+        ;;
+        "x86"[-_]"64-accton"[-_]"as5916"[-_]"54x" | "x86"[-_]"64-accton"[-_]"as5916"[-_]"54xm")
+        . /etc/psme/HW_NODE_AS5916_54XM
+        ;;
+        "x86"[-_]"64-accton"[-_]"as5916"[-_]"54x" | "x86"[-_]"64-accton"[-_]"as5916"[-_]"54xks")
+        . /etc/psme/HW_NODE_AS5916_54XKS
+        ;;
+        "x86"[-_]"64-accton"[-_]"as5916"[-_]"54x" | "x86"[-_]"64-accton"[-_]"as5916"[-_]"54xk")
+        . /etc/psme/HW_NODE_AS5916_54XK
+        ;;
+        "x86"[-_]"64-accton"[-_]"as5912"[-_]"54x")
+        . /etc/psme/HW_NODE_AS5912_54X
+        ;;
+        "x86"[-_]"64-accton"[-_]"as5712"[-_]"54x")
+        . /etc/psme/HW_NODE_AS5712_54X
+        ;;
+        "x86"[-_]"64-accton"[-_]"as5812"[-_]"54t")
+        . /etc/psme/HW_NODE_AS5812_54T
+        ;;
+        "x86"[-_]"64-accton"[-_]"as5812"[-_]"54x")
+        . /etc/psme/HW_NODE_AS5812_54X
+        ;;
+        "x86"[-_]"64-accton"[-_]"as7312"[-_]"54x")
+        . /etc/psme/HW_NODE_AS7312_54X
+        ;;
+         "x86"[-_]"64-accton"[-_]"as7816"[-_]"64x")
+        . /etc/psme/HW_NODE_AS7816_64X
+        ;;
+        "x86"[-_]"64-accton"[-_]"asxvolt16")
+        . /etc/psme/HW_NODE_ASXVOLT16
+        ;;
+        "x86"[-_]"64-accton"[-_]"asgvolt64")
+        . /etc/psme/HW_NODE_ASGVOLT64
+        ;;
+        "x86"[-_]"64-accton"[-_]"as6812"[-_]"32x")
+        . /etc/psme/HW_NODE_AS6812_32X
+        ;;
+        "x86"[-_]"64-accton"[-_]"as6712"[-_]"32x")
+        . /etc/psme/HW_NODE_AS6712_32X
+        ;;
+        "x86"[-_]"64-accton"[-_]"as7316"[-_]"26xb")
+        . /etc/psme/HW_NODE_AS7316_26XB
+        ;;
+        "x86"[-_]"64-accton"[-_]"as7726"[-_]"32x")
+        . /etc/psme/HW_NODE_AS7726_32X
+        ;;
+        "x86"[-_]"64-accton"[-_]"as7326"[-_]"56x")
+        . /etc/psme/HW_NODE_AS7326_56X
+        ;;
+        "x86"[-_]"64-accton"[-_]"as7926"[-_]"80xk")
+        . /etc/psme/HW_NODE_AS7926_80XK
+        ;;
+        "x86"[-_]"64-accton"[-_]"as7926"[-_]"40xke")
+        . /etc/psme/HW_NODE_AS7926_40XKE
+        ;;
+        "x86"[-_]"64-accton"[-_]"as9716"[-_]"32d")
+        . /etc/psme/HW_NODE_AS9716_32D
+        ;;
+        "x86"[-_]"64-accton"[-_]"as4630"[-_]"54pe")
+        . /etc/psme/HW_NODE_AS4630_54PE
+        ;;
+        "x86"[-_]"64-accton"[-_]"as5835"[-_]"54x")
+        . /etc/psme/HW_NODE_AS5835_54X
+        ;;
+        "x86"[-_]"64-accton"[-_]"as5835"[-_]"54t")
+        . /etc/psme/HW_NODE_AS5835_54T
+        ;;                
+        "arm-accton-as4610-54")
+        . /etc/psme/HW_NODE_AS4610_54T
+        ;;
+        "arm-accton_as4610_30")
+        . /etc/psme/HW_NODE_AS4610_30T
+        ;;
+    esac
+fi

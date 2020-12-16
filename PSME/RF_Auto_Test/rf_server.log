@@ -1,0 +1,18 @@
+{
+	"MEM" : 
+	[
+		{
+			"ENTRY" : 
+			{
+				"Created" : "2001-01-01T03:28:50+00:00",
+				"EntryCode" : "Assert",
+				"EntryType" : "Event",
+				"Message" : "System fan absent",
+				"OemRecordFormat" : "NULL",
+				"SensorNumber" : 1,
+				"SensorType" : "Fan",
+				"Severity" : "Warning"
+			}
+		}
+	]
+}

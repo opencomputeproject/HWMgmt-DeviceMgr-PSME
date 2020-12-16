@@ -1,0 +1,291 @@
+{
+    "Identifer": "06",
+    "C_PN":"XPPXG2N1CDFA",
+    "Attributes": [
+	{
+	    "Identifer": {
+		"Byte_Address": 0,
+		"Size": 1,
+		"Page": "Lo128B"
+	    }
+	},
+	{
+	    "Temp_High_Alarm": {
+		"Byte_Address": 2,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.00390625,
+		"sunit" : "C"				
+	    }
+	},
+	{
+	    "Temp_Low_Alarm": {
+		"Byte_Address": 4,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.00390625,
+		"sunit" : "C"				
+	    }
+	},
+	{
+	    "Temp_High_Warning": {
+		"Byte_Address": 6,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.00390625,
+		"sunit" : "C"				
+	    }
+	},
+	{
+	    "Temp_Low_Warning": {
+		"Byte_Address": 8,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.00390625,
+		"sunit" : "C"		
+	    }
+	},
+	
+	{
+	    "Voltage_High_Alarm": {
+		"Byte_Address": 10,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "V"		
+	    }
+	},
+	{
+	    "Voltage_Low_Alarm": {
+		"Byte_Address": 12,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "V"		
+	    }
+	},
+	{
+	    "Voltage_High_Warning": {
+		"Byte_Address": 14,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "V"		
+	    }
+	},
+	{
+	    "Voltage_Low_Warning": {
+		"Byte_Address": 16,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "V"			
+	    }
+	},	
+	
+	{
+	    "Bias_High_Alarm": {
+		"Byte_Address": 18,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.002,
+		"sunit" : "mA"			
+	    }
+	},
+	{
+	    "Bias_Low_Alarm": {
+		"Byte_Address": 20,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.002,
+		"sunit" : "mA"			
+	    }
+	},
+	{
+	    "Bias_High_Warning": {
+		"Byte_Address": 22,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.002,
+		"sunit" : "mA"			
+	    }
+	},
+	{
+	    "Bias_Low_Warning": {
+		"Byte_Address": 24,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.002,
+		"sunit" : "mA"				
+	    }
+	},
+	{
+	    "TX_Power_High_Alarm": {
+		"Byte_Address": 26,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "mW"		
+	    }
+	},
+	{
+	    "TX_Power_Low_Alarm": {
+		"Byte_Address": 28,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "mW"		
+	    }
+	},
+	{
+	    "TX_Power_High_Warning": {
+		"Byte_Address": 30,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "mW"		
+	    }
+	},
+	{
+	    "TX_Power_Low_Warning": {
+		"Byte_Address": 32,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "mW"		
+	    }
+	},
+	{
+	    "RX_Power_High_Alarm": {
+		"Byte_Address": 34,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "mW"
+	    }
+	},
+	{
+	    "RX_Power_Low_Alarm": {
+		"Byte_Address": 36,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "mW"	
+	    }
+	},
+	{
+	    "RX_Power_High_Warning": {
+		"Byte_Address": 38,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "mW"		
+	    }
+	},
+	{
+	    "RX_Power_Low_Warning": {
+		"Byte_Address": 40,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "mW"		
+	    }
+	},
+	{
+	    "Temperature": {
+		"Byte_Address": 96,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.00390625,
+		"sunit" : "C"				
+	    }
+	},
+	
+	{
+	    "Voltage": {
+		"Byte_Address": 98,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "V"				
+	    }
+	},
+	
+	{
+	    "Tx_Bias": {
+		"Byte_Address": 100,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit":  0.002,
+		"sunit" : "mA"		
+	    }
+	},
+	{
+	    "Tx_Power": {
+		"Byte_Address": 102,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit":  0.0001,
+		"sunit" : "mW"			
+	    }
+	},
+	{
+	    "Rx_Power": {
+		"Byte_Address": 104,
+		"Size": 2,
+		"Page": "Lo128B",
+		"unit": 0.0001,
+		"sunit" : "mW"			
+	    }
+	},
+	{
+	    "Vendor_name": {
+		"Byte_Address": 276,
+		"Size": 16,
+		"Page": "P01"
+	    }
+	},
+	{
+	    "Vendor_OUI": {
+		"Byte_Address": 293,
+		"Size": 3,
+		"Page": "P01"
+	    }
+	},
+	{
+	    "Vendor_PN": {
+		"Byte_Address": 296,
+		"Size": 16,
+		"Page": "P01"
+	    }
+	},
+	{
+	    "Vendor_rev": {
+		"Byte_Address": 312,
+		"Size": 2,
+		"Page": "P01"
+	    }
+	},
+	{
+	    "Vendor_SN": {
+		"Byte_Address": 324,
+		"Size": 16,
+		"Page": "P01"
+	    }
+	},
+	{
+	    "Data_Code": {
+		"Byte_Address": 340,
+		"Size": 8,
+		"Page": "P01"
+	    }
+	},
+	{
+	    "Vendor_Specific": {
+		"Byte_Address": 352,
+		"Size": 32,
+		"Page": "P01"
+	    }
+	}
+    ]
+}

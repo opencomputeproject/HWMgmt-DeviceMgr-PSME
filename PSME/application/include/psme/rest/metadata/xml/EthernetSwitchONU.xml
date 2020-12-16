@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Copyright 2014-2015 Distributed Management Task Force, Inc. (DMTF). All rights reserved.-->
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+
+  <edmx:Reference Uri="Org.OData.Core.V1.xml">
+    <edmx:Include Namespace="Org.OData.Core.V1" Alias="OData"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="RedfishExtensions.xml">
+    <edmx:Include Namespace="RedfishExtensions.v1_0_0" Alias="Redfish"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="Resource.xml">
+    <edmx:Include Namespace="Resource"/>
+    <edmx:Include Namespace="Resource.v1_0_0" />
+  </edmx:Reference>
+
+  <edmx:DataServices>
+
+     <!-- This schema defines a switch ONU and its respective properties.-->
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="EthernetSwitchONU">
+      <EntityType Name="EthernetSwitchONU" BaseType="Resource.v1_0_0.Resource" Abstract="true">
+        <Annotation Term="OData.Description" String="Represents ONU List for switch PON port."/>
+        <Annotation Term="OData.LongDescription" String="This resource shall be used to represent resources that represent a PON port"/>
+      </EntityType>
+    </Schema>
+    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="EthernetSwitchONU.v1_0_0">
+      <EntityType Name="EthernetSwitchONU" BaseType="EthernetSwitchONU.EthernetSwitchONU">
+        <Property Name="TransceiverStatistics" Type="EthernetSwitchONU.v1_0_0.TransceiverStatistics">
+          <Annotation Term="OData.Description"
+	        String="For port transceiver statistics information"/>
+          <Annotation Term="OData.LongDescription"
+	        String="For port transceiver statistics information"/>
+        </Property>
+     </EntityType>
+
+      <ComplexType Name="TransceiverStatistics">
+        <Annotation Term="OData.AdditionalProperties" Bool="false"/>
+        <Property Name="RxPower" Type="EthernetSwitchONU.v1_0_0.RxPower"/>       
+      </ComplexType>
+
+      <ComplexType Name="RxPower">
+        <Annotation Term="OData.AdditionalProperties" Bool="false"/>
+        <Property Name="Reading" Type="Edm.Double"/>
+        <Property Name="UpperThresholdFatal" Type="Edm.Double"/>
+        <Property Name="UpperThresholdCritical" Type="Edm.Double"/>
+        <Property Name="LowerThresholdCritical" Type="Edm.Double"/>
+        <Property Name="LowerThresholdFatal" Type="Edm.Double"/>   
+        <Property Name="Status" Type="Resource.Status" Nullable="false"/>        
+      </ComplexType>
+
+ 
+    </Schema>
+
+  </edmx:DataServices>
+</edmx:Edmx>

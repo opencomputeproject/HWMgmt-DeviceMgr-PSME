@@ -1,0 +1,24 @@
+#!/bin/bash
+function killservice()
+{   
+    pgrep -x $1 > /dev/null 
+    if [ $? -eq 0 ]
+    then
+        killall -9 -q $1 & > /dev/null
+    fi
+}
+killservice 'psme-rest-server';
+killservice 'psme-rest-server';
+killservice 'psme-chassis';
+killservice 'psme-chassis';
+
+if [ -f /etc/psme/platform_info.conf ];then
+    rm /etc/psme/platform_info.conf  
+fi
+
+if [ -f /etc/psme/service_uuid.json ];then
+    rm /etc/psme/service_uuid.json
+fi
+
+sudo ldconfig
+update-rc.d psme defaults   

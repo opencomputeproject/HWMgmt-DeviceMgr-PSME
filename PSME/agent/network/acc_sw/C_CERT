@@ -1,0 +1,32 @@
+#!/bin/bash
+# Edgecore DeviceManager
+# Copyright 2020-2021 Edgecore Networks, Inc.
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#  KIND, either express or implied.  See the License for the
+#  specific language governing permissions and limitations
+#  under the License.
+CERT_PATH=/etc/psme/certs
+CERT_SERVER_CRT_FILE=$CERT_PATH/server.crt
+CERT_SERVER_CRT_KEY_FILE=$CERT_PATH/server.key
+if [ ! -d "${CERT_PATH}" ] || [ ! -f "$CERT_SERVER_CRT_FILE" ] || [ ! -f "$CERT_SERVER_CRT_KEY_FILE" ];then
+    echo "No certs dir or cert/key files!"
+    mkdir -p ${CERT_PATH}
+    chmod 700 ${CERT_PATH}
+    cd ${CERT_PATH}
+    sudo openssl genrsa -out server.key 4096 
+    sudo openssl req -sha512 -new -key server.key -out ca.csr -subj "/C=TW/ST=TAICHUNG/L=TAICHUNG/O=selfsignedCA/OU=Personal/CN=192.168.1.99"
+    sudo openssl x509 -sha512 -req -days 3650 -in ca.csr -signkey server.key -out server.crt
+fi

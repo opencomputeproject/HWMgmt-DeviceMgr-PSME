@@ -1,0 +1,457 @@
+{
+    "Mode": "SM",
+    "Sleep": 7,
+    "Cir": 1000000,
+    "Pir": 1000000,
+    "Burst": 8000,
+    "ONUs":[
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 0,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    }, 
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 1,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 2,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 3,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 4,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 5,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 6,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 7,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 8,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 9,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 10,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 11,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 12,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 13,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 14,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 15,
+	    "nni_id"          : 0,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 0,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    }, 
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 1,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 2,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 3,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 4,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 5,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 6,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 7,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 8,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 9,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 10,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 11,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 12,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 13,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 14,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 15,
+	    "nni_id"          : 1,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 0,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    }, 
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 1,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 2,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 3,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 4,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 5,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 6,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 7,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 8,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 9,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 10,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 11,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 12,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 13,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 14,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 15,
+	    "nni_id"          : 2,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 0,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    }, 
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 1,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 2,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 3,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 4,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 5,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 6,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 7,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 8,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 9,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 10,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 11,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 12,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 13,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 14,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    },
+    {
+	    "onu_id"          : 1,
+	    "interface_id"    : 15,
+	    "nni_id"          : 3,
+	    "vendor_id"       : "ISKT",
+	    "vendor_specific" : "71E83268"
+    }
+    ]
+}
