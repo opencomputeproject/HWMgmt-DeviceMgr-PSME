@@ -1,9 +1,9 @@
 ### PSME Redfish Service Architecture Model
 
 ```
-+-----------------------+            
-|  REST Redfish Client  |            
-+-----------^-----------+            
++---------------------------+            
+|  Edgecore Device manager  |            
++-----------^---------------+            
 	    |                   
 	    |                  
 	    |                 

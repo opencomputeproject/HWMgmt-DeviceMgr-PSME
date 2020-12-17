@@ -163,6 +163,23 @@ Please refer the README document at
 $ ./PSME/RF_Auto_Test/README.md
 ```
 
+## Co-Work with Edgecore Device Manager
+```
+        +---------------------------+            
+        |  Edgecore Device manager  |            
+        +-----------+-------------+-+            
+                |             |    
+                |             |  
+        +-------v--+  +-------v------+                
+        |   VOLT   |  |   SWITCH     |               
+        |   PSME   |  |    PSME      |               
+        +----------+  +--------------+  
+``` 
+After make sure PSME can provide Restful API service, we can also setup Edgecore Device Manager to co-work with PSME. 
+Edgecore's Device Manager will use a standard interface and dataflow to manage and monitor for deployment in the field.
+
+More detailed information can be found at [Device-Manager](https://github.com/opencomputeproject/Device-Manager).
+
 ## Support on 
 
 PSME current tested on ONL(OpenNetworkLinux) and SONiC system. 
