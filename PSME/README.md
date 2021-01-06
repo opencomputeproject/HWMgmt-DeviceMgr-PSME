@@ -60,7 +60,7 @@
 
     This application also response for answering query from REST RF Client though https security port 8888 (SONiC NOS is 8889).
 
-    If any 3 types of events(ResouceAdd, ResouceRemove, Alert) have subscribed to PSME server from Redfish Event Listener, 
+    If any 3 types of events(ResourceAdd, ResourceRemove, Alert) have subscribed to PSME server from Redfish Event Listener, 
     PSME will send events to Redfish Event Listener while it gets events from PSME Chassis Agent.
 
 - **PSME Chassis Agent**

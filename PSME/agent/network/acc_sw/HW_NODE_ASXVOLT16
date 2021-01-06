@@ -35,7 +35,7 @@ mapping=("PON" "PON" "PON" "PON" "PON" "PON" "PON" "PON" "PON" "PON"
 # https://github.com/opencomputeproject/OpenNetworkLinux/pull/805/commits/8f456873a2e9dab7402503efb3d97bda78081db4
 ###########################################################################################################
 
-Thermal_Shutdown_Value=("104000" "70000" "65000" "60000" "70000" "105000" "105000")
-Thermal_Error_Value=("93000" "65000" "60000" "55000" "65000" "100000" "100000")
-Thermal_Warning_Upper_Value=("82000" "60000" "55000" "50000" "60000" "100000" "100000")
-Thermal_Warning_Lower_Value=("" "" "" "" "" "" "" "" "" "")
+#Thermal_Shutdown_Value=("104000" "70000" "65000" "60000" "70000" "105000" "105000")
+#Thermal_Error_Value=("93000" "65000" "60000" "55000" "65000" "100000" "100000")
+#Thermal_Warning_Upper_Value=("82000" "60000" "55000" "50000" "60000" "100000" "100000")
+#Thermal_Warning_Lower_Value=("" "" "" "" "" "" "" "" "" "")

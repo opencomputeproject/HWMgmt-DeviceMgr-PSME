@@ -39,6 +39,7 @@
 #include "agent-framework/version.hpp"
 #include "agent-framework/service_uuid.hpp"
 #include "ecsys_helper/ecsys_helper.hpp"
+#include "ecopenbmc_helper/ecopenbmc_helper.hpp"
 #include <chrono>
 #include <thread>
 using namespace agent::chassis::loader;
@@ -47,6 +48,7 @@ using namespace agent_framework::model;
 using namespace agent_framework::module;
 using namespace agent_framework::model::attribute;
 using namespace ecsys_helper;
+using namespace ecopenbmc_helper;
 
 #define ENABLE_CONFIGURATION_ENCRYPTION
 
@@ -335,34 +337,38 @@ std::cerr << "service uuid uuid[" << ServiceUuid::get_instance()->get_service_uu
 }
 ChassisLoader::~ChassisLoader() { }
 
-class LoadManagers {
+class LoadManagers
+{
 public:
-
-    void read_managers(const json::Value& json) {
-        for (const auto& elem : json["managers"].as_array()) {
+    void read_managers(const json::Value &json)
+    {
+        for (const auto &elem : json["managers"].as_array())
+        {
             auto manager = make_manager(elem);
             read_manager(manager, elem);
         }
     }
 
-    void read_managers(const std::string& parent, const json::Value& json) {
-	
-        for (const auto& elem : json["managers"].as_array()) {
+    void read_managers(const std::string &parent, const json::Value &json)
+    {
+        for (const auto &elem : json["managers"].as_array())
+        {
             auto manager = make_manager(parent, elem);
             read_manager(manager, elem);
         }
     }
 
-    void generate_acc_sw_chassis(Manager&  manager, const std::string& chassis_uuid, const json::Value& json) { 
+    void generate_acc_sw_chassis(Manager &manager, const std::string &chassis_uuid, const json::Value &json)
+    {
 	    int index1;
            int num = manager.get_max_fan_num();
            int t_s_num = manager.get_max_thermal_sensor_num();
            int psu_num = manager.get_max_psu_num();
 
-
            /*Add Fans Nodes*/
 
-   	    for( index1 = 1; index1 <=num ; index1++ ){
+        for (index1 = 1; index1 <= num; index1++)
+        {
 	        Fan fan{manager.get_uuid()};
 		 fan.set_chassis(chassis_uuid); 
 		 fan.set_current_speed(0);
@@ -373,7 +379,8 @@ public:
 	        ChassisComponents::get_instance()->get_fan_manager().add_entry(fan);
 	    }
 
-   	    for( index1 = 1; index1 <=t_s_num ; index1++ ){			
+        for (index1 = 1; index1 <= t_s_num; index1++)
+        {
 	        ThermalZone tzone{manager.get_uuid()};
 		 tzone.set_chassis(chassis_uuid); 
 		 tzone.set_temperature(0);
@@ -388,7 +395,8 @@ public:
 	        ChassisComponents::get_instance()->get_thermal_zone_manager().add_entry(tzone);
 	    }
 
-   	    for( index1 = 1; index1 <=psu_num ; index1++ ){			
+        for (index1 = 1; index1 <= psu_num; index1++)
+        {
 	        Psu psu{manager.get_uuid()};
 		 psu.set_chassis(chassis_uuid); 
 		 psu.set_psu_id(index1);
@@ -401,20 +409,22 @@ public:
     }
 
 private:
-    void read_manager(Manager& manager, const json::Value& json) {
+    void read_manager(Manager &manager, const json::Value &json)
+    {
 
         log_debug(GET_LOGGER("agent"), "Adding manager:" << manager.get_uuid());
-        CommonComponents::get_instance()->
-            get_module_manager().add_entry(manager);
+        CommonComponents::get_instance()->get_module_manager().add_entry(manager);
 
-        if (json["chassis"].is_object()) {
+        if (json["chassis"].is_object())
+        {
             auto chassis = make_chassis(manager.get_uuid(), json["chassis"]);
             log_debug(GET_LOGGER("agent"), "Adding chassis:" << chassis.get_uuid()
                                            << " to manager " << manager.get_uuid());
             CommonComponents::get_instance()->get_chassis_manager().add_entry(chassis);
 		    generate_acc_sw_chassis(manager, chassis.get_uuid(),  json["chassis"] );
         }
-        if (json["managers"].is_array()) {
+        if (json["managers"].is_array())
+        {
             log_debug(GET_LOGGER("agent"), "Adding children managers to manager:" << manager.get_uuid());
             read_managers(manager.get_uuid(), json);
         }
@@ -459,7 +469,8 @@ private:
         return manager;
     }
 
-    Manager make_manager(const std::string& parent, const json::Value& json) {
+    Manager make_manager(const std::string &parent, const json::Value &json)
+    {
         Manager manager{parent};
         make_manager_internals(manager, json);
         return manager;

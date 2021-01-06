@@ -107,14 +107,6 @@ void seg_fault_handler(int sig)
  * */
 int main(int argc, const char *argv[])
 {
-#ifdef BAL
-    auto &pOLT = Olt_Device::Olt_Device::get_instance();
-    if (!pOLT.chk_legal_platform())
-    {
-        return -1;
-    }
-#endif
-
     unsigned int server_port = DEFAULT_SERVER_PORT;
 
     /* Initialize configuration */

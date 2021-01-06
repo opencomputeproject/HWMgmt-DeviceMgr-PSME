@@ -152,28 +152,34 @@ SubscriptionVec EventService::select_subscribers(const Event& event) {
     return subscribers;
 }
 
-void EventService::m_handle_events() {
-    while (m_running) {
-        if (const auto event =
-                get_event_queue().wait_for_and_pop(std::chrono::seconds(1))) {
+void EventService::m_handle_events()
+{
+    while (m_running)
+    {
+        if (const auto event = get_event_queue().wait_for_and_pop(std::chrono::seconds(1)))
+        {
 
             log_debug(GET_LOGGER("rest"), " Popped EVENT: "
                         << json::Serializer(event->to_json()));
 
-            try {
+            try
+            {
                 auto subscribers = select_subscribers(*event);
 
-                for (const auto& subscriber: subscribers) {
+                for (const auto &subscriber : subscribers)
+                {
                     // @TODO send_event as tasks processed by threadpool
                     send_event(*this, *event, subscriber);
                 }
             }
-            catch (const std::runtime_error& e) {
+            catch (const std::runtime_error &e)
+            {
                 log_error(GET_LOGGER("rest"),
                     " Exception occured when processing event: "
                         << event->to_json() << " : " << e.what());
             }
-            catch (...) {
+            catch (...)
+            {
                 log_error(GET_LOGGER("rest"),
                     " Exception occured when processing event: "
                         << event->to_json());

@@ -35,6 +35,7 @@ include_directories(
     ${PSME_APPLICATION_DIR}/include
     ${EC_RF_PAL_HELPER_INCLUDE_DIRS}
     ${EC_SYS_HELPER_INCLUDE_DIRS}
+    ${EC_OPENBMC_HELPER_INCLUDE_DIRS}
     ${EC_BAL3_API_DIST_HELPER_INCLUDE_DIRS}
 )
 
@@ -97,6 +98,7 @@ target_link_libraries(psme-rest-server
     ${EC_NET_HELPER_LIBRARIES}
     ${EC_SYS_HELPER_LIBRARIES}
     ${EC_RF_PAL_HELPER_LIBRARIES}
+    ${EC_OPENBMC_HELPER_LIBRARIES}
     libm.so
     dl
     md5

@@ -252,8 +252,10 @@ void Watcher::watch() {
         return l.next_run > r.next_run;
     });
 
-    while (m_running) {
-        if ((!added_tasks.empty()) && (added_tasks.back().next_run <= std::chrono::steady_clock::now())) {
+    while (m_running)
+    {
+        if ((!added_tasks.empty()) && (added_tasks.back().next_run <= std::chrono::steady_clock::now()))
+        {
             /* workaround for moving unique_ptr, for move constess must be thrown away.. */
             Registration found = std::move(const_cast<Registration&>(added_tasks.back()));
             added_tasks.pop_back();
@@ -262,7 +264,8 @@ void Watcher::watch() {
             found.next_run += found.task->get_interval();
             found.executed++;
 
-            try {
+            try
+            {
                 log_info(GET_LOGGER("rest"), found.task->get_name() << " started run #" << found.executed);
                 auto started_at = std::chrono::high_resolution_clock::now();
 
@@ -270,28 +273,31 @@ void Watcher::watch() {
 
                 auto finished_at = std::chrono::high_resolution_clock::now();
                 auto duration = finished_at - started_at;
-                log_info(GET_LOGGER("rest"), found.task->get_name() << " completed run #" << found.executed <<
-                        " [" << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "ms]");
+                log_info(GET_LOGGER("rest"), found.task->get_name() << " completed run #" << found.executed << " [" << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "ms]");
             }
-            catch (const PollingTask::StopWatching&) {
-                log_warning(GET_LOGGER("rest"), found.task->get_name() << " requested to be removed" <<
-                        ", run #" << found.executed);
+            catch (const PollingTask::StopWatching &)
+            {
+                log_warning(GET_LOGGER("rest"), found.task->get_name() << " requested to be removed"
+                                                                       << ", run #" << found.executed);
                 /* don't push registration back! Task will be deleted when 'found' goes out of scope */
                 found.task->stopped();
                 continue;
             }
-            catch (...) {
-                log_error(GET_LOGGER("rest"), found.task->get_name() << " failed with exception" <<
-                        ", run #" << found.executed);
+            catch (...)
+            {
+                log_error(GET_LOGGER("rest"), found.task->get_name() << " failed with exception"
+                                                                     << ", run #" << found.executed);
             }
 
             /* add "modified" task back to the queue */
             insert(std::move(found));
-        } else {
+        }
+        else
+        {
             /*! @todo events are starved and queue grows if tasks took too much time. */
-            auto event = agent_framework::eventing::EventsQueue::get_instance()->
-                    wait_for_and_pop(std::chrono::seconds(1));
-            if (event && m_running) {
+            auto event = agent_framework::eventing::EventsQueue::get_instance()->wait_for_and_pop(std::chrono::seconds(1));
+            if (event && m_running)
+            {
                 process_event(event.get());
             }
         }

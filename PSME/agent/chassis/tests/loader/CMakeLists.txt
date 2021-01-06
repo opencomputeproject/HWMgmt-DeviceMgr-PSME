@@ -47,5 +47,7 @@ target_link_libraries(${test_target}
     ${CONFIGURATION_LIBRARIES}
     ${JSONCXX_LIBRARIES}
     ${EC_SYS_HELPER_LIBRARIES}
+    ${EC_OPENBMC_HELPER_LIBRARIES}
+    ${EC_LOG_HELPER_LIBRARIES}
     md5
 )

@@ -20,38 +20,26 @@
 # This product includes software developed at
 # Edgecore Networks Inc. (http://www.edge-core.com/).
 #
+
 # </license_header>
 
 cmake_minimum_required(VERSION 2.8)
-project("PSME Chassis" C CXX)
+project(ecopenbmc_helper CXX)
 
-#if (CMAKE_CROSSCOMPILING)
-#    message(WARNING "Not supported for crosscompiling.")
-#    return()
-#endif()
+set(EC_OPENBMC_HELPER_LIBRARIES
+    ecopenbmc_helper 
+    CACHE PATH "ecopenbmc_helper libraries"
+)
 
-set(AGENT_CHASSIS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(AGENT_CHASSIS_LIBRARIES
-    -Wl,--whole-archive chassis-commands -Wl,--no-whole-archive
+set(EC_OPENBMC_HELPER_INCLUDE_DIRS
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    CACHE PATH "ecopenbmc_helper include directory"
 )
 
 include_directories(
-    ${BASE64_INCLUDE_DIRS}
-    ${COMMON_INCLUDE_DIRS}
-    ${LOGGER_INCLUDE_DIRS}
-    ${LOGGER_INCLUDE_DIRS}
-    ${IPMI_INCLUDE_DIRS}
-    ${JSONCXX_INCLUDE_DIRS}
-    ${CONFIGURATION_INCLUDE_DIRS}
-    ${AGENT_FRAMEWORK_INCLUDE_DIRS}
-    ${NET_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${EC_NET_HELPER_INCLUDE_DIRS}
-    ${EC_LOG_HELPER_INCLUDE_DIRS}
-    ${EC_SYS_HELPER_INCLUDE_DIRS}
-    ${EC_OPENBMC_HELPER_INCLUDE_DIRS}
-    ${EC_RF_PAL_HELPER_INCLUDE_DIRS}
-    ${EC_BAL3_API_DIST_HELPER_INCLUDE_DIRS}
+    include
+    ../ecsys_helper/include
+    ../eclog_helper/include
 )
 
 include_directories(SYSTEM
@@ -60,8 +48,23 @@ include_directories(SYSTEM
     ${MD5_INCLUDE_DIRS}
     ${JSONCPP_INCLUDE_DIRS}
     ${JSONRPCCPP_INCLUDE_DIRS}
-    ${CY_USB_SERIAL_INCLUDE_DIRS}
+    ${EC_LOG_HELPER_INCLUDE_DIRS}
 )
 
-add_subdirectory(src)
-add_subdirectory(tests)
+add_library(ecopenbmc_helper STATIC
+    src/ecopenbmc_helper.cpp
+)
+
+if (CMAKE_CXX_COMPILER_ID MATCHES GNU|Clang)
+  set_source_files_properties(
+    src/ecopenbmc_helper.cpp
+    PROPERTIES COMPILE_FLAGS "-Wno-conversion"
+    )
+endif()
+
+install(TARGETS ecopenbmc_helper 
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
+

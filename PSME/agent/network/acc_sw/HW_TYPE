@@ -6,6 +6,9 @@ if [ ! -z "${HW_type}" ];then
     HW_TYPE_R=`echo $HW_TYPE_R_T | sed -e s/_/-/g`
 
     case "${HW_TYPE_R}" in
+        "x86"[-_]"64-accton"[-_]"minipack")
+        . /etc/psme/HW_NODE_MINIPACK
+        ;;    
         "x86"[-_]"64-accton"[-_]"as7712"[-_]"32x")
         . /etc/psme/HW_NODE_AS7712_32X
         ;;

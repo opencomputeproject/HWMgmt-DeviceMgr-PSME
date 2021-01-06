@@ -93,8 +93,8 @@ void EndpointBase::update_modified_time() {
     m_modified_time = ::get_current_time();
 }
 
-
-bool EndpointBase::authen_check(const Request& request,const std::string& method){
+bool EndpointBase::authen_check(const Request &request, const std::string &method)
+{
 
     std::string username{};
     std::string password{};
@@ -123,13 +123,6 @@ bool EndpointBase::authen_check(const Request& request,const std::string& method
             {
                 if (SessionManager::get_instance()->updateSessionTimestamp(token) == true)
                 {
-                    Session new_session = SessionManager::get_instance()->getSession_by_Token(token);
-                    const auto &account = AccountManager::get_instance()->getAccount(new_session.get_username());
-
-                    /*Check read/write privilege */
-                    /*Todo , Use "Privilege Mappings" to do more specific constrain*/
-                    if ((account.get_roleid() == "ReadOnlyUser") && (method == "POST" || method == "PATCH" || method == "DELETE"))
-                        return false;
                     return true;
                 }
                 else
@@ -150,11 +143,6 @@ bool EndpointBase::authen_check(const Request& request,const std::string& method
             if(account.get_enabled() != true)
                 return false;
 			
-            /*Check read/write priviledge */
-            /*Todo , Use "Privilege Mappings" to do more specific constrain*/					
-             if((account.get_roleid() == "ReadOnlyUser") && (method == "POST" || method == "PATCH" || method == "DELETE") )
-                return false;			 	
-
             int res  =AccountManager::get_instance()->login(username, password);	
 
             if(res == 0)

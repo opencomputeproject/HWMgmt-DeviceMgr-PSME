@@ -56,6 +56,7 @@
 #include <eclog_helper/eclog_helper.hpp>
 #include <ecnet_helper/ecnet_helper.hpp>
 #include <ecsys_helper/ecsys_helper.hpp>
+#include <ecopenbmc_helper/ecopenbmc_helper.hpp>
 
 #define FF3(readin) float(int(readin * 1000))
 namespace ecrf_pal_helper 
@@ -65,6 +66,7 @@ using namespace std;
 using namespace ecnet_helper;
 using namespace ecsys_helper;
 using namespace eclog_helper;
+using namespace ecopenbmc_helper;
 
 typedef struct EventMsgContent
 {
@@ -185,11 +187,12 @@ public:
     double m_Error = 0;
     double m_Shutdown = 0;
  
-    static std::vector<EventMsgContent_T> m_Event_Resouce_Alert;
-    static std::vector<EventMsgContent_T> m_Event_Port_Resouce_Alert;
-    static std::vector<EventMsgContent_T> get_Event_Resouce_Alert();
-    static void Clear_Event_Resouce_Alert();
-    static void Clear_Event_Port_Resouce_Alert();
+    static std::vector<EventMsgContent_T> m_Event_Resource_Alert;
+    static std::vector<EventMsgContent_T> m_Event_Port_Resource_Alert;
+    static std::vector<EventMsgContent_T> get_Event_Resource_Alert();
+    static std::vector<EventMsgContent_T> get_Event_Port_Resource_Alert();
+    static void Clear_Event_Resource_Alert();
+    static void Clear_Event_Port_Resource_Alert();
 };
 
 class Thermal_Info : public Dev_Info
@@ -345,6 +348,7 @@ public:
     void mon_memory_usage_info();
     void mon_cpu_usage_info();
     void mon_storage_usage_info();
+    void mon_openbmc_status();
     int mem_sample_number = SAMPLE_NUM;
     int cpu_sample_number = SAMPLE_NUM;
     int storage_sample_number = SAMPLE_NUM;
@@ -352,6 +356,7 @@ public:
     double cpu_usage_percentage = 0.0;
     double storage_usage_percentage = 0.0;
     DiskInfo m_storage={};
+    bool openbmc_status = false;
 };
 
 class Switch
@@ -362,16 +367,16 @@ public:
         get_basic_info();
         get_board_info();
     }
-    static std::vector<EventMsgContent_T> m_Event_Resouce_Add;
-    static std::vector<EventMsgContent_T> m_Event_Resouce_Remove;
-    static std::vector<EventMsgContent_T> m_Event_Port_Resouce_Add;
-    static std::vector<EventMsgContent_T> m_Event_Port_Resouce_Remove;
-    static std::vector<EventMsgContent_T> get_Event_Resouce_Add();
-    static std::vector<EventMsgContent_T> get_Event_Port_Resouce_Add();
-    static std::vector<EventMsgContent_T> get_Event_Resouce_Remove();
-    static std::vector<EventMsgContent_T> get_Event_Port_Resouce_Remove();
-    static std::vector<EventMsgContent_T> get_Event_Resouce_Alert();
-    static std::vector<EventMsgContent_T> get_Event_Port_Resouce_Alert();
+    static std::vector<EventMsgContent_T> m_Event_Resource_Add;
+    static std::vector<EventMsgContent_T> m_Event_Resource_Remove;
+    static std::vector<EventMsgContent_T> m_Event_Port_Resource_Add;
+    static std::vector<EventMsgContent_T> m_Event_Port_Resource_Remove;
+    static std::vector<EventMsgContent_T> get_Event_Resource_Add();
+    static std::vector<EventMsgContent_T> get_Event_Port_Resource_Add();
+    static std::vector<EventMsgContent_T> get_Event_Resource_Remove();
+    static std::vector<EventMsgContent_T> get_Event_Port_Resource_Remove();
+    static std::vector<EventMsgContent_T> get_Event_Resource_Alert();
+    static std::vector<EventMsgContent_T> get_Event_Port_Resource_Alert();
 
     static void clean_Event_Resource_Event();
     static void clean_Event_Port_Resource_Event();

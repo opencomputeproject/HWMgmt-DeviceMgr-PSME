@@ -463,19 +463,47 @@ int ecrf_pal_com_onl:: rfpal_thermal_info_com_get(unsigned id_in, rfpal_thermal_
                     bool isJson = (j_reader.parse(th_file, th_s));
                     if (isJson)
                     {
-                        thermal_info_cache.m_threshold.warning_upper = p_thermal_info->m_threshold.warning_upper = th_s[std::to_string(id_in).c_str()]["warning_upper"].asInt();
-                        thermal_info_cache.m_threshold.warning_lower = p_thermal_info->m_threshold.warning_lower = th_s[std::to_string(id_in).c_str()]["warning_lower"].asInt();
+                        if(th_s[std::to_string(id_in).c_str()]["warning_upper"].asInt())
+                        {
+                            p_thermal_info->m_threshold.warning_upper = th_s[std::to_string(id_in).c_str()]["warning_upper"].asInt();
+                            p_thermal_info->m_threshold.warning_lower = th_s[std::to_string(id_in).c_str()]["warning_lower"].asInt();
+                            th_file.close();
                     }
+                        else
+                        {
                     th_file.close();
+                            std::ofstream th_o_file(m_thermal_threshold_file_path);
+                            Json::StyledWriter styledWriter;
+                            std::string t_id = std::to_string(id_in);
+                            th_s[t_id.c_str()]["warning_lower"] = 0;
+                            th_s[t_id.c_str()]["warning_upper"] = fv.thresholds.warning;
+                            th_s[t_id.c_str()]["error"] = fv.thresholds.error;
+                            th_s[t_id.c_str()]["shutdown"] = fv.thresholds.shutdown;
+                            th_o_file << styledWriter.write(th_s);
+                            th_o_file.close();
+                            p_thermal_info->m_threshold.warning_upper = fv.thresholds.warning;
+                            p_thermal_info->m_threshold.warning_lower = 0;
+                        }
+                   }
                 }
                 else
                 {
+                    std::ofstream th_o_file(m_thermal_threshold_file_path);
+                    Json::StyledWriter styledWriter;
+                    std::string t_id = std::to_string(id_in);
+                    Json::Value th_os;
+                    th_os[t_id.c_str()]["warning_lower"] = 0;
+                    th_os[t_id.c_str()]["warning_upper"] = fv.thresholds.warning;
+                    th_os[t_id.c_str()]["error"] = fv.thresholds.error;
+                    th_os[t_id.c_str()]["shutdown"] = fv.thresholds.shutdown;
+                    th_o_file << styledWriter.write(th_os);
+                    th_o_file.close();
                     p_thermal_info->m_threshold.warning_upper = fv.thresholds.warning;
                     p_thermal_info->m_threshold.warning_lower = 0;
                 }
 
-                thermal_info_cache.m_threshold.error = p_thermal_info->m_threshold.error = fv.thresholds.error;
-                thermal_info_cache.m_threshold.shutdown = p_thermal_info->m_threshold.shutdown = fv.thresholds.shutdown;
+                p_thermal_info->m_threshold.error = fv.thresholds.error;
+                p_thermal_info->m_threshold.shutdown = fv.thresholds.shutdown;
             }
             else
                 p_thermal_info->status = 0;

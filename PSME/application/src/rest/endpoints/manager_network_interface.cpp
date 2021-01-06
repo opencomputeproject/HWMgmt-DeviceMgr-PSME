@@ -33,10 +33,13 @@
 #include "psme/rest/validators/schemas/ethernet_interface.hpp"
 #include <arpa/inet.h>
 #include "ecnet_helper/ecnet_helper.hpp"
+#include "ecopenbmc_helper/ecopenbmc_helper.hpp"
 #include "ecrf_pal_helper/api/ecrf_pal_helper.hpp"
 #include <limits.h>
 #include "ecsys_helper/ecsys_helper.hpp"
 #include "psme/rest/utils/ec_common_utils.hpp"
+
+using namespace ecopenbmc_helper;
 using namespace psme::rest::utils;
 using namespace ecrf_pal_helper;
 using namespace ecsys_helper;
@@ -123,9 +126,12 @@ void endpoint::ManagerNetworkInterface::get(const server::Request &req, server::
 	auto r = ::make_prototype();
 	r[Common::ODATA_ID] = PathBuilder(req).build();
 	r[Common::ID] = req.params[PathParam::NIC_ID];
+	int manager_id = atoi(req.params[PathParam::MANAGER_ID].c_str());
 
 	try
 	{
+		if (manager_id == 1)
+		{ // Mainboard manager port //
 		const json::Value config = configuration::Configuration::get_instance().to_json();
 		const auto& nic_name = config["server"]["network-interface-name"].as_string();
 
@@ -392,6 +398,58 @@ void endpoint::ManagerNetworkInterface::get(const server::Request &req, server::
 				}
 			}
 		}		 
+	}
+		else
+		{
+			json::Value ipv4_address;
+			json::Value ipv4_static_address;
+			ipv4_info_t ipv4info;
+			json::Value ip_confg;
+			ip_confg[NetworkInterface::IPv4_DHCP_USE_DNS_SERVERS] = false;
+			ip_confg[NetworkInterface::IPv4_DHCP_USE_DOMAIN_NAME] = false;
+			ip_confg[NetworkInterface::IPv4_DHCP_USE_GATEWAY] = false;
+			ip_confg[NetworkInterface::IPv4_DHCP_USE_NTP_SERVERS] = false;
+			ip_confg[NetworkInterface::IPv4_DHCP_USE_STATIC_ROUTES] = false;
+
+			auto &gecOpenBmc_helper = ecOpenBmc_helper::get_instance();
+			if (gecOpenBmc_helper.get_status())
+			{
+				r[Common::STATUS][Common::STATE] = "Enabled";
+				r[Common::STATUS][Common::HEALTH] = "OK";
+				r[Common::STATUS][Common::HEALTH_ROLLUP] = "OK";
+				gecOpenBmc_helper.get_ipv4_info(ipv4info);
+				r[Common::MAC_ADDRESS] = ipv4info.m_mac_address;
+				ipv4_address[IpAddress::ADDRESS] = ipv4info.m_ipv4_address;
+				ipv4_address[IpAddress::ADDRESS_ORIGIN] = ipv4info.m_ipv4_type;
+				ipv4_address[IpAddress::SUBNET_MASK] = ipv4info.m_ipv4_subnetmask;
+
+				if (ipv4info.m_ipv4_type == "DHCP")
+				{
+					ip_confg[NetworkInterface::IPv4_DHCP_ENABLED] = true;
+				}
+				else
+				{
+					ip_confg[NetworkInterface::IPv4_DHCP_ENABLED] = false;
+					ipv4_static_address[IpAddress::ADDRESS] = ipv4info.m_ipv4_address;
+					r[NetworkInterface::IPv4_STACIC_ADDRESSES].push_back(ipv4_static_address);
+				}
+
+				if (ipv4info.m_default_gateway != "")
+				{
+					ipv4_address[IpAddress::GATEWAY] = ipv4info.m_default_gateway;
+					ip_confg[NetworkInterface::IPv4_DHCP_USE_GATEWAY] = true;
+				}
+
+				r[NetworkInterface::IPv4_DHCP] = ip_confg;
+				r[NetworkInterface::IPv4_ADDRESSES].push_back(std::move(ipv4_address));
+				r[IpAddress::HOST_NAME] = gecOpenBmc_helper.get_hostname();
+			}
+			else
+			{
+				r[Common::STATUS][Common::STATE] = "Absent";
+				r[Common::STATUS][Common::HEALTH] = "Critical";
+			}
+		}
 	}
 	catch (const std::exception &ex)
 	{

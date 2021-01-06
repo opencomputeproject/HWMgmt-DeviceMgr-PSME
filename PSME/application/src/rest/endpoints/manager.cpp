@@ -30,11 +30,16 @@
 #include "psme/rest/constants/constants.hpp"
 #include "psme/rest/endpoints/manager.hpp"
 #include "psme/rest/utils/status_helpers.hpp"
-
-
+#include "ecopenbmc_helper/ecopenbmc_helper.hpp"
+#include "ecnet_helper/ecnet_helper.hpp"
+#include "configuration/configuration.hpp"
+#include "psme/rest/utils/network_interface_info.hpp"
 
 using namespace psme::rest;
 using namespace psme::rest::constants;
+using namespace ecopenbmc_helper;
+using namespace ecnet_helper;
+using namespace psme::rest::utils;
 
 using agent_framework::generic::ServiceUuid;
 
@@ -60,12 +65,6 @@ json::Value make_prototype() {
 
     r[Manager::ETHERNET_INTERFACES] = json::Value::Type::NIL;
     r[Manager::SERIAL_INTERFACES] = json::Value::Type::NIL;
-
-    /* TODO for BVT, cannot be read right now, will be used later
-     * r[Manager::GRAPHICAL_CONSOLE] = json::Value::Type::NIL;
-     * r[Manager::SERIAL_CONSOLE] = json::Value::Type::NIL;
-     * r[Manager::COMMAND_SHELL] = json::Value::Type::NIL;
-     * */
 
     r[Common::FIRMWARE_VERSION] = json::Value::Type::NIL;
     r[Common::OEM] = json::Value::Type::OBJECT;
@@ -110,8 +109,6 @@ void fill_links(const agent_framework::model::Manager& manager, json::Value& r) 
 }
 }
 
-
-/* TODO for BVT, cannot be read right now, will be used later*/
 template <typename T>
 json::Value console_to_json(const T& console)
 {

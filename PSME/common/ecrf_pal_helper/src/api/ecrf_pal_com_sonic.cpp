@@ -139,8 +139,22 @@ int ecrf_pal_com_sonic::rfpal_fan_info_com_get(unsigned id, rfpal_fan_info *p_fa
                 // present
                 str_node_result[0]='\0';
                 std::string fan_present = s[0]["ecrf_pal"]["fans"][str_fan_node]["present"].asString();
+                if(strcmp((fan_present.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                    char str_cmd_result[64]="";
+                    std::size_t pos = fan_present.find(":");
+                    std::string cmd = fan_present.substr(pos + 1);
+                    this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                    if(strlen(str_cmd_result) > 0){
+                        p_fan_info->status = 1;
+                    }
+                    else{
+                        p_fan_info->status = 0; 
+                    }        
+                }
+                else{
                 this->rfpal_sysfs_node_get(fan_present.c_str(), str_node_result);
                 p_fan_info->status = atoi(str_node_result);
+                }
                 // front_speed
                 str_node_result[0]='\0';
                 std::string fan_front_speed = s[0]["ecrf_pal"]["fans"][str_fan_node]["front_speed"].asString();
@@ -151,6 +165,10 @@ int ecrf_pal_com_sonic::rfpal_fan_info_com_get(unsigned id, rfpal_fan_info *p_fa
                 std::string fan_rear_speed = s[0]["ecrf_pal"]["fans"][str_fan_node]["rear_speed"].asString();
                 this->rfpal_sysfs_node_get(fan_rear_speed.c_str(), str_node_result);
                 p_fan_info->rear_rpm = atoi(str_node_result);            	  
+                // double check psu sttus
+                if(p_fan_info->front_rpm !=0 || p_fan_info->rear_rpm != 0){
+                    p_fan_info->status = 1;
+                }            	  
                 // front_percentage
                 str_node_result[0]='\0';
                 std::string fan_front_percentage = s[0]["ecrf_pal"]["fans"][str_fan_node]["front_percentage"].asString();
@@ -209,9 +227,23 @@ int ecrf_pal_com_sonic::rfpal_port_com_trans_is_present(int id)
             const Json::Value s = content.get("managers", defValue);
             sprintf(str_port_node, "port%d_node", id);                        
             std::string port_present = s[0]["ecrf_pal"]["ports"][str_port_node]["present"].asString();
+            if(strcmp((port_present.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t pos = port_present.find(":");
+                std::string cmd = port_present.substr(pos + 1);
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                if(strlen(str_cmd_result) > 0){
+                    is_present = 1;
+                }
+                else{
+                    is_present = 0;
+                }
+            }
+            else{
             this->rfpal_sysfs_node_get(port_present.c_str(), str_node_result);
             is_present =atoi(str_node_result);            
     	}
+    }
     }
     return is_present;
 }
@@ -233,10 +265,27 @@ int ecrf_pal_com_sonic::rfpal_sfp_tx_disable_com_set(unsigned id, int value)
             const Json::Value s = content.get("managers", defValue);
             sprintf(str_port_node, "port%d_node", id);                        
             std::string port_tx_disable = s[0]["ecrf_pal"]["ports"][str_port_node]["tx_disable"].asString();
+            if(strcmp((port_tx_disable.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t begin_pos = port_tx_disable.find(":");
+                std::size_t end_pos = port_tx_disable.find("|");
+                std::string cmd = port_tx_disable.substr(begin_pos + 1, (end_pos - (begin_pos+1)));
+                cmd = cmd.replace(cmd.find("show"), 4, "config");
+                if(value == 0){
+                    cmd.append("disable");
+                }
+                else{
+                    cmd.append("enable");
+                } 
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                return ECRF_PAL_STATUS_E_GENERIC;    	  	
+            }
+            else{
             sprintf(str_node_result, "%d", value);
             if(this->rfpal_sysfs_node_set(port_tx_disable.c_str(), str_node_result) == ECRF_PAL_STATUS_E_INVALID){
                 return ECRF_PAL_STATUS_E_GENERIC;
             }            
+            }
     	  }else{
             return ECRF_PAL_STATUS_E_GENERIC;    	  	
     	  }
@@ -265,10 +314,24 @@ int ecrf_pal_com_sonic::rfpal_sfp_tx_disable_com_get(unsigned id)
             const Json::Value s = content.get("managers", defValue);
             sprintf(str_port_node, "port%d_node", id);                        
             std::string port_tx_disable = s[0]["ecrf_pal"]["ports"][str_port_node]["tx_disable"].asString();
+            if(strcmp((port_tx_disable.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t pos = port_tx_disable.find(":");
+                std::string cmd = port_tx_disable.substr(pos + 1);
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                if(strlen(str_cmd_result) > 0){
+                    tx_disable_value = 1;
+                }
+                else{
+                    tx_disable_value = 0; 
+                }        
+             }
+             else{           
             if(this->rfpal_sysfs_node_get(port_tx_disable.c_str(), str_node_result) != ECRF_PAL_STATUS_E_INVALID){
                 tx_disable_value =atoi(str_node_result);
             }            
     	  }
+    }
     }
     return tx_disable_value;
 }
@@ -306,11 +369,11 @@ int ecrf_pal_com_sonic:: rfpal_thermal_info_com_get(unsigned id_in, rfpal_therma
 {
     p_thermal_info->status = 0;
     p_thermal_info->id = id_in;
-    p_thermal_info->mcelsius = 0;
-    p_thermal_info->m_threshold.warning_lower = 0;
-    p_thermal_info->m_threshold.warning_upper = 0;
-    p_thermal_info->m_threshold.error = 0;
-    p_thermal_info->m_threshold.shutdown = 0;
+    //p_thermal_info->mcelsius = 0;
+    //p_thermal_info->m_threshold.warning_lower = 0;
+    //p_thermal_info->m_threshold.warning_upper = 0;
+    //p_thermal_info->m_threshold.error = 0;
+    //p_thermal_info->m_threshold.shutdown = 0;
 
     rfpal_thresholds threshold_info;
     this->rfpal_thermal_thresholds_com_get(id_in, &threshold_info);
@@ -357,10 +420,22 @@ int ecrf_pal_com_sonic:: rfpal_thermal_info_com_get(unsigned id_in, rfpal_therma
               	    p_thermal_info->status = 1;
                 }
               	else{
-              	    char str_node_result[64]="";
                     std::string thermal_present = s[0]["ecrf_pal"]["thermals"][str_thermal_node]["present"].asString();
+                    if(strcmp((thermal_present.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                        char str_cmd_result[64]="";
+                        std::size_t pos = thermal_present.find(":");
+                        std::string cmd = thermal_present.substr(pos + 1);
+                        this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                        if(strlen(str_cmd_result) > 0){
+                            printf("CMD_OUTPUT, PSU PRESENT ==> 1\n");
+                            p_thermal_info->status = 1;
+                        }        
+                    }
+                    else{
+              	        char str_node_result[64]="";
                     this->rfpal_sysfs_node_get(thermal_present.c_str(), str_node_result);
                     p_thermal_info->status =atoi(str_node_result);            			
+              	}
               	}
                 char str_node_result[64]="";
                 char str_get_temp_cmd[64]="";
@@ -442,8 +517,23 @@ int ecrf_pal_com_sonic::rfpal_psu_info_com_get(unsigned id_in, rfpal_psu_info *p
             // present
             str_node_result[0]='\0';
             std::string psu_present = s[0]["ecrf_pal"]["psus"][str_psu_node]["present"].asString();
+            if(strcmp((psu_present.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t pos = psu_present.find(":");
+                std::string cmd = psu_present.substr(pos + 1);
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                if(strlen(str_cmd_result) > 0){
+                    printf("CMD_OUTPUT, PSU PRESENT ==> 1\n");
+                    p_psu_info->status = 1;
+                }
+                else{
+                    p_psu_info->status = 0; 
+                }        
+            }
+            else{ 
             this->rfpal_sysfs_node_get(psu_present.c_str(), str_node_result);
             p_psu_info->status = atoi(str_node_result);
+            }
             // vin
             str_node_result[0]='\0';
             std::string psu_vin = s[0]["ecrf_pal"]["psus"][str_psu_node]["vin"].asString();

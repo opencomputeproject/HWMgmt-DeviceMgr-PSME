@@ -26,6 +26,8 @@ set(SOURCES
     chassis_loader.cpp
 )
 
-TARGET_LINK_LIBRARIES(${EC_SYS_HELPER_LIBRARIES})
+#TARGET_LINK_LIBRARIES(chassis-loader
+#    ${EC_SYS_HELPER_LIBRARIES}
+#)
 
 add_library(chassis-loader OBJECT ${SOURCES})

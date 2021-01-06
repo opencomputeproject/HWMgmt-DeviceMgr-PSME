@@ -315,6 +315,8 @@ extern const char MANAGER_FOR_REMOTE_TARGETS[];
 extern const char MANAGER_FOR_LOGICAL_DRIVES[];
 extern const char MANAGER_FOR_PHYSICAL_DRIVES[];
 extern const char NETWORK_PROTOCOL[];
+extern const char MANAGER_FOR_CTRL_X86_IP[];
+extern const char MANAGER_FOR_CTRL_BMC_IP[];
 extern const char ETHERNET_INTERFACES[];
 extern const char SERIAL_INTERFACES[];
 extern const char LOG_SERVICES[];

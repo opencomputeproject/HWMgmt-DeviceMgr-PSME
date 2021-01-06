@@ -269,7 +269,7 @@ void RF_PalInfo::get_ecrf_pal_info()
             secrf_pal.get_port_present_info();
             secrf_pal.update_port_present_event();
             /*Send all events */
-            std::vector<EventMsgContent_T> tmp_e_a = secrf_pal.get_Event_Port_Resouce_Add();
+            std::vector<EventMsgContent_T> tmp_e_a = secrf_pal.get_Event_Port_Resource_Add();
 
             for (unsigned int i = 0; i < tmp_e_a.size(); i++)
             {
@@ -282,7 +282,7 @@ void RF_PalInfo::get_ecrf_pal_info()
                 agent_framework::eventing::EventsQueue::get_instance()->push_back(edat);
             }
 
-            std::vector<EventMsgContent_T> tmp_e_r = secrf_pal.get_Event_Port_Resouce_Remove();
+            std::vector<EventMsgContent_T> tmp_e_r = secrf_pal.get_Event_Port_Resource_Remove();
 
             for (unsigned int i = 0; i < tmp_e_r.size(); i++)
             {
@@ -295,7 +295,7 @@ void RF_PalInfo::get_ecrf_pal_info()
                 agent_framework::eventing::EventsQueue::get_instance()->push_back(edat);
             }
 
-            std::vector<EventMsgContent_T> tmp_e_al = secrf_pal.get_Event_Port_Resouce_Alert();
+            std::vector<EventMsgContent_T> tmp_e_al = secrf_pal.get_Event_Port_Resource_Alert();
 
             for (unsigned int i = 0; i < tmp_e_al.size(); i++)
             {

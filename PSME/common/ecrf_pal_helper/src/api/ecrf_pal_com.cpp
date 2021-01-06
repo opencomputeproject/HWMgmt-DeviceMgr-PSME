@@ -315,11 +315,12 @@ int ecrf_pal_com::rfpal_thermal_thresholds_com_get(unsigned id, rfpal_thresholds
         }
         else
         {
-            threshold_info->warning_lower = 0;
-            threshold_info->warning_upper = 0;
-            threshold_info->error = 0; 
-            threshold_info->shutdown = 0; 
+            threshold_info->warning_lower = -99000;
+            threshold_info->warning_upper = -99000;
+            threshold_info->error = -99000;
+            threshold_info->shutdown = -99000;
             gADbg.acc_printf(LEVEL_WARN,"Get thermal threshold id[%d] error!! file not found", id);
+            return ECRF_PAL_STATUS_E_GENERIC;
         }
     }
     catch (const std::exception &e)

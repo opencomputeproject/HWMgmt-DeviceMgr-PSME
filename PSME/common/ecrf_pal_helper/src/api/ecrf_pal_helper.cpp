@@ -1640,7 +1640,7 @@ void Switch::get_thermal_info()
                         else
                         {
                             set_thermal_present(ii, false);
-                            (*pObj)->set_info(ii, 0, 0, 0, 0, 0, false);
+                            (*pObj)->set_info(ii, 0, fv.m_threshold.warning_upper, fv.m_threshold.warning_lower, fv.m_threshold.error, fv.m_threshold.shutdown, false);
                         }
                     }
                 }
@@ -1820,7 +1820,7 @@ void Fan_Info::set_info(int ID, std::string Model, std::string SN, int RPM, int 
                     message_body.message_content = message_event;
                     message_body.message_id = "ResourceEvent.1.0.3.ResourceErrorsDetected";
                     message_body.origin_of_condition = orig_of_condition;
-                    m_Event_Resouce_Alert.push_back(message_body);
+                    m_Event_Resource_Alert.push_back(message_body);
                     m_fan_alert = 0;
                 }
                 m_fan_alert++;
@@ -1955,11 +1955,19 @@ void CPU_Thermal::set_thermal_threshold_value(int Warning_Upper, int Warning_Low
 {
     m_Warning_upper = Warning_Upper;
     m_Warning_lower = Warning_Lower;
-    /*Todo:Should can get value from ONLP or SONiC*/
-    (void) (Error);
-    (void) (Shutdown);
+    auto &secrf_pal = ecrf_pal_helper::Switch::get_instance();
+    if (secrf_pal.get_nos_type() == "sonic")
+    {
+        m_Error = Error;
+        m_Shutdown = Shutdown;
+    }
+    else
+    {
+        //Todo::Wait new ONLP driver value;//
     m_Error = 93000;
     m_Shutdown = 105000;
+}
+    return;
 }
 
 void SYS_Thermal::set_thermal_threshold_value(int Warning_Upper, int Warning_Lower, int Error, int Shutdown)
@@ -1982,11 +1990,38 @@ void Thermal_Info::set_info(int ID, double Current_Temperature, double Warning_U
 {
     try
     {
+        auto &secrf_pal = ecrf_pal_helper::Switch::get_instance();
+
         auto &Entry = RFLogEntry::get_instance();
         m_ID = ID;
         m_Current_Temperature = Current_Temperature;
         m_Present = present;
         set_thermal_threshold_value(Warning_Upper,Warning_Lower, Error, Shutdown);
+
+        if (secrf_pal.get_nos_type() == "sonic")
+        {
+            //SONiC do not support thermal Alert because driver doesn't support threshold value.//
+            if(present)
+            {
+                if (Current_Temperature > 0)
+                {
+                    m_Status_Health = "OK";
+                    m_Status_State = "Enabled";
+                }
+                else
+                {
+                    m_Status_Health = "OK";
+                    m_Status_State = "UnavailableOffline";
+                }
+            }
+            else
+            {
+                m_Status_Health = "Warning";
+                m_Status_State = "Absent";
+            }
+            return;
+        }
+
         /*
    Area : 1 
    "Warning" "Enabled"
@@ -2041,7 +2076,7 @@ void Thermal_Info::set_info(int ID, double Current_Temperature, double Warning_U
                     oem["State"] = "ExceededLowerThresholdNonCritical";
                     oem["ThresholdValue"] = m_Warning_lower/1000; 
                     message_body.oem = oem;
-                    m_Event_Resouce_Alert.push_back(message_body);
+                    m_Event_Resource_Alert.push_back(message_body);
                     m_thermal_alert = 0;
                 }
                 m_thermal_alert ++;
@@ -2073,7 +2108,7 @@ void Thermal_Info::set_info(int ID, double Current_Temperature, double Warning_U
                     oem["State"] = "ExceededUpperThresholdNonCritical";
                     oem["ThresholdValue"] = m_Warning_upper/1000; 
                     message_body.oem = oem;
-                    m_Event_Resouce_Alert.push_back(message_body);
+                    m_Event_Resource_Alert.push_back(message_body);
                     m_thermal_alert = 0;
                 }
                 m_thermal_alert ++;
@@ -2106,7 +2141,7 @@ void Thermal_Info::set_info(int ID, double Current_Temperature, double Warning_U
                     oem["State"] = "ExceededUpperThresholdCritical";
                     oem["ThresholdValue"] = m_Error/1000; 
                     message_body.oem = oem;
-                    m_Event_Resouce_Alert.push_back(message_body);
+                    m_Event_Resource_Alert.push_back(message_body);
                     m_thermal_alert = 0;
                 }
                 m_thermal_alert ++;
@@ -2138,7 +2173,7 @@ void Thermal_Info::set_info(int ID, double Current_Temperature, double Warning_U
                     oem["State"] = "ExceededUpperThresholdFatal";
                     oem["ThresholdValue"] = m_Shutdown/1000;
                     message_body.oem = oem;
-                    m_Event_Resouce_Alert.push_back(message_body);
+                    m_Event_Resource_Alert.push_back(message_body);
                     m_thermal_alert = 0;
                 }
                 m_thermal_alert ++;
@@ -2607,7 +2642,7 @@ void Switch::update_port_present_event()
                     message_body.message_id = "ResourceEvent.1.0.3.ResourceRemoved";
                     message_body.message_content = message_event;
                     message_body.origin_of_condition = orig_of_condition;
-                    m_Event_Port_Resouce_Remove.push_back(message_body);
+                    m_Event_Port_Resource_Remove.push_back(message_body);
                 }
                 else if ((p_bit == 0) && (c_bit == 1))
                 { // port plug in
@@ -2623,7 +2658,7 @@ void Switch::update_port_present_event()
                     message_body.message_content = message_event;
                     message_body.origin_of_condition = orig_of_condition; 
                     message_body.message_id = "ResourceEvent.1.0.3.ResourceCreated";
-                    m_Event_Port_Resouce_Add.push_back(message_body);
+                    m_Event_Port_Resource_Add.push_back(message_body);
                 }
             }
             else if ((id >= 64) && (id < 128))
@@ -2649,7 +2684,7 @@ void Switch::update_port_present_event()
                     message_body.message_content = message_event;
                     message_body.message_id = "ResourceEvent.1.0.3.ResourceRemoved";
                     message_body.origin_of_condition = orig_of_condition; 
-                    m_Event_Port_Resouce_Remove.push_back(message_body);
+                    m_Event_Port_Resource_Remove.push_back(message_body);
                 }
                 else if ((p_bit == 0) && (c_bit == 1))
                 { // port plug in
@@ -2665,7 +2700,7 @@ void Switch::update_port_present_event()
                     message_body.message_content = message_event;
                     message_body.origin_of_condition = orig_of_condition; 
                     message_body.message_id = "ResourceEvent.1.0.3.ResourceCreated";
-                    m_Event_Port_Resouce_Add.push_back(message_body);
+                    m_Event_Port_Resource_Add.push_back(message_body);
                 }
             }
             else
@@ -2715,7 +2750,7 @@ void Switch::update_psu_present_event()
                 message_body.message_id = "ResourceEvent.1.0.3.ResourceRemoved";
                 message_body.message_content = message_event;
                 message_body.origin_of_condition =orig_of_condition;
-                m_Event_Resouce_Remove.push_back(message_body);
+                m_Event_Resource_Remove.push_back(message_body);
             }
             else if ((p_bit == 0) && (c_bit == 1))
             { // PSU plug in
@@ -2731,7 +2766,7 @@ void Switch::update_psu_present_event()
                 message_body.message_content = message_event;
                 message_body.message_id = "ResourceEvent.1.0.3.ResourceCreated";
                 message_body.origin_of_condition = orig_of_condition; 
-                m_Event_Resouce_Add.push_back(message_body);
+                m_Event_Resource_Add.push_back(message_body);
             }
         }
         m_pre_Psu_Present = m_Psu_Present;
@@ -2884,7 +2919,7 @@ void Switch::update_fan_present_event()
                 message_body.message_content = message_event;
                 message_body.message_id = "ResourceEvent.1.0.3.ResourceRemoved";
                 message_body.origin_of_condition = orig_of_condition; 
-                m_Event_Resouce_Remove.push_back(message_body);
+                m_Event_Resource_Remove.push_back(message_body);
             }
             else if ((p_bit == 0) && (c_bit == 1))
             { // FAN plug in
@@ -2900,7 +2935,7 @@ void Switch::update_fan_present_event()
                 message_body.message_content = message_event;
                 message_body.origin_of_condition = orig_of_condition; 
                 message_body.message_id = "ResourceEvent.1.0.3.ResourceCreated";
-                m_Event_Resouce_Add.push_back(message_body);
+                m_Event_Resource_Add.push_back(message_body);
             }
         }
         m_pre_Fan_Present = m_Fan_Present;
@@ -3152,78 +3187,83 @@ void Switch::get_per_port_sys_file()
     }
 }
 
-std::vector<EventMsgContent_T> Dev_Info::m_Event_Resouce_Alert = {};
+std::vector<EventMsgContent_T> Dev_Info::m_Event_Resource_Alert = {};
 
-std::vector<EventMsgContent_T> Dev_Info::m_Event_Port_Resouce_Alert = {};
+std::vector<EventMsgContent_T> Dev_Info::m_Event_Port_Resource_Alert = {};
 
-std::vector<EventMsgContent_T> Dev_Info::get_Event_Resouce_Alert()
+std::vector<EventMsgContent_T> Dev_Info::get_Event_Resource_Alert()
 {
-    return m_Event_Resouce_Alert;
+    return m_Event_Resource_Alert;
 }
 
-void Dev_Info::Clear_Event_Resouce_Alert()
+std::vector<EventMsgContent_T> Dev_Info::get_Event_Port_Resource_Alert()
 {
-    m_Event_Resouce_Alert.clear();
+    return m_Event_Port_Resource_Alert;
+}
+
+void Dev_Info::Clear_Event_Resource_Alert()
+{
+    m_Event_Resource_Alert.clear();
     return;
 }
 
-void Dev_Info::Clear_Event_Port_Resouce_Alert()
+void Dev_Info::Clear_Event_Port_Resource_Alert()
 {
-    m_Event_Port_Resouce_Alert.clear();
+    m_Event_Port_Resource_Alert.clear();
     return;
 }
 
-std::vector<EventMsgContent_T>  Switch::m_Event_Resouce_Add = {};
+std::vector<EventMsgContent_T>  Switch::m_Event_Resource_Add = {};
 
-std::vector<EventMsgContent_T>  Switch::get_Event_Resouce_Add()
+std::vector<EventMsgContent_T>  Switch::get_Event_Resource_Add()
 {
-    return m_Event_Resouce_Add;
+    return m_Event_Resource_Add;
 }
 
-std::vector<EventMsgContent_T> Switch::m_Event_Port_Resouce_Add = {};
+std::vector<EventMsgContent_T> Switch::m_Event_Port_Resource_Add = {};
 
-std::vector<EventMsgContent_T> Switch::get_Event_Port_Resouce_Add()
+std::vector<EventMsgContent_T> Switch::get_Event_Port_Resource_Add()
 {
-    return m_Event_Port_Resouce_Add;
+    return m_Event_Port_Resource_Add;
 }
 
-std::vector<EventMsgContent_T> Switch::m_Event_Resouce_Remove = {};
+std::vector<EventMsgContent_T> Switch::m_Event_Resource_Remove = {};
 
-std::vector<EventMsgContent_T> Switch::get_Event_Resouce_Remove()
+std::vector<EventMsgContent_T> Switch::get_Event_Resource_Remove()
 {
-    return m_Event_Resouce_Remove;
+    return m_Event_Resource_Remove;
 }
 
-std::vector<EventMsgContent_T> Switch::m_Event_Port_Resouce_Remove = {};
+std::vector<EventMsgContent_T> Switch::m_Event_Port_Resource_Remove = {};
 
-std::vector<EventMsgContent_T> Switch::get_Event_Port_Resouce_Remove()
+std::vector<EventMsgContent_T> Switch::get_Event_Port_Resource_Remove()
 {
-    return m_Event_Port_Resouce_Remove;
+    return m_Event_Port_Resource_Remove;
 }
 
-std::vector<EventMsgContent_T> Switch::get_Event_Resouce_Alert()
+std::vector<EventMsgContent_T> Switch::get_Event_Resource_Alert()
 {
-    return Dev_Info::get_Event_Resouce_Alert();
+    return Dev_Info::get_Event_Resource_Alert();
 }
 
-std::vector<EventMsgContent_T> Switch::get_Event_Port_Resouce_Alert()
+std::vector<EventMsgContent_T> Switch::get_Event_Port_Resource_Alert()
 {
-    return Dev_Info::get_Event_Resouce_Alert();
+    return Dev_Info::get_Event_Port_Resource_Alert();
 }
 
 void Switch::clean_Event_Resource_Event()
 {
-    m_Event_Resouce_Add.clear();
-    m_Event_Resouce_Remove.clear();
-    Dev_Info::Clear_Event_Resouce_Alert();
+    m_Event_Resource_Add.clear();
+    m_Event_Resource_Remove.clear();
+    Dev_Info::Clear_Event_Resource_Alert();
     return;
 }
 
 void Switch::clean_Event_Port_Resource_Event()
 {
-    m_Event_Port_Resouce_Add.clear();
-    m_Event_Port_Resouce_Remove.clear();
-    Dev_Info::Clear_Event_Port_Resouce_Alert();
+    m_Event_Port_Resource_Add.clear();
+    m_Event_Port_Resource_Remove.clear();
+    Dev_Info::Clear_Event_Port_Resource_Alert();
     return;
 }
 
@@ -3233,7 +3273,6 @@ void SysResource::mon_cpu_usage_info()
     {
         struct sysinfo s_info;
         sysinfo(&s_info);
-
 
         CPU s1;
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -3275,7 +3314,7 @@ void SysResource::mon_cpu_usage_info()
                 oem["State"] = "ExceededUpperThresholdWarning";
                 oem["ThresholdValue"] = cpu_upper_th; 
                 message_body.oem = oem;
-                m_Event_Resouce_Alert.push_back(message_body);
+                m_Event_Resource_Alert.push_back(message_body);
             }
         }
     }
@@ -3327,7 +3366,7 @@ void SysResource::mon_memory_usage_info()
                 oem["State"] = "ExceededLowerThresholdWarning";
                 oem["ThresholdValue"] = lower_mem_usage_th; 
                 message_body.oem = oem;
-                m_Event_Resouce_Alert.push_back(message_body);
+                m_Event_Resource_Alert.push_back(message_body);
             }
         }
     }
@@ -3375,7 +3414,7 @@ void SysResource::mon_storage_usage_info()
                 oem["State"] = "ExceededUpperThresholdWarning";
                 oem["ThresholdValue"] = upper_stor_usage_th; 
                 message_body.oem = oem;
-                m_Event_Resouce_Alert.push_back(message_body);
+                m_Event_Resource_Alert.push_back(message_body);
             }
         }
     }
@@ -3385,11 +3424,49 @@ void SysResource::mon_storage_usage_info()
     }
 }
 
+void SysResource::mon_openbmc_status()
+{
+    try
+    {
+        EventMsgContent_T message_body;
+        std::string orig_of_condition = "/redfish/v1/Manager/2";
+        message_body.origin_of_condition = orig_of_condition;
+
+        auto &gecOpenBmc_helper = ecOpenBmc_helper::get_instance();
+        if (gecOpenBmc_helper.get_status() && openbmc_status == false)
+        {
+            gADbg.acc_printf(LEVEL_INFO, "Found BMC moudle");
+            openbmc_status = true;
+
+            std::string message_event = std::string("The state of resource ") + orig_of_condition + " has changed to state type Enabled.";
+            message_body.message_content = message_event;
+            message_body.message_id = "ResourceEvent.1.0.3.ResourceStatusChangedOK";
+            m_Event_Resource_Alert.push_back(message_body);
+        }
+        else if (!gecOpenBmc_helper.get_status() && openbmc_status == true)
+        {
+            gADbg.acc_printf(LEVEL_WARN, "BMC moudle disapper!");
+            openbmc_status = false;
+
+            std::string message_event = std::string("The state of resource ") + orig_of_condition + " has changed to state type Absent.";
+
+            message_body.message_content = message_event;
+            message_body.message_id = "ResourceEvent.1.0.3.ResourceStatusChangedCritical";
+            m_Event_Resource_Alert.push_back(message_body);
+        }
+    }
+    catch (const std::exception &e)
+    {
+        gADbg.acc_printf(LEVEL_WARN, "get openbmc status error");
+    }
+}
+
 void Switch::monitor_sys_resource()
 {
     m_SysResource.mon_memory_usage_info();
     m_SysResource.mon_storage_usage_info();
     m_SysResource.mon_cpu_usage_info();
+    m_SysResource.mon_openbmc_status();
 }
 
 } // namespace ecrf_pal_helper

@@ -38,6 +38,7 @@ add_subdirectory(net)
 add_subdirectory(ssdp)
 add_subdirectory(ecnet_helper)
 add_subdirectory(eclog_helper)
+add_subdirectory(ecopenbmc_helper)
 add_subdirectory(ecsys_helper)
 add_subdirectory(ecrf_pal_helper)
 

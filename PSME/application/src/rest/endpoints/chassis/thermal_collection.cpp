@@ -86,9 +86,6 @@ void ThermalCollection::get(const server::Request &req, server::Response &res)
     auto tz_uuids = tz_manager.get_keys();
     auto chassis = psme::rest::model::Find<agent_framework::model::Chassis>(req.params[PathParam::CHASSIS_ID]).get();
 
-    //Set thermal related info. //
-    rfpal_thresholds threshold_info = {0};
-
     for (const auto &tz_uuid : tz_uuids)
     {
         auto tz_ = tz_manager.get_entry(tz_uuid); //Get TZ object by fan_uuid//
@@ -125,19 +122,25 @@ void ThermalCollection::get(const server::Request &req, server::Response &res)
         jsontmp[Common::STATUS][Common::HEALTH_ROLLUP] = json::Value::Type::NIL;
         jsontmp[constants::ThermalZoneCollection::READING_CELSIUS] = (tz_.get_temperature() * 0.001);
 
-        //Get real time data from pal//
-        if (rfpal_thermal_thresholds_get(thermal_id, &threshold_info) == ECRF_PAL_STATUS_OK)
-        {
-            jsontmp[ChassisThreshold::LOWERTHRESHOLDNONCRITICAL] = (threshold_info.warning_lower * 0.001);
-            jsontmp[ChassisThreshold::UPPERTHRESHOLDNONCRITICAL] = (threshold_info.warning_upper * 0.001);
-        }
-        else
-        {
+        if (tz_.get_warning_lower_temp() != -99000)
             jsontmp[ChassisThreshold::LOWERTHRESHOLDNONCRITICAL] = (tz_.get_warning_lower_temp() * 0.001);
+        else
+            jsontmp[ChassisThreshold::LOWERTHRESHOLDNONCRITICAL] = json::Value::Type::NIL;
+
+        if (tz_.get_warning_upper_temp() != -99000)
             jsontmp[ChassisThreshold::UPPERTHRESHOLDNONCRITICAL] = (tz_.get_warning_upper_temp() * 0.001);
-        }
+        else
+            jsontmp[ChassisThreshold::UPPERTHRESHOLDNONCRITICAL] = json::Value::Type::NIL;
+
+        if (tz_.get_error_temp() != -99000)
         jsontmp[ChassisThreshold::UPPERTHRESHOLDCRITICAL] = (tz_.get_error_temp() * 0.001);
+        else
+            jsontmp[ChassisThreshold::UPPERTHRESHOLDCRITICAL] = json::Value::Type::NIL;
+
+        if(tz_.get_shutdown_temp() != -99000)
         jsontmp[ChassisThreshold::UPPERTHRESHOLDFATAL] = (tz_.get_shutdown_temp() * 0.001);
+        else
+            jsontmp[ChassisThreshold::UPPERTHRESHOLDFATAL] = json::Value::Type::NIL;
 
         jsontmp[Common::STATUS][Common::HEALTH_ROLLUP] = tz_.get_status_health();
         jsontmp[Common::STATUS][Common::STATE] = tz_.get_status_state();
@@ -212,6 +215,13 @@ void ThermalCollection::patch(const server::Request &request, server::Response &
 {
     try
     {
+        auto &secrf_pal = ecrf_pal_helper::Switch::get_instance();
+        if (secrf_pal.get_nos_type() == "sonic")
+        {
+            response.set_status(server::status_5XX::NOT_IMPLEMENTED);
+            return;
+        }
+
         rfpal_thresholds threshold_info = {0};
 
         auto json = JsonValidator::validate_request_body<schema::ChassisThPatchSchema>(request);

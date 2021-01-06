@@ -122,8 +122,8 @@ void PsuCollection::get(const server::Request &req, server::Response &res)
                 jsonVoltages[ChassisThreshold::UPPERTHRESHOLDCRITICAL] = json::Value::Type::NIL;
                 jsonVoltages[ChassisThreshold::UPPERTHRESHOLDFATAL] = json::Value::Type::NIL;
                 jsonVoltages[ThermalZone::PHYSICAL_CONTEXT] = "VoltageRegulator";
-                jsonVoltages[Common::STATUS][Common::STATE] = "Enabled";
-                jsonVoltages[Common::STATUS][Common::HEALTH] = "OK";
+                jsonVoltages[Common::STATUS][Common::STATE] =  psu_.get_status_state();
+                jsonVoltages[Common::STATUS][Common::HEALTH] =  psu_.get_status_health();
 
                 json::Value lrejsontmp;
                 lrejsontmp[Common::ODATA_ID] = endpoint::PathBuilder(PathParam::BASE_URL).append(Common::CHASSIS).append(chassis.get_id()).build();
