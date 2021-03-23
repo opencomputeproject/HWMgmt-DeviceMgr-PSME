@@ -20,7 +20,8 @@
 #  under the License.
 PlatformPath="/etc/onl/platform"
 
-if [ -f "${PlatformPath}" ];then
+os_type=`psme.sh get nos_type`
+if [ "$os_type" == "onl" ];then
     #ONL
     HW_type=`cat  ${PlatformPath}`
     ONLPDUMP="/lib/platform-config/${HW_type}/onl/bin/onlpdump"
@@ -35,6 +36,11 @@ fi
 Config_File="/etc/psme/platform_info.conf"
 ASSET_TAG="/etc/psme/ASSET_TAG"
 CMD_OUTPUT="CMD_OUTPUT"
+NOT_SUPPORT="NOT_SUPPORT"
+X="X"
+X_PLUS="X_PLUS"
+PORT_INDEX="PORT_INDEX"
+
 
 #Thermal_Threshold_File="/etc/psme/thermal_threshold"
 #Thermal_Default_Shutdown_Value=105000
@@ -148,17 +154,37 @@ while [ "$i" -lt "${PORT_MAX}" ];do
         	echo " \"present\":\"\",   " >> ${Config_File}
         else
           if [[ ${i2c_nodes_port_present} =~ $CMD_OUTPUT ]];then
+                if [[ $i2c_nodes_port_present  =~ $PORT_INDEX ]];then
+                    echo " \"present\":\"${i2c_nodes_port_present/PORT_INDEX/${PORT_INDEX_MAP[${i}]}}\",   " >> ${Config_File}            
+                elif [[ $i2c_nodes_port_present  =~ $X ]];then                                 
               echo " \"present\":\"${i2c_nodes_port_present/X/${i}}\",   " >> ${Config_File}
           else
+                    echo " \"present\":\"${i2c_nodes_port_present}\",   " >> ${Config_File}              
+                fi              
+            else
           echo " \"present\":\"${i2c_prefix}/${i2c_bus_port_path}/${i2c_nodes_port_present}${ii}\",   " >> ${Config_File}
         fi
         fi
+        if [[ ${GEN_EEPROM_FILE} =~ $CMD_OUTPUT ]];then
+            if [[ $GEN_EEPROM_FILE  =~ $PORT_INDEX ]];then
+                GEN_EEPROM_FILE_tmp=${GEN_EEPROM_FILE/PORT_INDEX/${PORT_INDEX_MAP[${i}]}}
+                if [[ $GEN_EEPROM_FILE_tmp  =~ $X ]];then
+                    echo " \"gen_eeprom\":\"${GEN_EEPROM_FILE_tmp/X/$(($i+1))}\",   " >> ${Config_File}
+                fi
+            fi    
+        fi    
         if [ "$i2c_nodes_port_lp_mode" == "" ];then
         	echo " \"tx_disable\":\"\"   " >> ${Config_File}
         else
           if [[ ${i2c_nodes_port_lp_mode} =~ $CMD_OUTPUT ]];then
+                if [[ $i2c_nodes_port_lp_mode  =~ $PORT_INDEX ]];then
+                    echo " \"tx_disable\":\"${i2c_nodes_port_lp_mode/PORT_INDEX/${PORT_INDEX_MAP[${i}]}}\"   " >> ${Config_File}            
+                elif [[ $i2c_nodes_port_lp_mode  =~ $X ]];then
               echo " \"tx_disable\":\"${i2c_nodes_port_lp_mode/X/${i}}\"   " >> ${Config_File}              
           else
+                    echo " \"tx_disable\":\"${i2c_nodes_port_lp_mode}\"   " >> ${Config_File}             
+                fi             
+            else
           echo " \"tx_disable\":\"${i2c_prefix}/${i2c_bus_port_path}/${i2c_nodes_port_lp_mode}${ii}\"   " >> ${Config_File}
         fi
         fi
@@ -247,7 +273,15 @@ while [ "$i" -lt "${FAN_MAX}" ];do
                 fi
                 echo " \"front_speed\":\"${i2c_prefix}/${i2c_bus_fan}/fan${iii}_${i2c_nodes_fan_front_speed}\",   " >> ${Config_File}                                
             else        
+                if [[ ${i2c_nodes_fan_front_speed} =~ $CMD_OUTPUT ]];then
+                    if [[ $i2c_nodes_fan_front_speed  =~ $X ]];then
+                        echo " \"front_speed\":\"${i2c_nodes_fan_front_speed/X/${ii}}\",   " >> ${Config_File}
+                    else
+                        echo " \"front_speed\":\"${i2c_nodes_fan_front_speed}\",   " >> ${Config_File}
+                    fi
+                else  
         	echo " \"front_speed\":\"${i2c_prefix}/${i2c_bus_fan}/fan${ii}_${i2c_nodes_fan_front_speed}\",   " >> ${Config_File}
+        fi
         fi
         fi
         if [ "$i2c_nodes_fan_rear_speed" == "" ];then
@@ -263,7 +297,15 @@ while [ "$i" -lt "${FAN_MAX}" ];do
         	      fi
         	      echo " \"rear_speed\":\"${i2c_prefix}/${i2c_bus_fan}/fan${iii}_${i2c_nodes_fan_rear_speed}\",   " >> ${Config_File}        	      
             else
+                if [[ ${i2c_nodes_fan_rear_speed} =~ $CMD_OUTPUT ]];then
+                    if [[ $i2c_nodes_fan_rear_speed  =~ $X ]];then
+                        echo " \"rear_speed\":\"${i2c_nodes_fan_rear_speed/X/${ii}}\",   " >> ${Config_File}
+                    else
+                        echo " \"rear_speed\":\"${i2c_nodes_fan_rear_speed}\",   " >> ${Config_File}
+                    fi
+                else
         	echo " \"rear_speed\":\"${i2c_prefix}/${i2c_bus_fan}/fan${ii}_${i2c_nodes_fan_rear_speed}\",   " >> ${Config_File}
+        fi
         fi
         fi
         if [ "$i2c_nodes_fan_front_percentage" == "" ];then
@@ -306,8 +348,19 @@ while [ "$i" -lt "${FAN_MAX}" ];do
         fi
         if [ "$i2c_nodes_psu_fan_speed" == "" ];then
         	echo " \"front_speed\":\"\",   " >> ${Config_File}
+        elif [[ ${i2c_nodes_psu_fan_speed} =~ $NOT_SUPPORT ]];then
+        	echo " \"front_speed\":\"${i2c_nodes_psu_fan_speed}\",   " >> ${Config_File}
+        else        
+            if [[ ${i2c_nodes_psu_fan_speed} =~ $CMD_OUTPUT ]];then
+                if [[ $i2c_nodes_psu_fan_speed  =~ $X ]];then
+		    i2c_nodes_psu_fan_speed_tmp=${i2c_nodes_psu_fan_speed/X/$(($psu_i+1))}
+		    echo " \"front_speed\":\"${i2c_nodes_psu_fan_speed_tmp/X/$(($psu_i+1))}\",   " >> ${Config_File}
+		else
+		    echo " \"front_speed\":\"${i2c_nodes_psu_fan_speed}\",   " >> ${Config_File}
+		fi
         else        
         	echo " \"front_speed\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_fan_speed}\",   " >> ${Config_File}
+        fi
         fi
         echo " \"rear_speed\":\"\",   " >> ${Config_File}
         if [ "$i2c_nodes_psu_fan_percentage" == "" ];then
@@ -413,7 +466,9 @@ while [ "$i" -lt "${THERMAL_SEN_MAX}" ];do
         if [ "${i2c_nodes_thermal_temp}" == "" ];then
         	echo " \"temp\":\"\"   " >> ${Config_File}
         else
-          if [[ $i2c_nodes_thermal_temp  =~ $X ]];then
+          if [[ ${i2c_nodes_thermal_temp} =~ $CMD_OUTPUT ]];then
+              echo " \"temp\":\"${i2c_nodes_thermal_temp/THERMAL_PARSE_KEYWORD/${THERMAL_PARSE_KEYWORD[${sys_i}]}}\"   " >> ${Config_File}        
+          elif [[ $i2c_nodes_thermal_temp  =~ $X ]];then
               echo " \"temp\":\"${i2c_prefix}/${i2c_bus_thermal[${sys_i}]}/${i2c_nodes_thermal_temp/X/$(($sys_i+1))}\"   " >> ${Config_File}
           else
           echo " \"temp\":\"${i2c_prefix}/${i2c_bus_thermal[${sys_i}]}/${i2c_nodes_thermal_temp}\"   " >> ${Config_File}
@@ -438,6 +493,13 @@ while [ "$i" -lt "${THERMAL_SEN_MAX}" ];do
         	echo " \"temp\":\"\"   " >> ${Config_File}
         else
           if [[ ${i2c_nodes_psu_temp} =~ $CMD_OUTPUT ]];then
+              if [[ $i2c_nodes_psu_temp  =~ $X ]];then
+	          i2c_nodes_psu_temp_tmp=${i2c_nodes_psu_temp/X/$(($psu_i+1))}
+		  echo " \"temp\":\"${i2c_nodes_psu_temp_tmp/X/$(($psu_i+1))}\"   " >> ${Config_File}
+	      else              
+                  echo " \"temp\":\"${i2c_nodes_psu_temp}\"   " >> ${Config_File}
+              fi
+          elif [[ ${i2c_nodes_psu_temp} =~ $NOT_SUPPORT ]];then
               echo " \"temp\":\"${i2c_nodes_psu_temp}\"   " >> ${Config_File}
           else
           echo " \"temp\":\"${i2c_prefix}/${i2c_bus_psu_ym2651[${psu_i}]}/${i2c_nodes_psu_temp}\"   " >> ${Config_File}
@@ -497,6 +559,13 @@ while [ "$i" -lt "${PSU_MAX}" ];do
         fi
         if [ "${i2c_nodes_psu_v_in}" == "" ];then
         	echo " \"vin\":\"\",   " >> ${Config_File}
+        elif [[ ${i2c_nodes_psu_v_in} =~ $CMD_OUTPUT ]];then
+            if [[ $i2c_nodes_psu_v_in  =~ $X ]];then
+                i2c_nodes_psu_v_in_tmp=${i2c_nodes_psu_v_in/X/$(($psu_i+1))}
+		echo " \"vin\":\"${i2c_nodes_psu_v_in_tmp/X/$(($psu_i+1))}\",   " >> ${Config_File}
+	    else              
+                echo " \"vin\":\"${i2c_nodes_psu_v_in}\",   " >> ${Config_File}
+            fi              	
         else
             if [ "$i2c_nodes_psu_v_in" == "$i2c_nodes_psu_v_out" ];then
                 if [ $(($psu_i+1)) == "1" ];then
@@ -511,6 +580,13 @@ while [ "$i" -lt "${PSU_MAX}" ];do
         fi      
         if [ "${i2c_nodes_psu_v_out}" == "" ];then
         	echo " \"vout\":\"\",   " >> ${Config_File}
+        elif [[ ${i2c_nodes_psu_v_out} =~ $CMD_OUTPUT ]];then
+            if [[ $i2c_nodes_psu_v_out  =~ $X_PLUS ]];then
+                i2c_nodes_psu_v_out_tmp=${i2c_nodes_psu_v_out/X_PLUS/$(($psu_i+1+1))}
+		echo " \"vout\":\"${i2c_nodes_psu_v_out_tmp/X_PLUS/$(($psu_i+1+1))}\",   " >> ${Config_File}
+            else              
+                echo " \"vout\":\"${i2c_nodes_psu_v_out}\",   " >> ${Config_File}
+            fi        	
         else
             if [ "$i2c_nodes_psu_v_out" == "$i2c_nodes_psu_v_in" ];then
                 if [ $(($psu_i+1)) == "1" ];then
@@ -525,6 +601,13 @@ while [ "$i" -lt "${PSU_MAX}" ];do
         fi
         if [ "${i2c_nodes_psu_i_in}" == "" ];then
         	echo " \"iin\":\"\",   " >> ${Config_File}
+        elif [[ ${i2c_nodes_psu_i_in} =~ $CMD_OUTPUT ]];then
+            if [[ $i2c_nodes_psu_i_in  =~ $X ]];then
+                i2c_nodes_psu_i_in_tmp=${i2c_nodes_psu_i_in/X/$(($psu_i+1))}
+		echo " \"iin\":\"${i2c_nodes_psu_i_in_tmp/X/$(($psu_i+1))}\",   " >> ${Config_File}
+            else              
+                echo " \"iin\":\"${i2c_nodes_psu_i_in}\",   " >> ${Config_File}
+            fi        	
         else
             if [ "$i2c_nodes_psu_i_in" == "$i2c_nodes_psu_i_out" ];then
                 if [ $(($psu_i+1)) == "1" ];then
@@ -539,6 +622,13 @@ while [ "$i" -lt "${PSU_MAX}" ];do
         fi
         if [ "${i2c_nodes_psu_i_out}" == "" ];then
         	echo " \"iout\":\"\",   " >> ${Config_File}
+        elif [[ ${i2c_nodes_psu_i_out} =~ $CMD_OUTPUT ]];then
+            if [[ $i2c_nodes_psu_i_out  =~ $X_PLUS ]];then
+                i2c_nodes_psu_i_out_tmp=${i2c_nodes_psu_i_out/X_PLUS/$(($psu_i+1+1))}
+		echo " \"iout\":\"${i2c_nodes_psu_i_out_tmp/X_PLUS/$(($psu_i+1+1))}\",   " >> ${Config_File}
+            else              
+                echo " \"iout\":\"${i2c_nodes_psu_i_in}\",   " >> ${Config_File}
+            fi        	
         else
             if [ "$i2c_nodes_psu_i_out" == "$i2c_nodes_psu_i_in" ];then
                 if [ $(($psu_i+1)) == "1" ];then
@@ -553,6 +643,13 @@ while [ "$i" -lt "${PSU_MAX}" ];do
         fi
         if [ "${i2c_nodes_psu_p_in}" == "" ];then
         	echo " \"pin\":\"\",   " >> ${Config_File}
+        elif [[ ${i2c_nodes_psu_p_in} =~ $CMD_OUTPUT ]];then
+            if [[ $i2c_nodes_psu_p_in  =~ $X ]];then
+                i2c_nodes_psu_p_in_tmp=${i2c_nodes_psu_p_in/X/$(($psu_i+1))}
+		echo " \"pin\":\"${i2c_nodes_psu_p_in_tmp/X/$(($psu_i+1))}\",   " >> ${Config_File}
+	    else              
+                echo " \"pin\":\"${i2c_nodes_psu_p_in}\",   " >> ${Config_File}
+            fi        	
         else
             if [ "$i2c_nodes_psu_p_in" == "$i2c_nodes_psu_p_out" ];then
                 if [ $(($psu_i+1)) == "1" ];then
@@ -567,6 +664,13 @@ while [ "$i" -lt "${PSU_MAX}" ];do
         fi
         if [ "${i2c_nodes_psu_p_out}" == "" ];then
         	echo " \"pout\":\"\",   " >> ${Config_File}
+        elif [[ ${i2c_nodes_psu_p_out} =~ $CMD_OUTPUT ]];then
+            if [[ $i2c_nodes_psu_p_out  =~ $X ]];then
+	        i2c_nodes_psu_p_out_tmp=${i2c_nodes_psu_p_out/X/$(($psu_i+1))}
+		echo " \"pout\":\"${i2c_nodes_psu_p_out_tmp/X/$(($psu_i+1))}\",   " >> ${Config_File}
+            else              
+                echo " \"pout\":\"${i2c_nodes_psu_p_out}\",   " >> ${Config_File}
+            fi        	
         else
             if [ "$i2c_nodes_psu_p_out" == "$i2c_nodes_psu_p_in" ];then
                 if [ $(($psu_i+1)) == "1" ];then
@@ -659,37 +763,36 @@ if [ ! -f "${ASSET_TAG}" ];then
 `echo "N/A" > ${ASSET_TAG} `
 fi
 
-if [ "$HW_type" != "arm-accton-as4610-54-r0" ];then
-#Accton 5081 server
-Product_name=`dmidecode -s system-product-name | grep SAU`
-fi
-
-if [ ! -f "${ONLPDUMP}" ] && [ ! "$Product_name" = "SAU5081" ] ;then
+if [ ! -f "${ONLPDUMP}" ];then
     # VM environment
-    MANUFACTURER="ACCTON"
+    MANUFACTURER="Accton"
     SERIAL_NUMBER="S1234567890"
     ASSET_TAG_C=`cat "${ASSET_TAG}"`
     PLATFORM="BDCR"
-    MODULE_NUMBER="M1234567890"
-    NINF="ma1"
+    MODULE_NUMBER="PN112233445566"
+    NINF=`psme.sh get mgmt_port_name`
+    sed -i "s/ma1/$NINF/g" /etc/psme/psme.conf 
     TYPE="Drawer"
-    FAN_MAX="8"
-    THERMAL_SEN_MAX="7"
-    PSU_MAX="2"
-    PORT_MAX="54"
-    CPU_MAX="4"
-    CPU_MANU="Intel"   
-    CPU_VID="Intel" 
-    CPU_STEPPING="1" 
-    CPU_MODEL_NAME="Intel"
-    CPU_MAX_SPEED="2700" 
-    CPU_TOTAL_CORE="1"
-    CPU_TOTAL_THREAD="1"
+    FAN_MAX=`psme.sh get max_fan_num`
+    THERMAL_SEN_MAX=`psme.sh get thermal_sensor_num`
+    PSU_MAX=`psme.sh get max_psu_num`
+    PORT_MAX=`psme.sh get max_port_num`
+    NOS_TYPE=`psme.sh get nos_type`
+
+    CPU_MAX=1
+    CPU_MANU=`lscpu | grep 'Arch'| awk -F'Architecture:' '{print $2}' | sed -e "s/ //g"`    
+    CPU_VID=`lscpu | grep 'Vendor ID'| awk -F'Vendor ID:' '{print $2}' | sed -e "s/ //g"`
+    CPU_STEPPING=`lscpu | grep 'Stepping'| awk -F'Stepping:' '{print $2}' | sed -e "s/ //g"` 
+    CPU_MODEL_NAME=`lscpu | grep 'Model name'| awk -F'Model name:' '{print $2}' | sed -e "s/   //g"` 
+    CPU_MAX_SPEED=`lscpu | grep 'CPU MHz:'| awk -F'CPU MHz:' '{print $2}' | sed -e "s/ //g"` 
+    CPU_MAX_SPEED=${CPU_MAX_SPEED%.*}
+    CPU_TOTAL_CORE=`lscpu | grep 'Core(s)'| awk -F'per socket:' '{print $2}' | sed -e "s/ //g"` 
+    CPU_TOTAL_THREAD=`lscpu | grep 'Thread(s)'| awk -F'per core:' '{print $2}' | sed -e "s/ //g"`    
+ 
     MEM_TOTAL_C="1"
     DRV_TOTAL_C="1"
-    
 else
-    if [ -f "${PlatformPath}" ];then
+    if [ "$os_type" == "onl" ];then
     MANUFACTURER=`${ONLPDUMP} | grep -m 1 "Manufacturer" | awk -F':' '{print $2}' | sed -e "s/ //g"`
     SERIAL_NUMBER=`${ONLPDUMP} | grep -m 1 "Serial Number" | awk -F':' '{print $2}' | sed -e "s/ //g"`
     ASSET_TAG_C=`cat "${ASSET_TAG}"`
@@ -751,8 +854,6 @@ else
     CPU_TOTAL_CORE="1"
     CPU_TOTAL_THREAD="1"
 fi
-
-
 fi
 
 make_platform_info()

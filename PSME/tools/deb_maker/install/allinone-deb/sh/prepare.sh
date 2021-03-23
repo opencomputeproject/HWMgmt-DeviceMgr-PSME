@@ -47,7 +47,7 @@ cp ${PSME_EC_SW_DIR}/*                                  $ITEM_PATH/etc/psme 2>/d
 cp $PSME_PROJ_PATH/bin/psme-rest-server                  $ITEM_PATH/usr/local/bin
 cp $PSME_PROJ_PATH/bin/psme-chassis                      $ITEM_PATH/usr/local/bin
 cp $PSME_PROJ_PATH/lib/libjsoncpp.so.999                 $ITEM_PATH/usr/local/lib
-cp $PSME_PROJ_PATH/lib/libmicrohttpd.so                  $ITEM_PATH/usr/local/lib
+cp $PSME_PROJ_PATH/lib/libmicrohttpd.so                  $ITEM_PATH/usr/local/lib/libmicrohttpd.so.12
 cp $PSME_PROJ_PATH/lib/libjsonrpccpp-server.so.999       $ITEM_PATH/usr/local/lib
 cp $PSME_PROJ_PATH/lib/libjsonrpccpp-client.so.999       $ITEM_PATH/usr/local/lib
 cp $PSME_PROJ_PATH/lib/libjsonrpccpp-common.so.999       $ITEM_PATH/usr/local/lib

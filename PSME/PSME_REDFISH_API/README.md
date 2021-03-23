@@ -39,6 +39,16 @@ HTTP Request Methods used in PSME service.
    
       - Response : 200 OK
 
+   Curl command:
+
+   Authentication disabled:   
+      curl --insecure -X POST -D headers.txt https://${DUT_IP}/redfish/v1/SessionService/ -d '{"ServiceEnabled":true,"SessionTimeout":30}'
+
+   Authentication enabled:   
+      curl -k -H "X-Auth-Token: gBQpFP2nBQrfnNVP8dZiCZbNIfnjogdX" -X POST https://${DUT_IP}/redfish/v1/SessionService/  -d '{"ServiceEnabled":true,"SessionTimeout":30}' 
+
+
+
    Change SessionTimeout to 500 seconds
 
       - URL     :  /redfish/v1/SessionService/
@@ -51,6 +61,16 @@ HTTP Request Methods used in PSME service.
       }
    
       - Response : 200 OK
+
+   Curl command:
+
+   Authentication disabled:   
+      curl --insecure -X POST -D headers.txt https://${DUT_IP}/redfish/v1/SessionService/ -d '{"SessionTimeout":500}'
+
+   Authentication enabled:   
+      curl -k -H "X-Auth-Token: gBQpFP2nBQrfnNVP8dZiCZbNIfnjogdX" -X POST https://${DUT_IP}/redfish/v1/SessionService/  -d '{"SessionTimeout":500}' 
+
+
 
    After you enable authentication service,you need have correct privilege to do GET/POST/PATCH action.
      
@@ -69,7 +89,14 @@ HTTP Request Methods used in PSME service.
 
       - Response : 201 CREATED
      
-   X-Auth Token header displays Location and session ID 
+   Curl command:
+
+   Authentication disabled:   
+      curl --insecure -X POST -D headers.txt https://${DUT_IP}/redfish/v1/SessionService/Sessions -d '{"UserName":"admin","Password":"redfish"}' 
+      
+
+
+   X-Auth Token header displays Location and session ID in headers.txt file. 
    Ex: Location: /redfish/v1/SessionService/Sessions/1 
 	     
    Delete a session (Logout) already created.  
@@ -86,7 +113,10 @@ HTTP Request Methods used in PSME service.
 	
    Curl command:
 
+   Authentication enabled:   
       curl -k -H "X-Auth-Token: 605c5QiyVFqxLM2uj86Fj83xd0THGGiM" -X DELETE https://${DUT_IP}/redfish/v1/SessionService/Sessions/1
+
+
 
    Please note that only "RoleId" as "Administrator" can del others session id (force other user logout) and user himself can del its own session id(logout himself).
 	
@@ -140,6 +170,14 @@ HTTP Request Methods used in PSME service.
       
       - Response : 200 OK
 
+   Curl command:
+
+   Authentication disabled:   
+      curl --insecure -X GET https://${DUT_IP}/redfish/v1/AccountService/Accounts/
+
+   Authentication enabled:   
+      curl -k -H "X-Auth-Token: gBQpFP2nBQrfnNVP8dZiCZbNIfnjogdX" -X GET https://${DUT_IP}/redfish/v1/AccountService/Accounts/
+
    Create new account (Only administrator can add new user)
       
       - URL     :  /redfish/v1/AccountService/Accounts
@@ -151,14 +189,26 @@ HTTP Request Methods used in PSME service.
         "Name":"Name_1", 
         "UserName":"User_Name_1", 
         "Password":"User_Password_1", 
-        "RoleId":"Administrator",         // Administrator, Operator, ReadOnlyUser 
+        "RoleId":"Administrator",
         "Enabled":true ,
         "Locked":false 
         }           
 
       - Response : 201 CREATED  
 
-  ## Querying system Status
+      "RoleId" must be Administrator/Operator/ReadOnlyUser 
+
+   Curl command:
+
+   Authentication disabled:   
+      curl --insecure -X POST https://${DUT_IP}/redfish/v1/AccountService/Accounts/ -d '{"Name":"Name_1", "UserName":"User_Name_1","Password":"User_Password_1","RoleId":"Administrator", "Enabled":true , "Locked":false}' 
+
+   Authentication enabled:   
+      curl -k -H "X-Auth-Token: i0g1d8vgqrGE1Yv5Yym3saof2oliM2d7" -X POST -D headers.txt https://${DUT_IP}/redfish/v1/AccountService/Accounts/ -d '{"Name":"Name_1", "UserName":"Name_1","Password":"User_Password_1","RoleId":"Administrator", "Enabled":true , "Locked":false}'
+
+  
+
+  ## Querying System Status
   
   Here we will take Edgecore XGSPON device x86-64-accton-asxvolt16-r0 for example and 
   get related devices and system status from PSME Redfish Service.
@@ -582,231 +632,19 @@ HTTP Request Methods used in PSME service.
         "UpperThresholdFatal": 105,
         "RelatedItem":[{"@odata.id": "/redfish/v1/Chassis/1" }]
         },
-        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "2", "Name": "Chassis Thermal Sensor Temperature",?¦},
-        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "3", "Name": "Chassis Thermal Sensor Temperature",?¦},
-        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "4", "Name": "Chassis Thermal Sensor Temperature",?¦},
-        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "5", "Name": "Chassis Thermal Sensor Temperature",?¦},
-        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "6", "Name": "Chassis Thermal Sensor Temperature",?¦},
-        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "7", "Name": "Chassis Thermal Sensor Temperature",?¦},
-        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "8", "Name": "Chassis Thermal Sensor Temperature",?¦},
-        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "9", "Name": "PSU Thermal Sensor Temperature",?¦},
-        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "10", "Name": "PSU Thermal Sensor Temperature",?¦}
+        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "2", "Name": "Chassis Thermal Sensor Temperature",
+        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "3", "Name": "Chassis Thermal Sensor Temperature",},
+        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "4", "Name": "Chassis Thermal Sensor Temperature",},
+        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "5", "Name": "Chassis Thermal Sensor Temperature",},
+        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "6", "Name": "Chassis Thermal Sensor Temperature",},
+        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "7", "Name": "Chassis Thermal Sensor Temperature",},
+        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "8", "Name": "Chassis Thermal Sensor Temperature",},
+        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "9", "Name": "PSU Thermal Sensor Temperature",},
+        {"@odata.id": "/redfish/v1/Chassis/1/Thermal", "MemberId": "10", "Name": "PSU Thermal Sensor Temperature",}
         ]}
               
       - Response : 200 OK
 		        
-   ## QSFP/XFP information :
-      
-   Collection of port 
-   
-       - URL     :  /redfish/v1/EthernetSwitches/1/Ports
-       - Required Privilege : Login 
-       - Method  :  GET
-       - Response Payload :
-      
-        {
-        "@odata.context": "/redfish/v1/$metadata#EthernetSwitchPortCollection.EthernetSwitchPortCollection",
-        "@odata.id": "/redfish/v1/EthernetSwitches/1/Ports",
-        "@odata.type": "#EthernetSwitchPortCollection.EthernetSwitchPortCollection",
-        "Name": "Ethernet Switch Port Collection",
-        "Description": "Collection of Ethernet Switch Ports",
-        "Members@odata.count": 20,
-        "Members":[
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/1"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/2"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/3"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/4"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/5"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/6"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/7"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/8"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/9"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/10"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/11"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/12"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/13"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/14"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/15"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/16"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/17"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/18"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/19"},
-        {"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/20"}
-        ]
-        }
-        - Response : 200 OK
-		    			
-   Port 1 Present :
-        
-      - URL     :  /redfish/v1/EthernetSwitches/1/Ports/1
-      - Required Privilege : Login 
-      - Method  :  GET
-      - Response Payload :
-  
-        {
-        "@odata.context": "/redfish/v1/$metadata#EthernetSwitchPort.EthernetSwitchPort",
-        "@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/1",
-        "@odata.type": "#EthernetSwitchPort.v1_0_0.EthernetSwitchPort",
-        "Id": "1",
-        "Name": "Port1",
-        "Description": "Ethernet Switch Port description",
-        "PortId": "Port ID",
-        "Status":{
-        "State": "Enabled",  <==== Enabled : Present , Absent: No Present
-        "Health": "OK",
-        "HealthRollup": "OK"
-        },
-        "LinkType": "Ethernet",
-        "OperationalState": null,
-        "AdministrativeState": null,
-        "LinkSpeedMbps": null,
-        "NeighborInfo":{"SwitchId": null, "PortId": null, "CableId": null},
-        "NeighborMAC": null,
-        "FrameSize": null,
-        "Autosense": null,
-        "FullDuplex": null,
-        "MACAddress": null,
-        "PortClass": null,
-        "PortMode": null,
-        "PortType": null,
-        "Oem":{},
-        "IPv4Addresses":[],
-        "IPv6Addresses":[],
-        "VLANs":{"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/1/VLANs"},
-        "StaticMACs":{
-        "@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/1/StaticMACs"
-        },
-        "Links":{"PrimaryVLAN": null, "Switch":{"@odata.id": "/redfish/v1/EthernetSwitches/1"...},
-        "TransceiverStatistics":{"SFP Vendor Name": "SOURCEPHOTONICS", "Part Number": "XPPXG2N1CDFA", "Serial Number": "H6B2010733", "Manufacture Date": "170510",...}
-        }
-        - Response : 200 OK
-        
-   Port 1 "Transceiver Statistics" (OEM):
-      
-   If device detect supported transceiver in device, we can get related information like
-   "SFP Vendor Name","Part Number","Serial Number", "Manufacture Date" of transceiver.
-   and "Temperature","Voltage","BiasCurrent","TxPower" detail data.
-    
-   If transceiver not plug-in device then no such data appear in URL.
-          
-      - URL     :  /redfish/v1/EthernetSwitches/1/Ports/1
-      - Required Privilege : Login 
-      - Method  :  GET
-      - Response Payload :
-        {
-        "@odata.context": "/redfish/v1/$metadata#EthernetSwitchPort.EthernetSwitchPort",
-        "@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/1",
-        "@odata.type": "#EthernetSwitchPort.v1_0_0.EthernetSwitchPort",
-        "Id": "1",
-        "Name": "Port1",
-        "Description": "Ethernet Switch Port description",
-        "PortId": "Port ID",
-        "Status":{"State": "Enabled", "Health": "OK", "HealthRollup": "OK"},
-        "LinkType": "Ethernet",
-        "OperationalState": null,
-        "AdministrativeState": null,
-        "LinkSpeedMbps": null,
-        "NeighborInfo":{"SwitchId": null, "PortId": null, "CableId": null},
-        "NeighborMAC": null,
-        "FrameSize": null,
-        "Autosense": null,
-        "FullDuplex": null,
-        "MACAddress": null,
-        "PortClass": null,
-        "PortMode": null,
-        "PortType": null,
-        "Oem":{},
-        "IPv4Addresses":[],
-        "IPv6Addresses":[],
-        "VLANs":{"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/1/VLANs"},
-        "StaticMACs":{"@odata.id": "/redfish/v1/EthernetSwitches/1/Ports/1/StaticMACs"},
-        "Links":{"PrimaryVLAN": null, "Switch":{"@odata.id": "/redfish/v1/EthernetSwitches/1"...},
-        "TransceiverStatistics":
-        {
-        "SFP Vendor Name": "SOURCEPHOTONICS",
-        "Part Number": "XPPXG2N1CDFA",
-        "Serial Number": "H6B2010733",
-        "Manufacture Date": "170510",
-        "Temperature":{
-        "Reading": 39.527,
-        "UpperThresholdFatal": 80,
-        "UpperThresholdCritical": 75,
-        "LowerThresholdCritical": -5,
-        "LowerThresholdFatal": -10,
-        "Status":{"State": "Enabled", "Health": "OK"}
-        },
-        "Voltage":{
-        "Reading": 3.347,
-        "UpperThresholdFatal": 3.599,
-        "UpperThresholdCritical": 3.549,
-        "LowerThresholdCritical": 3.049,
-        "LowerThresholdFatal": 3,
-        "Status":{"State": "Enabled", "Health": "OK"}
-        },
-        "BiasCurrent":{
-        "Reading": 0,
-        "UpperThresholdFatal": 130,
-        "UpperThresholdCritical": 120,
-        "LowerThresholdCritical": 20,
-        "LowerThresholdFatal": 10,
-        "Status":{"State": "Enabled", "Health": "Critical"}
-        },
-        "TxPower":{
-        "Reading": 0,
-        "UpperThresholdFatal": 5.011,
-        "UpperThresholdCritical": 3.981,
-        "LowerThresholdCritical": 1.412,
-        "LowerThresholdFatal": 1.122,
-        "Status":{"State": "Enabled", "Health": "Critical"}
-        }
-        }
-        }  
-        - Response : 200 OK			
-
-
-   If device detect un-supported transceiver in device, we can not get related information like
-   "SFP Vendor Name","Part Number","Serial Number", "Manufacture Date" of transceiver and all value 
-   are "NA" and "Temperature","Voltage","BiasCurrent","TxPower" value are all 0.
-
-        TransceiverStatistics":{
-        "SFP Vendor Name": "NA",
-        "Part Number": "NA",
-        "Serial Number": "NA",
-        "Manufacture Date": "NA",
-        "Temperature":{"Reading": 0, "UpperThresholdFatal": 0, "UpperThresholdCritical": 0, "LowerThresholdCritical": 0, "LowerThresholdFatal": 0,...},
-        "Voltage":{"Reading": 0, "UpperThresholdFatal": 0, "UpperThresholdCritical": 0, "LowerThresholdCritical": 0, "LowerThresholdFatal": 0,...},
-        "BiasCurrent":{"Reading": 0, "UpperThresholdFatal": 0, "UpperThresholdCritical": 0, "LowerThresholdCritical": 0, "LowerThresholdFatal": 0,...},
-        "TxPower":{"Reading": 0, "UpperThresholdFatal": 0, "UpperThresholdCritical": 0, "LowerThresholdCritical": 0, "LowerThresholdFatal": 0,...}
-        }
-
-  ##  Supported Statistics of Transceivers Hardware Vendor informations 
-  
-	+========+===============+===============+
-	| QSFP28 |               |               |
-	+========+===============+===============+
-	|        |   Vendor Name |   Part Number |
-	+--------+---------------+---------------+
-	|      1 |   Precision   |   QSFP28AOC03 |
-	+--------+---------------+---------------+
-
-	+==============+====================+================+
-	| XFP (XGSPON) |                    |                |
-	+==============+====================+================+
-	|              |   Vendor Name      |   Part Number  |
-	+--------------+--------------------+----------------+
-	|            1 |   Source Photonics |   XPPXG2N1CDFA |
-	+--------------+--------------------+----------------+
-	|            2 |   Hisense          |   LTH7226-PC+  |
-	+--------------+--------------------+----------------+
-
-	+===========+===============+================+
-	| SFP(GPON) |               |                |
-	+===========+===============+================+
-	|           |   Vendor Name |   Part Number  |
-	+-----------+---------------+----------------+
-	|         1 |   Hisense     |   LTE3680M-BH+ |
-	+-----------+---------------+----------------+
-
 
   ## Reboot device through PSME
   
@@ -820,6 +658,16 @@ HTTP Request Methods used in PSME service.
         }      
         - Response : 200 OK
 		        
+   Curl command:
+
+   Authentication disabled:   
+      curl --insecure -X POST https://${DUT_IP}/redfish/v1/Systems/1/Actions/ComputerSystem.Reset -d '{ "ResetType":"GracefulRestart" }'
+
+   Authentication enabled:   
+      curl -k -H "X-Auth-Token: i0g1d8vgqrGE1Yv5Yym3saof2oliM2d7" -X POST -D headers.txt https://${DUT_IP}/redfish/v1/Systems/1/Actions/ComputerSystem.Reset -d '{ "ResetType":"GracefulRestart" }'
+ 
+		  
+
   ## Log service
 
    Log service will record all ONL peripheral Add/Remove/Alert event like
@@ -836,6 +684,16 @@ HTTP Request Methods used in PSME service.
     "ServiceEnabled": true 
     } 
     - Response : 204 NO_CONTENT		  
+      
+   Curl command:
+
+   Authentication disabled:   
+      curl --insecure -X PATCH https://${DUT_IP}/redfish/v1/Managers/1/LogServices/1 -d '{"ServiceEnabled": true }'
+
+   Authentication enabled:   
+      curl -k -H "X-Auth-Token: i0g1d8vgqrGE1Yv5Yym3saof2oliM2d7" -X PATCH -D headers.txt https://${DUT_IP}/redfish/v1/Managers/1/LogServices/1 -d '{"ServiceEnabled": true }'
+
+
       
    Get log entries of current device.
 	  
@@ -861,7 +719,7 @@ HTTP Request Methods used in PSME service.
 		  
    Clear log entries of current device.
 		  
-    - URL     :  /v1/Managers/1/LogServices/1/Actions/LogService.Reset
+    - URL     :  /redfish/v1/Managers/1/LogServices/1/Actions/LogService.Reset
     - Required Privilege : ConfigureComponents
     - Method  :  POST
     - Payload : 		  

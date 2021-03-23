@@ -158,13 +158,47 @@ int ecrf_pal_com_sonic::rfpal_fan_info_com_get(unsigned id, rfpal_fan_info *p_fa
                 // front_speed
                 str_node_result[0]='\0';
                 std::string fan_front_speed = s[0]["ecrf_pal"]["fans"][str_fan_node]["front_speed"].asString();
+                if(strcmp((fan_front_speed.substr(0, 11)).c_str(),"NOT_SUPPORT") == 0){
+                    p_fan_info->front_rpm = ECRF_PAL_CONST_NOT_SUPPORTED;
+                }
+                else{
+                    if(strcmp((fan_front_speed.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                        char str_cmd_result[64]="";
+                        std::size_t pos = fan_front_speed.find(":");
+                        std::string cmd = fan_front_speed.substr(pos + 1);
+                        this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                        if(strlen(str_cmd_result) > 0){
+                            printf("CMD_OUTPUT, FAN front speed ==> %s\n", str_cmd_result);
+                            p_fan_info->front_rpm = atoi(str_cmd_result);
+                        }
+                    }
+                    else{ 
                 this->rfpal_sysfs_node_get(fan_front_speed.c_str(), str_node_result);
                 p_fan_info->front_rpm = atoi(str_node_result);            	  
+                    }
+                }
                 // rear_speed
                 str_node_result[0]='\0';
                 std::string fan_rear_speed = s[0]["ecrf_pal"]["fans"][str_fan_node]["rear_speed"].asString();
+                if(strcmp((fan_rear_speed.substr(0, 11)).c_str(),"NOT_SUPPORT") == 0){
+                    p_fan_info->rear_rpm = ECRF_PAL_CONST_NOT_SUPPORTED;
+                }
+                else{
+                   if(strcmp((fan_rear_speed.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                        char str_cmd_result[64]="";
+                        std::size_t pos = fan_rear_speed.find(":");
+                        std::string cmd = fan_rear_speed.substr(pos + 1);
+                        this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                        if(strlen(str_cmd_result) > 0){
+                            printf("CMD_OUTPUT, FAN rear speed ==> %s\n", str_cmd_result);
+                            p_fan_info->rear_rpm = atoi(str_cmd_result);
+                        }
+                    }
+                    else{
                 this->rfpal_sysfs_node_get(fan_rear_speed.c_str(), str_node_result);
                 p_fan_info->rear_rpm = atoi(str_node_result);            	  
+                    }
+                }
                 // double check psu sttus
                 if(p_fan_info->front_rpm !=0 || p_fan_info->rear_rpm != 0){
                     p_fan_info->status = 1;
@@ -243,6 +277,28 @@ int ecrf_pal_com_sonic::rfpal_port_com_trans_is_present(int id)
             this->rfpal_sysfs_node_get(port_present.c_str(), str_node_result);
             is_present =atoi(str_node_result);            
     	}
+            // check and generate eeprom file
+            if(is_present == 1){
+                std::string port_gen_eeprom = s[0]["ecrf_pal"]["ports"][str_port_node]["gen_eeprom"].asString();
+                if(strcmp((port_gen_eeprom.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                    char str_cmd_result[64]="";
+                    char buff[100];
+                    buff[0]='\0';
+                    //delete /etc/psme/port_eeprom/X/eerpom/X folder
+                    snprintf(buff, sizeof(buff), "%s%d", "sudo rm -rf /etc/psme/port_eeprom/", id);
+                    std::string cmdDelEEPROMFolder = buff;
+                    this->rfpal_system_cmd_set(cmdDelEEPROMFolder.c_str(), str_cmd_result);
+                    // create /etc/psme/port_eeprom/X/eerpom/X folder 
+                    buff[0]='\0';
+                    snprintf(buff, sizeof(buff), "%s%d", "sudo mkdir -p /etc/psme/port_eeprom/", id);
+                    std::string cmdCreateEEPROMFolder = buff; 
+                    this->rfpal_system_cmd_set(cmdCreateEEPROMFolder.c_str(), str_cmd_result);
+                    // 
+                    std::size_t pos = port_gen_eeprom.find(":");
+                    std::string cmd = port_gen_eeprom.substr(pos + 1);
+                    this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                } 
+            }        
     }
     }
     return is_present;
@@ -437,12 +493,29 @@ int ecrf_pal_com_sonic:: rfpal_thermal_info_com_get(unsigned id_in, rfpal_therma
                     p_thermal_info->status =atoi(str_node_result);            			
               	}
               	}
-                char str_node_result[64]="";
-                char str_get_temp_cmd[64]="";
                 std::string thermal_temp = s[0]["ecrf_pal"]["thermals"][str_thermal_node]["temp"].asString();
+                if(strcmp((thermal_temp.substr(0, 11)).c_str(),"NOT_SUPPORT") == 0){
+                    p_thermal_info->mcelsius = ECRF_PAL_CONST_NOT_SUPPORTED;
+                }
+                else{
+                    if(strcmp((thermal_temp.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                        char str_cmd_result[64]="";
+                        std::size_t pos = thermal_temp.find(":");
+                        std::string cmd = thermal_temp.substr(pos + 1);
+                        this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                        if(strlen(str_cmd_result) > 0){
+                            printf("CMD_OUTPUT, THERMAL temp ==> %s\n", str_cmd_result);
+                            p_thermal_info->mcelsius = atof(str_cmd_result) * 1000;
+                        }
+                    }
+                    else{                     
+                        char str_get_temp_cmd[64]="";
+                        char str_node_result[64]="";
                 sprintf(str_get_temp_cmd, "sudo cat %s", thermal_temp.c_str());
                 this->rfpal_system_cmd_set(str_get_temp_cmd, str_node_result);
                 p_thermal_info->mcelsius = atoi(str_node_result);
+            }
+                }
             }
             else{
                 printf("Thermal type error\n");
@@ -537,33 +610,106 @@ int ecrf_pal_com_sonic::rfpal_psu_info_com_get(unsigned id_in, rfpal_psu_info *p
             // vin
             str_node_result[0]='\0';
             std::string psu_vin = s[0]["ecrf_pal"]["psus"][str_psu_node]["vin"].asString();
+            if(strcmp((psu_vin.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t pos = psu_vin.find(":");
+                std::string cmd = psu_vin.substr(pos + 1);
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                if(strlen(str_cmd_result) > 0){
+                    printf("CMD_OUTPUT, PSU vin ==> %s\n", str_cmd_result);
+                    p_psu_info->mvin = atof(str_cmd_result) * 1000;
+                }
+            }
+            else{
             this->rfpal_sysfs_node_get(psu_vin.c_str(), str_node_result);
             p_psu_info->mvin = atoi(str_node_result);            	  
+            }
             // vout
             str_node_result[0]='\0';
             std::string psu_vout = s[0]["ecrf_pal"]["psus"][str_psu_node]["vout"].asString();
+            if(strcmp((psu_vout.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t pos = psu_vout.find(":");
+                std::string cmd = psu_vout.substr(pos + 1);
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                if(strlen(str_cmd_result) > 0){
+                    printf("CMD_OUTPUT, PSU vout ==> %s\n", str_cmd_result);
+                    p_psu_info->mvout = atof(str_cmd_result) * 1000;
+                }
+            }
+            else{
             this->rfpal_sysfs_node_get(psu_vout.c_str(), str_node_result);
             p_psu_info->mvout = atoi(str_node_result);            	  
+            }
             // iin
             str_node_result[0]='\0';
             std::string psu_iin = s[0]["ecrf_pal"]["psus"][str_psu_node]["iin"].asString();
+            if(strcmp((psu_iin.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t pos = psu_iin.find(":");
+                std::string cmd = psu_iin.substr(pos + 1);
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                if(strlen(str_cmd_result) > 0){
+                    printf("CMD_OUTPUT, PSU iin ==> %s\n", str_cmd_result);
+                    p_psu_info->miin = atof(str_cmd_result) * 1000;
+                }
+            }
+            else{
             this->rfpal_sysfs_node_get(psu_iin.c_str(), str_node_result);
+                p_psu_info->miin = atoi(str_node_result);
+            }
             // iout 
             str_node_result[0]='\0';
             std::string psu_iout = s[0]["ecrf_pal"]["psus"][str_psu_node]["iout"].asString();
+            if(strcmp((psu_iout.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t pos = psu_iout.find(":");
+                std::string cmd = psu_iout.substr(pos + 1);
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                if(strlen(str_cmd_result) > 0){
+                    printf("CMD_OUTPUT, PSU iout ==> %s\n", str_cmd_result);
+                    p_psu_info->miout = atof(str_cmd_result) * 1000;
+                }
+            }
+            else{
             this->rfpal_sysfs_node_get(psu_iout.c_str(), str_node_result);
             p_psu_info->miout = atoi(str_node_result);
+            }
             // pin
             str_node_result[0]='\0';
             std::string psu_pin = s[0]["ecrf_pal"]["psus"][str_psu_node]["pin"].asString();
+            if(strcmp((psu_pin.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t pos = psu_pin.find(":");
+                std::string cmd = psu_pin.substr(pos + 1);
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                if(strlen(str_cmd_result) > 0){
+                    printf("CMD_OUTPUT, PSU pin ==> %s\n", str_cmd_result);
+                    p_psu_info->mpin = atof(str_cmd_result) * 1000;
+                }
+            }
+            else{
             this->rfpal_sysfs_node_get(psu_pin.c_str(), str_node_result);
             p_psu_info->mpin = atoi(str_node_result);						
+            }
             // pout 
             str_node_result[0]='\0';
             std::string psu_pout = s[0]["ecrf_pal"]["psus"][str_psu_node]["pout"].asString();
+            if(strcmp((psu_pout.substr(0, 10)).c_str(),"CMD_OUTPUT") == 0){
+                char str_cmd_result[64]="";
+                std::size_t pos = psu_pout.find(":");
+                std::string cmd = psu_pout.substr(pos + 1);
+                this->rfpal_system_cmd_set(cmd.c_str(), str_cmd_result);
+                if(strlen(str_cmd_result) > 0){
+                    printf("CMD_OUTPUT, PSU pout ==> %s\n", str_cmd_result);
+                    p_psu_info->mpout = atof(str_cmd_result) * 1000;
+                }
+            }
+            else{
             this->rfpal_sysfs_node_get(psu_pout.c_str(), str_node_result);
             p_psu_info->mpout = atoi(str_node_result);						
         }
+    }
     }
     return ECRF_PAL_STATUS_OK;    
 }

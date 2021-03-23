@@ -120,24 +120,28 @@ void ThermalCollection::get(const server::Request &req, server::Response &res)
 
         jsontmp[constants::ThermalZoneCollection::SENSOR_NUMBER] = thermal_id;
         jsontmp[Common::STATUS][Common::HEALTH_ROLLUP] = json::Value::Type::NIL;
-        jsontmp[constants::ThermalZoneCollection::READING_CELSIUS] = (tz_.get_temperature() * 0.001);
 
-        if (tz_.get_warning_lower_temp() != -99000)
+        if (tz_.get_temperature() != ECRF_PAL_CONST_NOT_SUPPORTED)
+        jsontmp[constants::ThermalZoneCollection::READING_CELSIUS] = (tz_.get_temperature() * 0.001);
+        else
+            jsontmp[constants::ThermalZoneCollection::READING_CELSIUS] = json::Value::Type::NIL;
+
+        if (tz_.get_warning_lower_temp() != ECRF_PAL_CONST_NOT_SUPPORTED )
             jsontmp[ChassisThreshold::LOWERTHRESHOLDNONCRITICAL] = (tz_.get_warning_lower_temp() * 0.001);
         else
             jsontmp[ChassisThreshold::LOWERTHRESHOLDNONCRITICAL] = json::Value::Type::NIL;
 
-        if (tz_.get_warning_upper_temp() != -99000)
+        if (tz_.get_warning_upper_temp() != ECRF_PAL_CONST_NOT_SUPPORTED)
             jsontmp[ChassisThreshold::UPPERTHRESHOLDNONCRITICAL] = (tz_.get_warning_upper_temp() * 0.001);
         else
             jsontmp[ChassisThreshold::UPPERTHRESHOLDNONCRITICAL] = json::Value::Type::NIL;
 
-        if (tz_.get_error_temp() != -99000)
+        if (tz_.get_error_temp() != ECRF_PAL_CONST_NOT_SUPPORTED)
         jsontmp[ChassisThreshold::UPPERTHRESHOLDCRITICAL] = (tz_.get_error_temp() * 0.001);
         else
             jsontmp[ChassisThreshold::UPPERTHRESHOLDCRITICAL] = json::Value::Type::NIL;
 
-        if(tz_.get_shutdown_temp() != -99000)
+        if(tz_.get_shutdown_temp() != ECRF_PAL_CONST_NOT_SUPPORTED)
         jsontmp[ChassisThreshold::UPPERTHRESHOLDFATAL] = (tz_.get_shutdown_temp() * 0.001);
         else
             jsontmp[ChassisThreshold::UPPERTHRESHOLDFATAL] = json::Value::Type::NIL;

@@ -1866,7 +1866,7 @@ void Fan_Info::set_info(int ID, std::string Model, std::string SN, int RPM, int 
                 Entry.get_current_time();
                 Entry.set_log_entry(event, sensor_type, servrity, message, ID);
             }
-            else if (present && (RPM > 0))
+            else if (present && (RPM > 0 || RPM == ECRF_PAL_CONST_NOT_SUPPORTED)) //PSU present but doesn't provide rpm info. //
             {
                 //PSU working normal
                 m_Status_Health = "OK";
@@ -2003,7 +2003,7 @@ void Thermal_Info::set_info(int ID, double Current_Temperature, double Warning_U
             //SONiC do not support thermal Alert because driver doesn't support threshold value.//
             if(present)
             {
-                if (Current_Temperature > 0)
+                if (Current_Temperature > 0 || Current_Temperature == ECRF_PAL_CONST_NOT_SUPPORTED) //PSU exist but doesn't have thermal info.
                 {
                     m_Status_Health = "OK";
                     m_Status_State = "Enabled";

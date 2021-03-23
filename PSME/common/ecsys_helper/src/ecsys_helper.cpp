@@ -130,6 +130,18 @@ void HelperTools::exec_shell(const char *cmd, char *result_a, int time_out)
 	}
 }
 
+std::vector<std::string> HelperTools::split(const std::string& s, char delimiter)                                                                                                                          
+{                                                                                                                                                                                             
+   std::vector<std::string> splits;                                                                                                                                                           
+   std::string split;                                                                                                                                                                         
+   std::istringstream ss(s);                                                                                                                                                                  
+   while (std::getline(ss, split, delimiter))                                                                                                                                                 
+   {                                                                                                                                                                                          
+      splits.push_back(split);                                                                                                                                                                
+   }                                                                                                                                                                                          
+   return splits;                                                                                                                                                                             
+}
+
 CPU::CPU()
 {
 	std::ifstream fileStat("/proc/stat");
@@ -488,13 +500,22 @@ void DiskInfo::init()
 		ls = blkid_probe_get_partitions(m_pr);
 		m_sdx_number = blkid_partlist_numof_partitions(ls);
 
+		std::string ret;
+		char command[HT_BUFFER_LEN] = {0};
+		//Assume NOS installed in /dev/sda HD //
+		//sprintf(command, "ls %s*", m_harddisk_path.c_str());
+		sprintf(command,"%s" ,"ls /dev/sda* | sed -e 's/ //g'");
+		HelperTools::exec_shell_(command, ret, 0);
+		std::vector<std::string> vec_list = HelperTools::split(ret, '\n');
+
 		for (int i = 1; i <= m_sdx_number; i++)
 		{
 			sdx_info_t tmp_info;
 			const char *uuid;
 			const char *label;
 			const char *type;
-			std::string sdx_name = m_harddisk_path + std::to_string(i);
+			std::string sdx_name =vec_list[i]; 
+
 			blkid_probe pr = NULL;
 			pr = blkid_new_probe_from_filename(sdx_name.c_str());
 			blkid_do_probe(pr);
@@ -523,8 +544,6 @@ void DiskInfo::init()
 				if (sdx_name.find(ent->mnt_fsname) != std::string::npos)
 				{
 					tmp_info.mount_dir = ent->mnt_dir;
-					spdlog::info("{} {}", ent->mnt_fsname, ent->mnt_dir);
-					spdlog::info("name[{}] uuid[{}] label[{}] type[{}]\r\n", sdx_name.c_str(), uuid, label, type);
 					m_sdx_v_member.push_back(tmp_info);
 					break;
 				}

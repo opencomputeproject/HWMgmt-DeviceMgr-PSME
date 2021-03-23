@@ -243,7 +243,7 @@ void endpoint::Account::patch(const server::Request& request, server::Response& 
         server::Request get_request{request};
         get_request.params.set(key, n_username);
         std::cout << "change account_id to " << get_request.params[PathParam::ACCOUNT_ID] << std::endl;
-        get(get_request, response);
+        response.set_status(server::status_2XX::OK);
     
     
 }

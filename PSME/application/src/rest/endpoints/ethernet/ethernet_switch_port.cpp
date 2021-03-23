@@ -271,9 +271,9 @@ void endpoint::EthernetSwitchPort::patch(const server::Request &request, server:
             ecRF_Pal.set_port_tx_disable_status(iPort, false);
         else if (true == TxDisableState)
             ecRF_Pal.set_port_tx_disable_status(iPort, true);
-    }
 
-    get(request, response);
+        return response.set_status(server::status_2XX::NO_CONTENT);
+    }
 }
 
 void endpoint::EthernetSwitchPort::del(const server::Request &req, server::Response &res)

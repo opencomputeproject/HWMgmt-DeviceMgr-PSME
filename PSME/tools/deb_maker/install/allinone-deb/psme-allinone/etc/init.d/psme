@@ -27,7 +27,7 @@ C_CERT=/etc/psme/C_CERT
 
 force_kill() {
 	pid=`ps axu|grep $1|grep -v grep|awk '{print $2}'`
-	if [ $pid ]
+	if [ "$pid" ]
 	then
 		kill -9 $pid
 	fi
@@ -67,7 +67,7 @@ start_daemon_with_param() {
         if [ -d /proc/$RUNNING ]; then
             lname=$(readlink /proc/$RUNNING/exe)
             pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
-            if [ $pname = $1 ]; then
+            if [ "$pname" = $1 ]; then
                 echo "$2 already is running"
                 return;
             fi
@@ -84,7 +84,7 @@ start_daemon_no_pid() {
         if [ -d /proc/$RUNNING ]; then
             lname=$(readlink /proc/$RUNNING/exe)
             pname=`echo $lname|/usr/bin/awk -F '[ ;]+' '{print $1}'`
-            if [ $pname = $1 ]; then
+            if [ "$pname" = $1 ]; then
                 echo "$2 already is running"
                 return;
             fi
@@ -98,7 +98,7 @@ stop_daemon() {
     if [ -s /var/run/$2.pid ]; then
         RUNNING=$(cat /var/run/$2.pid)
         if [ -d /proc/$RUNNING ]; then
-            if [ $(readlink /proc/$RUNNING/exe) = $1 ]; then
+            if [ "$(readlink /proc/$RUNNING/exe)" = $1 ]; then
                 start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$2.pid --exec $1 
                 if [ -f /var/run/$2.pid ]
                 then
@@ -153,8 +153,10 @@ get_status(){
 }
 
 do_start() {
-    PlatformPath="/etc/onl/platform"
-    if [ ! -f "${PlatformPath}" ];then
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+    os_type=`psme.sh get nos_type`
+    if [ "$os_type" != "onl" ];then
+        if [ "$os_type" == "sonic" ];then
         #SONiC platform need wait sonic-cfggen can get HW_type
         count=120
         while [ $count != "0" ];do
@@ -170,6 +172,7 @@ do_start() {
                 break;
             fi
        done
+    fi
     fi
 
     if [ ! -f /etc/psme/platform_info.conf ];then

@@ -60,6 +60,7 @@ class HelperTools
 public:
     static void exec_shell(const char *cmd, char *result_a, int time_out);
     static void exec_shell_(std::string cmd, std::string &result_a, int time_out);
+    static std::vector<std::string> split(const std::string& s, char delimiter); 
 };
 
 /*
@@ -329,10 +330,10 @@ public:
     DiskInfo();
     ~DiskInfo();
     void init();
-//    DiskInfo(const DiskInfo &) = default;
-//    DiskInfo &operator=(const DiskInfo &) = default;
-//    DiskInfo(DiskInfo &&) = default;
-//    DiskInfo &operator=(DiskInfo &&) = default;
+    DiskInfo(const DiskInfo &) = default;
+    DiskInfo &operator=(const DiskInfo &) = default;
+    DiskInfo(DiskInfo &&) = default;
+    DiskInfo &operator=(DiskInfo &&) = default;
     bool m_init_ok = false;
     void get_all_mounted_free_space_bytes();
     double get_sdx_used_percentage();

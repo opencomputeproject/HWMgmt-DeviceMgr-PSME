@@ -34,6 +34,7 @@
 using namespace psme::rest::utils;
 
 const std::string  EcCommonUtils::m_onie_boot_dir = "/mnt/onie-boot/";
+const std::string  EcCommonUtils::m_onl_image_dir = "/mnt/onl/images/";
 
 std::string format_(const std::string fmt_str, ...);
 std::string format_(const std::string fmt_str, ...)
@@ -64,6 +65,32 @@ void EcCommonUtils::umount_onie_boot_part()
 	exec_shell_(command, resultA, 0);
 }
 
+void EcCommonUtils::mount_onl_image_part()
+{
+	char command[BUFFER_LEN] = {0};
+	std::string resultA;
+	sprintf(command, "[ -d %s ] || mkdir %s;mount LABEL=ONL-IMAGES %s > /dev/null 2>&1", m_onl_image_dir.c_str(), m_onl_image_dir.c_str(), m_onl_image_dir.c_str());
+	exec_shell_(command, resultA, 0);
+}
+
+void EcCommonUtils::umount_onl_image_part()
+{
+	char command[BUFFER_LEN] = {0};
+	std::string resultA;
+	sprintf(command, "umount %s > /dev/null 2>&1", m_onl_image_dir.c_str());
+	exec_shell_(command, resultA, 0);
+}
+
+void EcCommonUtils::rm_onl_image()
+{
+	char command[BUFFER_LEN] = {0};
+	std::string resultA;
+	mount_onl_image_part();
+	sprintf(command, "rm %sonie-installer > /dev/null 2>&1", m_onl_image_dir.c_str());
+	exec_shell_(command, resultA, 0);
+	umount_onl_image_part();
+}
+
 bool EcCommonUtils::Support_EFI()
 {
 	char command[BUFFER_LEN] = {0};
@@ -71,7 +98,7 @@ bool EcCommonUtils::Support_EFI()
 	sprintf(command,"%s", "efibootmgr -v  2>&1"); //add 2>&1 can redir to result//
 	exec_shell_(command, resultA, 0);
 
-	if (resultA.find("not supported") == std::string::npos)
+	if ((resultA.find("not supported") == std::string::npos) && (resultA.find("No such file")== std::string::npos))
 	{
 		return true;
 	}
@@ -281,6 +308,26 @@ std::string EcCommonUtils::GetONIEBootMode()
 	return ret;
 }
 
+std::string EcCommonUtils::GetSONiCCurrentBootImageName()
+{
+	std::string ret;
+	char command[BUFFER_LEN] = {0};
+	sprintf(command,"%s","cat /proc/cmdline | grep loop  | grep -o -P '(?<=loop=).*(?=/fs.squashfs)' | sed -e s/image-// | tr -d '\n'");
+	exec_shell_(command,ret,0);
+	return ret;
+}
+
+std::vector<std::string> EcCommonUtils::GetSONiCInstalledListImageName()
+{
+	std::string ret;
+	char command[BUFFER_LEN] = {0};
+	//sprintf(command,"%s","ls /host/ | grep image | sed -e s/image-//");
+	sprintf(command,"%s","cat /host/grub/grub.cfg|grep \"menuentry '\"|sed -e \"s/menuentry '//\"|sed -e \"s/' {//\"");
+	exec_shell_(command,ret,0);
+	std::vector<std::string> vec_list;
+	return split(ret, '\n');
+}
+
 bool EcCommonUtils::SetONIEBootModeToONIE(std::string mode)
 {
 	mount_onie_boot_part();
@@ -290,6 +337,46 @@ bool EcCommonUtils::SetONIEBootModeToONIE(std::string mode)
 	exec_shell_(command, ret, 0);
 	umount_onie_boot_part();
 	if (ret.find("ERROR"))
+		return false;
+	else
+		return true;
+}
+
+bool EcCommonUtils::UninstallSONiCNos(std::string full_image_name)
+{
+	char command[BUFFER_LEN] = {0};
+	sprintf(command, "echo y | sudo sonic_installer remove %s", full_image_name.c_str());
+	std::string ret;
+	exec_shell_(command, ret, 1);
+
+	if (ret.find("Done") != std::string::npos)
+		return true;
+	else
+		return false;
+}
+
+
+bool EcCommonUtils::SetSONiCDefault(std::string name)
+{
+	char command[BUFFER_LEN] = {0};
+	sprintf(command, "sudo sonic_installer set_default %s", name.c_str());
+	std::string ret;
+	exec_shell_(command, ret, 1);
+
+	if (ret.find("Error") != std::string::npos)
+		return false;
+	else
+		return true;
+}
+
+bool EcCommonUtils::SetSONiCBootOnce(std::string full_name)
+{
+	char command[BUFFER_LEN] = {0};
+	sprintf(command, "sudo sonic_installer set_next_boot %s", full_name.c_str());
+	std::string ret;
+	exec_shell_(command, ret, 1);
+
+	if (ret.find("Error") != std::string::npos)
 		return false;
 	else
 		return true;

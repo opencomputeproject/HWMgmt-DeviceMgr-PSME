@@ -575,7 +575,7 @@ protected:
 
     void set_psu_present(int ID, bool status)
     {
-        // bitwise mapping : 0x1 means port 1 , 0x2 means port2, 0x3 meane port 1 port2 //
+        // bitwise mapping : 0x1 means port 1 , 0x2 means port2, 0x3 means port 1 port2 //
         if (ID - 1 >= 0)
         {
             if (status)

@@ -74,12 +74,6 @@ get_max_fan_num()
     echo "${CURRENT_FAN_NUM}"
 }
 
-# Include HW_NODE_INFO
-
-if [ "$HW_type" != "arm-accton-as4610-54-r0" ];then
-    Product_name=`dmidecode -s system-product-name | grep SAU`
-fi
-
 . /etc/psme/HW_TYPE
 
 DBG=0

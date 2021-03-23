@@ -92,7 +92,9 @@ Test Thermal Sensor
     Should Be Equal As Strings  ${resp.dict['Temperatures'][${ID}]['Status']['State']}  Enabled 
 
     Log to console               ${resp.dict['Temperatures'][${ID}]['ReadingCelsius']}
-    Should Not Be Equal As Integers  ${resp.dict['Temperatures'][${ID}]['ReadingCelsius']}  0
+    Run Keyword If  ${resp.dict['Temperatures'][${ID}]['ReadingCelsius']} != None 
+     ...        Should Not Be Equal As Integers  ${resp.dict['Temperatures'][${ID}]['ReadingCelsius']}  0
+
 
 Plug In Fan 
     [Documentation]  Plug In Fan and verify status
@@ -107,7 +109,8 @@ Plug In Fan
     Should Be Equal As Strings  ${resp.dict['Fans'][${ID}]['Status']['State']}  Enabled 
 
     Log to console               ${resp.dict['Fans'][${ID}]['Reading']}
-    Should Not Be Equal As Integers  ${resp.dict['Fans'][${ID}]['Reading']}  0
+    Run Keyword If  ${resp.dict['Fans'][${ID}]['Reading']} != None 
+     ...        Should Not Be Equal As Integers  ${resp.dict['Fans'][${ID}]['Reading']}  0
 
 Plug In PSU
     [Documentation]  Plugi In PSU and verify status

@@ -6,6 +6,24 @@ if [ ! -z "${HW_type}" ];then
     HW_TYPE_R=`echo $HW_TYPE_R_T | sed -e s/_/-/g`
 
     case "${HW_TYPE_R}" in
+        "x86"[-_]"64-accton"[-_]"as5915"[-_]"18x")
+        . /etc/psme/HW_NODE_AS5915_18X        
+        ;;
+        "x86"[-_]"64-accton"[-_]"wedge100bf"[-_]"65x")
+        . /etc/psme/HW_NODE_WEDGE100BF_65X
+        ;;    
+        "x86"[-_]"64-accton"[-_]"wedge100bf"[-_]"32x")
+        . /etc/psme/HW_NODE_WEDGE100BF_32X
+        if [ "${os_type}" == "onl" ];then
+            #ONL
+            EEPROM_FILE=`ln -s -f /usr/local/bin/mod_conf/map/x86-64-accton-wedge100bf-32x_onl /usr/local/bin/mod_conf/map/x86-64-accton-wedge100bf-32x`
+        else
+            if [ "${os_type}" == "sonic" ];then
+                #SONIC
+                EEPROM_FILE=`ln -s -f /usr/local/bin/mod_conf/map/x86-64-accton-wedge100bf-32x_sonic /usr/local/bin/mod_conf/map/x86-64-accton-wedge100bf-32x`
+            fi
+        fi
+        ;;    
         "x86"[-_]"64-accton"[-_]"minipack")
         . /etc/psme/HW_NODE_MINIPACK
         ;;    

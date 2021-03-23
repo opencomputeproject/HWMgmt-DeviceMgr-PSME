@@ -321,6 +321,7 @@ endpoint::System::~System() {}
 
 void endpoint::System::get(const server::Request &req, server::Response &res)
 {
+    auto &secrf_pal = ecrf_pal_helper::Switch::get_instance();
     auto response = make_prototype();
     response[Common::ODATA_ID] = PathBuilder(req).build();
 
@@ -330,14 +331,13 @@ void endpoint::System::get(const server::Request &req, server::Response &res)
     response[constants::Common::ODATA_ID] = PathBuilder(req).build();
     response[constants::Common::ID] = req.params[PathParam::SYSTEM_ID];
     response[constants::System::SYSTEM_TYPE] = system.get_system_type();
-    response[Common::MANUFACTURER] = system.get_fru_info().get_manufacturer();
-    response[Common::MODEL] = system.get_fru_info().get_model_number();
-    response[Common::SERIAL] = system.get_fru_info().get_serial_number();
-    response[Common::PART_NUMBER] = system.get_fru_info().get_part_number();
+    response[Common::MANUFACTURER] = secrf_pal.get_manufacturer().c_str(); 
+    response[Common::MODEL] = secrf_pal.get_platform_name().c_str();       
+    response[Common::SERIAL] = secrf_pal.get_serial_number().c_str();      
+    response[Common::PART_NUMBER] = secrf_pal.get_part_number().c_str();   
 	response[constants::Common::UUID] = ServiceUuid::get_instance()->get_service_uuid();
     endpoint::status_to_json(system, response);
-    response[Common::STATUS][Common::HEALTH_ROLLUP] =
-        endpoint::HealthRollup<agent_framework::model::System>().get(system.get_uuid());
+    response[Common::STATUS][Common::HEALTH_ROLLUP] = endpoint::HealthRollup<agent_framework::model::System>().get(system.get_uuid());
     response[constants::System::POWER_STATE] = system.get_power_state().to_string();
 
     char command[HT_BUFFER_LEN] = {0};

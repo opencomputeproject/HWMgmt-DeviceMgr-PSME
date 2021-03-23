@@ -36,10 +36,14 @@ class EcCommonUtils
 {
 public:
     static const std::string  m_onie_boot_dir;
+    static const std::string  m_onl_image_dir;
     static void exec_shell(const char *cmd, char *result_a, int time_out);
     static void exec_shell_(std::string cmd, std::string &result_a, int time_out);
     static void mount_onie_boot_part();
     static void umount_onie_boot_part();
+    static void mount_onl_image_part();
+    static void umount_onl_image_part();
+    static void rm_onl_image();
     static bool Support_EFI();
     static bool Support_TFTP();
     static bool Support_WGET();
@@ -47,11 +51,17 @@ public:
     static std::string GetEfiBootOrder();
     static std::string GetEfiBootIndexByName(std::string);
     static std::string GetONIEBootMode();
+    static std::string GetSONiCCurrentBootImageName();
+    static std::vector<std::string> GetSONiCInstalledListImageName();
     static bool SetONIEBootModeToONIE(std::string mode);
     static std::vector<std::string> split(const std::string &s, char delimiter);
     static bool SetEfiBootCurrent(std::string order_string);
     static bool SetEfiBootNext(std::string order_string);
     static bool DelEfiBootNext();
+    static bool SetSONiCDefault(std::string full_image_name);
+    static bool SetSONiCBootOnce(std::string full_name);
+    static bool UninstallSONiCNos(std::string full_image_name);
+ 
     ~EcCommonUtils(){};
 };
 

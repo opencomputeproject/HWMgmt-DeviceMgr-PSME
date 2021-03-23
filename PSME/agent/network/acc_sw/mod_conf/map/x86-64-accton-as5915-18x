@@ -1,0 +1,16 @@
+{
+  "1":"/sys/bus/i2c/devices/10-0050/eeprom",
+  "2":"/sys/bus/i2c/devices/11-0050/eeprom",
+  "3":"/sys/bus/i2c/devices/12-0050/eeprom",
+  "4":"/sys/bus/i2c/devices/13-0050/eeprom",
+  "5":"/sys/bus/i2c/devices/14-0050/eeprom",
+  "6":"/sys/bus/i2c/devices/15-0050/eeprom",  
+  "7":"/sys/bus/i2c/devices/18-0050/eeprom",
+  "8":"/sys/bus/i2c/devices/19-0050/eeprom",
+  "9":"/sys/bus/i2c/devices/20-0050/eeprom", 
+  "10":"/sys/bus/i2c/devices/21-0050/eeprom",
+  "11":"/sys/bus/i2c/devices/22-0050/eeprom",
+  "12":"/sys/bus/i2c/devices/23-0050/eeprom",
+  "13":"/sys/bus/i2c/devices/24-0050/eeprom",
+  "14":"/sys/bus/i2c/devices/25-0050/eeprom" 
+}

@@ -51,6 +51,7 @@ typedef enum ecrf_pal_const_num_e
     ECRF_PAL_CONST_64 = 64,
     ECRF_PAL_CONST_128 = 128,
     ECRF_PAL_CONST_256 = 256,
+    ECRF_PAL_CONST_NOT_SUPPORTED = -99000
 } ecrf_pal_const_num_t;
 
 typedef struct rfpal_thresholds

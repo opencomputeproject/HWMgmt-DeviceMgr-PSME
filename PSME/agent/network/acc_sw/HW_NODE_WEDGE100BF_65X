@@ -20,36 +20,30 @@
 ###########################################################################################################
 # Support Platform type
 ###########################################################################################################
-fans_type=("S" "S" "S" "S" "S" "S" "S" "S" "P" "P" "P" "P")
-thermals_type=("C" "S" "S" "S" "S" "S" "S" "S" "S" "P" "P" "P" "P")
-psus_type=("S" "S" "S" "S")
+fans_type=("S" "S" "S" "S" "S" "S" "S" "S" "S" "S" "P" "P")
+thermals_type=("C" "S" "S" "S" "S" "S" "S" "S" "P" "P")
+psus_type=("S" "S")
 mapping=("QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
 "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
 "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
 "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
 "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
 "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP")
+"QSFP" "QSFP" "QSFP" "QSFP" "QSFP")
 
 ###########################################################################################################
 # cpu core temp path
 ###########################################################################################################
-cpu_core_prefix=("/sys/devices/platform/coretemp.0/hwmon/hwmon1")
+cpu_core_prefix=("/sys/devices/platform/coretemp.0/hwmon/hwmon0")
 
 ###########################################################################################################
 # i2c bus path
 ###########################################################################################################
-i2c_prefix=("/sys/devices/platform")
-i2c_bus_fan=("minipack_psensor")
-i2c_bus_thermal=("minipack_psensor" "minipack_psensor" "minipack_psensor" "minipack_psensor" "minipack_psensor" "minipack_psensor" "minipack_psensor" "minipack_psensor")
-i2c_bus_psu_basic=("minipack_psensor" "minipack_psensor" "minipack_psensor" "minipack_psensor")
-i2c_bus_psu_ym2651=("minipack_psensor" "minipack_psensor" "minipack_psensor" "minipack_psensor")
+i2c_prefix=("")
+i2c_bus_fan=("")
+i2c_bus_thermal=("" "" "" "" "" "" "")
+i2c_bus_psu_basic=("" "")
+i2c_bus_psu_ym2651=("" "")
 i2c_bus_port=("")
 i2c_bus_port_map=("")
 
@@ -59,18 +53,17 @@ i2c_bus_port_map=("")
 i2c_nodes_fan_name=("")
 i2c_nodes_fan_serial=("")
 i2c_nodes_fan_present=("")
-i2c_nodes_fan_front_speed=("input")
-#fanX_input (X = 1, 3 , 5, 7)
-i2c_nodes_fan_rear_speed=("input")
-#fanX_input (X = 2, 4, 6, 8)
+i2c_nodes_fan_front_speed=("CMD_OUTPUT:show environment | grep 'Fan X front' | awk -F ':' '{print \$2}' | awk -F 'RPM' '{print \$1}' | sed s/[[:space:]]//g")
+i2c_nodes_fan_rear_speed=("CMD_OUTPUT:show environment | grep 'Fan X rear' | awk -F ':' '{print \$2}' | awk -F 'RPM' '{print \$1}' | sed s/[[:space:]]//g")
 i2c_nodes_fan_front_percentage=("")
 i2c_nodes_fan_rear_percentage=("")
 
 ###########################################################################################################
 # Thermal sysfs node
 ###########################################################################################################
-i2c_nodes_thermal_temp=("tempX_input")
-#tempX_input (X = 1, 2, 3, 4, 5, 6, 7, 8)
+i2c_nodes_thermal_temp=("CMD_OUTPUT:show environment | grep 'THERMAL_PARSE_KEYWORD' | awk -F ':' '{print \$2}' | awk -F 'C' '{print \$1}' | sed s/[[:space:]]//g | sed 's/+//g'")
+THERMAL_PARSE_KEYWORD=("Outlet Middle Temp" "Inlet Middle Temp" "Inlet Left Temp" "Switch Temp" "Inlet Right Temp" "Outlet Right Temp" "Outlet Left Temp")
+
 ###########################################################################################################
 # CPU core temp node
 ###########################################################################################################
@@ -88,31 +81,26 @@ i2c_nodes_psu_basic_serial=("")
 ###########################################################################################################
 # PSU ym2651 sysfs node
 ###########################################################################################################
-i2c_nodes_psu_v_out=("inX_input")
-#inX_input (X=2, 4, 6, 8)
-i2c_nodes_psu_i_out=("currX_input")
-#currX_input (X=2, 4, 6, 8)
-i2c_nodes_psu_p_out=("powerX_input")
-#powerX_input (X=2, 4, 6, 8)
+i2c_nodes_psu_v_out=("CMD_OUTPUT:show environment | grep 'vout1'| sed -n 'X_PLUS,X_PLUSp'| awk -F ':' '{print \$2}' | awk -F 'V' '{print \$1}' |  sed s/[[:space:]]//g | sed 's/+//g'")
+i2c_nodes_psu_i_out=("CMD_OUTPUT:show environment | grep 'iout1'| sed -n 'X_PLUS,X_PLUSp'| awk -F ':' '{print \$2}' | awk -F 'A' '{print \$1}' |  sed s/[[:space:]]//g | sed 's/+//g'")
+i2c_nodes_psu_p_out=("CMD_OUTPUT:show environment | grep 'pout1'| sed -n 'X,Xp'| awk -F ':' '{print \$2}' | awk -F 'W' '{print \$1}' |  sed s/[[:space:]]//g")
 i2c_nodes_psu_type=("")
 i2c_nodes_psu_fan_name=("")
 i2c_nodes_psu_fan_serial=("")
 i2c_nodes_psu_fan_dir=("")
-i2c_nodes_psu_temp=("NOT_SUPPORT")
-i2c_nodes_psu_fan_speed=("NOT_SUPPORT")
+i2c_nodes_psu_temp=("CMD_OUTPUT:show environment | grep 'temp1'| sed -n 'X,Xp'| awk -F ':' '{print \$2}' | awk -F 'C' '{print \$1}' |  sed s/[[:space:]]//g | sed 's/+//g'")
+i2c_nodes_psu_fan_speed=("CMD_OUTPUT:show environment | grep 'fan1'| sed -n 'X,Xp'| awk -F ':' '{print \$2}' | awk -F 'RPM' '{print \$1}' |  sed s/[[:space:]]//g")
 i2c_nodes_psu_fan_percentage=("")
-i2c_nodes_psu_v_in=("inX_input")
-#inX_input (X=1, 3, 5, 7)
-i2c_nodes_psu_i_in=("currX_input")
-#currX_input (X=1, 3, 5, 7)
-i2c_nodes_psu_p_in=("powerX_input")
-#powerX_input (X=1, 3, 5, 7)
+i2c_nodes_psu_v_in=("CMD_OUTPUT:show environment | grep 'vin'| sed -n 'X,Xp'| awk -F ':' '{print \$2}' | awk -F 'V' '{print \$1}' |  sed s/[[:space:]]//g | sed 's/+//g'")
+i2c_nodes_psu_i_in=("CMD_OUTPUT:show environment | grep 'iin'| sed -n 'X,Xp'| awk -F ':' '{print \$2}' | awk -F 'A' '{print \$1}' |  sed s/[[:space:]]//g | sed 's/+//g'")
+i2c_nodes_psu_p_in=("CMD_OUTPUT:show environment | grep 'pin'| sed -n 'X,Xp'| awk -F ':' '{print \$2}' | awk -F 'W' '{print \$1}' |  sed s/[[:space:]]//g")
 ###########################################################################################################
 # SFP(QSFP) sysfs node
 ###########################################################################################################
 i2c_nodes_port_present_all=("")
-i2c_nodes_port_present=("CMD_OUTPUT:show interface transceiver presence EthernetX | grep 'Present'")
-#(X=1, 2, 3, ...128) 
+i2c_nodes_port_present=("CMD_OUTPUT:show interface transceiver presence EthernetPORT_INDEX | grep 'Present'")
+PORT_INDEX_MAP=("0" "4" "8" "12" "16" "20" "24" "28" "32" "36" "40" "44" "48" "52" "56" "60" "64" "68" "72" "76" "80" "84" "88" "92" "96" "100" "104" "108" "112" "116" "120" "124" "128" "132" "136" "140" "144" "148" "152" "156" "160" "164" "168" "172" "176" "180" "184" "188" "192" "196" "200" "204" "208" "212" "216" "220" "224" "228" "232" "236" "240" "2244" "248" "252" "256")
 i2c_nodes_port_tx_disable=("")
-i2c_nodes_port_lp_mode=("CMD_OUTPUT:sudo show interface transceiver lpmode EthernetX | grep 'On'")
-#(X=1, 2, 3, ...128)
+i2c_nodes_port_lp_mode=("CMD_OUTPUT:sudo show interface transceiver lpmode EthernetPORT_INDEX | grep 'On'")
+GEN_EEPROM_FILE=("CMD_OUTPUT:sfputil show eeprom --raw -p EthernetPORT_INDEX | sed '1d' | sed 's/[[:space:]]//g'| sed ':a;N;$!ba;s/\\\n//g' | xxd -r -p > /etc/psme/port_eeprom/X/eeprom")
+#sfputil show eeprom --raw -p ${input_str1} | sed '1d' | sed 's/[[:space:]]//g'| sed ':a;N;$!ba;s/\\\n//g' | xxd -r -p  > eeprom_raw.bin

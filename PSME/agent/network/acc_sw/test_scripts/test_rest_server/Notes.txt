@@ -1,0 +1,17 @@
+ssh to test server. 
+
+cp port.sh thermal.sh to test server
+
+Modify port.sh and thermal.sh  srv_ip=*172.17.8.6:*8888 of your DUT's IP address.
+
+./port.sh
+
+This will start to query redfish/v1/EthernetSwitches/1/Ports/
+
+From port 1 to 74    100 times
+
+ssh to test server again 
+
+./thermal.sh 1000
+
+This will start to query /redfish/v1/Chassis/1/Thermal    1000 times
