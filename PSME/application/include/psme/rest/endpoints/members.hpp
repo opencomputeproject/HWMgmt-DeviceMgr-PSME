@@ -36,26 +36,23 @@ namespace endpoint {
 
 
 /*!
- * A class representing the rest api SessionCollection endpoint
+ * A class representing the rest api Members endpoint
  */
-class SessionCollection : public EndpointBase {
+class Members : public EndpointBase {
 public:
 
     /*!
-     * @brief The constructor for SessionCollection class
+     * @brief The constructor for Members class
      */
-    explicit SessionCollection(const std::string& path);
+    explicit Members(const std::string& path);
 
 
     /*!
-     * @brief SessionCollection class destructor
+     * @brief Members class destructor
      */
-    virtual ~SessionCollection();
+    virtual ~Members();
 
-    void get(const server::Request& request, server::Response& response) override;
     void post(const server::Request& request, server::Response& response) override;
-    void del(const server::Request& request, server::Response& response) override;	
-    void patch(const server::Request& request, server::Response& response) override;
 };
 
 

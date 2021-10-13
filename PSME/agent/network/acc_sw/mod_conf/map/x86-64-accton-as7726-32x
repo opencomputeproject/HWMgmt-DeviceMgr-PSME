@@ -30,7 +30,7 @@
   "29": "/sys/bus/i2c/devices/41-0050/eeprom",
   "30": "/sys/bus/i2c/devices/42-0050/eeprom",
   "31": "/sys/bus/i2c/devices/43-0050/eeprom",
-  "32": "/sys/bus/i2c/devices/44-0050/eeprom"
+  "32": "/sys/bus/i2c/devices/44-0050/eeprom",
   "33": "/sys/bus/i2c/devices/15-0050/eeprom",
   "34": "/sys/bus/i2c/devices/16-0050/eeprom"  
 }

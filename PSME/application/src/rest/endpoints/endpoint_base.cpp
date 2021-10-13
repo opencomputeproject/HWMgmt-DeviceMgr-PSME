@@ -70,6 +70,7 @@ void psme::rest::server::http_method_not_allowed(const Request&, Response& respo
     auto message = "Requested operation is not allowed on this resource.";
     auto error = error::ErrorFactory::create_method_not_allowed_error(message);
 
+    response.set_header("Allow", "GET");
     response.set_status(error.get_http_status_code());
     response.set_body(error.as_string());
 }
@@ -81,6 +82,7 @@ void psme::rest::server::http_method_not_authorized(const Request&, Response& re
 
     response.set_status(error.get_http_status_code());
     response.set_body(error.as_string());
+    response.set_header("WWW-Authenticate", "Basic realm=<realm>[, charset=\"UTF-8\"]");  
 }
 
 
@@ -164,6 +166,10 @@ void EndpointBase::get(const Request& request, Response& response) {
     http_method_not_allowed(request, response);
 }
 
+void EndpointBase::head(const Request& request, Response& response) {
+    http_method_not_allowed(request, response);
+}
+
 void EndpointBase::del(const Request& request, Response& response) {
     http_method_not_allowed(request, response);
 }
@@ -177,5 +183,8 @@ void EndpointBase::patch(const Request& request, Response& response) {
 }
 
 void EndpointBase::put(const Request& request, Response& response) {
+    http_method_not_allowed(request, response);
+}
+void EndpointBase::trace(const Request& request, Response& response) {
     http_method_not_allowed(request, response);
 }

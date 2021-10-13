@@ -127,6 +127,13 @@ public:
     virtual void get(const Request& request, Response& response) = 0;
 
     /*!
+     * @brief HEAD HTTP method handler
+     * @param[in] request HTTP request object
+     * @param[out] response HTTP response object
+     */
+    virtual void head(const Request& request, Response& response) = 0;
+
+    /*!
      * @brief DELETE HTTP method handler
      * @param[in] request HTTP request object
      * @param[out] response HTTP response object
@@ -153,6 +160,13 @@ public:
      * @param[out] response HTTP response object
      */
     virtual void put(const Request& request, Response& response) = 0;
+    /*!
+     * @brief TRACE HTTP method handler
+     * @param[in] request HTTP request object
+     * @param[out] response HTTP response object
+     */
+    virtual void trace(const Request& request, Response& response) = 0;
+
 };
 
 }

@@ -25,6 +25,9 @@
 #include "psme/rest/account/config/account_config.hpp"
 #include "psme/rest/validators/schemas/account.hpp"
 #include "psme/rest/validators/json_validator.hpp"
+#include "psme/rest/session/manager/session_manager.hpp"
+#include "psme/rest/utils/time_utils.hpp"
+#include <sys/time.h>
 
 
 #include "psme/rest/constants/constants.hpp"
@@ -43,6 +46,7 @@ using namespace psme::rest::account::config;
 
 using namespace psme::rest::endpoint::utils;
 using namespace psme::rest::validators;
+using namespace psme::rest::utils;
 
 
 
@@ -68,8 +72,14 @@ json::Value make_prototype() {
 }
 
 void to_json(const Account& account, json::Value& json) {
-    json[Common::NAME] = account.get_name();
+    json[Common::NAME] = "User Account";
+
+    if (account.get_enabled() == false)
+        json[AccountConst::USERNAME] = "";
+    else
     json[AccountConst::USERNAME] = account.get_username();
+
+    json[Common::DESCRIPTION] = "User Account"; 
     //json[AccountConst::PASSWORD] = account.get_password();
     json[AccountConst::LOCKED] = account.get_locked();
     json[AccountConst::ROLEID] = account.get_roleid();
@@ -84,6 +94,7 @@ endpoint::Account::~Account() {}
 
 void endpoint::Account::get(const server::Request &request, server::Response &response)
 {
+    std::chrono::steady_clock::time_point m_timestamp{std::chrono::steady_clock::now()};
     auto r = make_prototype();
     r[Common::ODATA_ID] = request.get_url();
     r[Common::ID] = request.params[PathParam::ACCOUNT_ID];
@@ -95,15 +106,16 @@ void endpoint::Account::get(const server::Request &request, server::Response &re
 #endif    
     const auto& role = AccountManager::get_instance()->getRole(account.get_roleid());
     to_json(account, r);
-        
     json::Value link;
     link[Common::ODATA_ID] = endpoint::PathBuilder(PathParam::BASE_URL)
                     .append(constants::Root::ACCOUNT_SERVICE)
                     .append(constants::AccountService::ROLES)
-                                 .append(role.get_id())
+                                 .append(account.get_roleid())
                                  .build();
     r[Common::LINKS][AccountConst::ROLE] = std::move(link);    
    
+    std::string time_s = "W/\"" + TimeUtils::get_time_with_zone(m_timestamp) + '\"';     
+    response.set_header("ETag", time_s);
     set_response(response, r);
 }
 

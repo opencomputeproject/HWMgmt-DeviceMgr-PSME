@@ -37,7 +37,7 @@ namespace manager{
 using namespace psme::rest::session;
 using namespace psme::rest::session::model;
 
-using SessionMap = std::map<std::string, Session>;  //username, Session
+using SessionMap = std::map<std::string, Session>;  //Authen_Token, Session
 /*!
  * SubscriptionManager implementation
  */
@@ -126,13 +126,21 @@ public:
      *
      * @param session Session
      */
-    uint64_t addSession(Session session, bool isupdate);
+    std::string addSession(Session session, bool isupdate);
 
     /*! Mod session
      *
      * @param session Session
      */
     uint64_t modSession(Session session);
+
+    /*!
+     * @brief Get session by session string id
+     *
+     * @param session_id Session string id
+     * @return Session
+     */
+    Session getSessionByStringId(std::string session_string_id);
 
     /*!
      * @brief Get session by session id
@@ -163,21 +171,14 @@ public:
      *
      * @return Session collection
      */
-    SessionMap getSession();
+    SessionMap getSessionMap();
 
     /*!
-     * @brief Removes subscription by subscription id
+     * @brief Removes session by string id 
      *
-     * @param subscription_id Subscription id
+     * @param string id 
      */
-    void delSession(uint64_t session_id);
-    
-    /*!
-     * @brief Removes session by username
-     *
-     * @param username
-     */
-    void delSession(const std::string& session_username);
+    void delSession_by_string_id(std::string string_id);
 
     /*!
      * @brief Get number of subscriptions
@@ -214,15 +215,17 @@ public:
 
     bool chkExceptionUri(const std::string& uri);
 
-    bool checkSession_by_name(const std::string& session_username);
+    bool checkSessionExist_by_name(const std::string& session_username);
+
+    std::string getAuthenToken_by_name(const std::string& session_username);
 
 private:
 
-
     Session getSession_by_name(const std::string& session_username);
 
-
     void delSession_by_name(const std::string& session_username);
+
+    void delSession_by_token(const std::string& session_token);
 
     uint64_t m_MaxSessions{20};
 

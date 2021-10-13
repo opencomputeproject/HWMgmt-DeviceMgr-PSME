@@ -1,0 +1,42 @@
+#!/bin/bash
+
+function killservice()
+{   
+    pgrep -x $1 > /dev/null 
+    if [ $? -eq 0 ]
+    then
+        killall -9 -q $1 & > /dev/null
+    fi
+}
+
+function get_cur_nos()
+{   
+    Cur_OS_Ver=`cat /etc/debian_version`
+    echo "${Cur_OS_Ver%%.*}"
+}
+
+
+
+
+
+
+
+
+
+
+function get_nos() 
+{   
+    echo 10 
+}
+
+
+if [ $(get_nos) == $(get_cur_nos) ];then
+    killall psme-rest-server > /dev/null
+    killall psme-chassis > /dev/null
+    killservice psme-rest-server;
+    killservice psme-chassis;
+else
+    echo "###########  Your PSME is for Debian $(get_nos) version. But your working Linux is Debian $(get_cur_nos) version!! ###############"
+    exit -1
+fi
+

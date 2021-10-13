@@ -49,8 +49,6 @@ Delete Redfish Session Using Valid login
     Redfish.Login
     ${session_info}=  Get Redfish Session Info
 
-    Redfish.Login
-
     # Example o/p:
     # [{'@odata.id': '/redfish/v1/SessionService/Sessions/bOol3WlCI8'},
     #  {'@odata.id': '/redfish/v1/SessionService/Sessions/Yu3xFqjZr1'}]

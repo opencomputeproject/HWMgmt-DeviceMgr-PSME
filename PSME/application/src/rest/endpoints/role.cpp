@@ -85,8 +85,7 @@ void endpoint::Role::get(const server::Request& request, server::Response& respo
     auto r = make_prototype();
     r[Common::ODATA_ID] = request.get_url();
     r[Common::ID] = request.params[PathParam::ROLE_ID];
-    const auto& id = id_to_uint64(request.params[PathParam::ROLE_ID]);
-    const auto& role = AccountManager::get_instance()->getRole(id);
+    const auto& role = AccountManager::get_instance()->getRole(request.params[PathParam::ROLE_ID]);
     to_json(role, r);
     set_response(response, r);
 }
@@ -97,10 +96,8 @@ void endpoint::Role::del(const server::Request& request, server::Response& respo
     response.set_status(server::status_2XX::NO_CONTENT);
 }
 
-
-
-void endpoint::Role::patch(const server::Request& request, server::Response& response) {
-	
+void endpoint::Role::patch(const server::Request &request, server::Response &response)
+{
 #if 0        
     using namespace psme::rest::account::model;
     const auto& id = id_to_uint64(request.params[PathParam::ROLE_ID]);
@@ -124,7 +121,7 @@ void endpoint::Role::patch(const server::Request& request, server::Response& res
     AccountManager::get_instance()->modAccount(old_username,account); 
     AccountConfig::get_instance()->saveAccounts();
 #endif
-    get(request, response);
-    
-    
+    (void) (request);
+    response.set_status(server::status_4XX::METHOD_NOT_ALLOWED);
+    return;
 }

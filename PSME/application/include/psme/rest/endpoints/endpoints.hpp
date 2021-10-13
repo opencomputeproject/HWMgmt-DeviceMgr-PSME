@@ -66,6 +66,7 @@
 #include "monitor.hpp"
 #include "network_protocol.hpp"
 #include "odata_service_document.hpp"
+#include "rpvfoobar.hpp"
 
 #include "system/system.hpp"
 #include "system/systems_collection.hpp"
@@ -127,6 +128,7 @@
 #include "chassis/chassis_reset.hpp"
 #include "session_service.hpp"
 #include "sessions.hpp"
+#include "members.hpp"
 #include "chassis/power_zone.hpp"
 #include "chassis/power_zones_collection.hpp"
 #include "chassis/drive.hpp"

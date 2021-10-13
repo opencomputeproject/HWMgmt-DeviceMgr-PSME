@@ -12,23 +12,24 @@ ${Pwd}  redfish
 
 ${RO_UserName}  readonly 
 ${RO_Pwd}  readonly 
-${RO_ROLE}  ReadOnlyUser 
+${RO_ROLE}  ReadOnly
 
 ${TEST_RO_UserName}  testreadonly 
 ${TEST_RO_Pwd}  testreadonly 
 ${TEST1_RO_UserName}  test1readonlypwd 
 ${TEST1_RO_Pwd}  test1readonlypwd 
-${RO_ROLE}  ReadOnlyUser 
+${RO_ROLE}  ReadOnly 
+${PATCH_NEW_NAME}  NEWUSERNAME 
 
 ${OP_UserName}  Operator 
 ${OP_Pwd}  Operator 
 ${OP_ROLE}  Operator 
 
-${TEST_USER_BODY}  {"UserName":"U1","Password":"P1","RoleId":"ReadOnlyUser", "Enabled":true , "Locked":false}
-${TEST1_USER_BODY}  {"UserName":"U2","Password":"P2","RoleId":"ReadOnlyUser", "Enabled":true , "Locked":false}
-${PATCH_PWD_BODY}  { "UserName": "readonly", "Password": "readonlyU2", "Locked": false, "Enabled": true, "RoleId": "ReadOnlyUser" } 
+${TEST_USER_BODY}  {"UserName":"U1","Password":"P1","RoleId":"ReadOnly", "Enabled":true , "Locked":false}
+${TEST1_USER_BODY}  {"UserName":"U2","Password":"P2","RoleId":"ReadOnly", "Enabled":true , "Locked":false}
+${PATCH_PWD_BODY}  { "UserName": "readonly", "Password": "readonlyU2", "Locked": false, "Enabled": true, "RoleId": "ReadOnly" } 
 ${OP_PATCH_PWD_BODY}  { "UserName": "Operator", "Password": "OperatorU2", "Locked": false, "Enabled": true, "RoleId": "Operator" } 
-${PATCH_TEST_PWD_BODY}  { "UserName": "testreadonly", "Password": "testreadonlyU2", "Locked": false, "Enabled": true, "RoleId": "ReadOnlyUser" } 
+${PATCH_TEST_PWD_BODY}  { "UserName": "testreadonly", "Password": "testreadonlyU2", "Locked": false, "Enabled": true, "RoleId": "ReadOnly" } 
 
 ** Test Cases **
 
@@ -48,8 +49,8 @@ Verify AccountService_session_timeout
 
     ${payload}=  Create Dictionary
     ...  ServiceEnabled=${True}  SessionTimeout=${6}
-    Redfish.Post  /redfish/v1/SessionService/  body=&{payload}
-    ...  valid_status_codes=[${HTTP_OK}]
+    ${resp}=  Redfish.Post  /redfish/v1/SessionService/  body=&{payload}
+    Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
 
     Sleep  10s
 
@@ -59,27 +60,28 @@ Verify AccountService_session_timeout
     Redfish.Login  
     ${payload}=  Create Dictionary
     ...  ServiceEnabled=${True}  SessionTimeout=${60}
-    Redfish.Post  /redfish/v1/SessionService/  body=&{payload}
-    ...  valid_status_codes=[${HTTP_OK}]
+    ${resp}=  Redfish.Post  /redfish/v1/SessionService/  body=&{payload}
+    Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
+    Redfish.Logout  
 
 Redfish Create and Verify Users
-    [Documentation]  Create Redfish users with various roles.
-    [Tags]  Redfish_Create_and_Verify_Users
-    [Template]  Redfish Create And Verify User
+    [Documentation]  Create Redfish enabled users with various roles.
+    [Tags]  Redfish_Create_and_Verify_Enabled_Users
+    [Template]  Redfish Create And Verify Enabled User
 
     # username    # username     # password    # role_id       #locked    # enabled 
       nameadmin    admin_user     TestPwd123  Administrator    ${False}   ${True}
-      nameadmin_1  admin_user_1   TestPwd123  ReadOnlyUser     ${False}   ${True}
+      nameadmin_1  admin_user_1   TestPwd123  ReadOnly     ${False}   ${True}
       nameopt_1    operator_user_2  TestPwd123  Operator       ${False}   ${True}
 
-Verify Redfish User with Wrong Password
-    [Documentation]  Verify Redfish User with Wrong Password.
+Verify Create Redfish User with Wrong Password
+    [Documentation]  Verify Create Redfish User with Wrong Password.
     [Tags]  Verify_Redfish_User_with_Wrong_Password
-    [Template]  Verify Redfish User with Wrong Password
+    [Template]  Verify Create Redfish User with Wrong Password
 
     # username        # username     # password    # role_id         # locked    # enabled  # wrong_password
     nameadmin         admin_user_3     TestPwd123    Administrator   ${False}    ${True}    aa 
-    nameadmin_1       admin_user_4     TestPwd123    ReadOnlyUser    ${False}    ${True}    bb
+    nameadmin_1       admin_user_4     TestPwd123    ReadOnly    ${False}    ${True}    bb
     nameopt_1         operator_user_5  TestPwd123    Operator        ${False}    ${True}    cc
 
 Verify Login with Deleted Redfish Users
@@ -87,18 +89,18 @@ Verify Login with Deleted Redfish Users
     [Tags]  Verify_Login_with_Deleted_Redfish_Users
     [Template]  Verify Login with Deleted Redfish User
 
-     # username       # username     password    role_id  locked  enabled    wrong_password
-     nameadmin        admin_user_6   TestPwd123  Administrator    ${False}   ${True}  aa 
-     nameadmin_1      admin_user_7   TestPwd123  ReadOnlyUser     ${False}   ${True}  dd
-     nameopt_1        operator_user_8  TestPwd123  Operator       ${False}   ${True}  ee
+     # username       # username     password    role_id  locked  enabled
+     nameadmin        admin_user_6   TestPwd123  Administrator    ${False}   ${True}
+     nameadmin_1      admin_user_7   TestPwd123  ReadOnly     ${False}   ${True}
+     nameopt_1        operator_user_8  TestPwd123  Operator       ${False}   ${True}
 
 Verify User Creation Without Enabling it
     [Documentation]  Verify User Creation Without Enabling it.
     [Tags]  Verify_User_Creation_Without_Enabling_it
-    [Template]  Redfish Create And Verify User
+    [Template]  Redfish Create And Verify Disabled User
     # username        # username        password    role_id             locked     enabled
     nameadmin         admin_user_9      TestPwd123  Administrator       ${False}   ${False}
-    nameadmin_1       admin_user_10     TestPwd123  ReadOnlyUser        ${False}   ${False}
+    nameadmin_1       admin_user_10     TestPwd123  ReadOnly        ${False}   ${False}
     nameopt_1         operator_user_11  TestPwd123  Operator            ${False}   ${False}
 
 Verify Create and Patch parameters  
@@ -109,30 +111,8 @@ Verify Create and Patch parameters
     # username    # username     # password    # role_id       #locked    # enabled 
       nameadmin    admin_user     TestPwd123  Administrator    ${False}   ${True}
 
-Verify Redfish User Persistence After Reboot
-    [Documentation]  Verify Redfish user persistence after reboot.
-    [Tags]  Verify_Redfish_User_Persistence_After_Reboot
-    # Create Redfish users.
-
-    Redfish.Login  ${UserName}  ${Pwd} 
-    Redfish Create User  newname_1    admin_user_12     TestPwd123  Administrator       ${False}   ${True}
-    Redfish Create User  newname_2    admin_user_13     TestPwd123  ReadOnlyUser        ${False}   ${True}
-    Redfish Create User  newname_3    operator_user_14  TestPwd123  Operator            ${False}   ${True}
-
-
-    Redfish.Login  ${UserName}  ${Pwd} 
-    Redfish Verify User   newname_1   admin_user_12     TestPwd123  Administrator  ${False}  ${True}
-    Redfish Verify User   newname_2   admin_user_13     TestPwd123  ReadOnlyUser   ${False}  ${True}
-    Redfish Verify User   newname_3   operator_user_14  TestPwd123  Operator       ${False}  ${True}
-
-    # Delete created users.
-    Redfish.Delete  /redfish/v1/AccountService/Accounts/admin_user_12
-    Redfish.Delete  /redfish/v1/AccountService/Accounts/admin_user_13
-    Redfish.Delete  /redfish/v1/AccountService/Accounts/operator_user_14
-    Redfish.Logout
-
-Verify AccountService_ReadOnlyUser
-    [Documentation]  Verify Redfish ReadOnlyUser account can get major service 
+Verify AccountService_ReadOnly
+    [Documentation]  Verify Redfish ReadOnly account can get major service 
     [Tags]  Verify_AccountService_UserOnlyUser_Enable
 
     Redfish.Login  ${UserName}  ${Pwd} 
@@ -176,13 +156,13 @@ Verify AccountService_ReadOnlyUser
     ${resp}=  Redfish.Get  /redfish/v1/AccountService/Roles
     Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
 
-    ${resp}=  Redfish.Get  /redfish/v1/AccountService/Roles/1
+    ${resp}=  Redfish.Get  /redfish/v1/AccountService/Roles/Administrator
     Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
 
-    ${resp}=  Redfish.Get  /redfish/v1/AccountService/Roles/2
+    ${resp}=  Redfish.Get  /redfish/v1/AccountService/Roles/ReadOnly
     Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
 
-    ${resp}=  Redfish.Get  /redfish/v1/AccountService/Roles/3
+    ${resp}=  Redfish.Get  /redfish/v1/AccountService/Roles/Operator
     Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
 
     ${resp}=  Redfish.Get  /redfish/v1/Registries/
@@ -239,24 +219,33 @@ Verify AccountService_ReadOnlyUser
     ${resp}=  Redfish.Get  /redfish/v1/SessionService/Sessions
     Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
 
+    Redfish.Logout
     Redfish.Login  
     # Delete Specified User
     Redfish.Delete  /redfish/v1/AccountService/Accounts/${RO_UserName}
     Redfish.Logout
 
+Verify AccountService_ReadOnly_Cannot_POST_PATCH
+    [Documentation]  Verify Redfish ReadOnly account cannot use patch post action 
+    [Tags]  Verify_AccountService_ReadOnly_CANNOT_PATCH_POST
 
+    Redfish.Login  ${UserName}  ${Pwd} 
+    Redfish Create User  NewName  ${RO_UserName}  ${RO_Pwd}  ${RO_ROLE}  ${False}  ${True}
+    Redfish.Logout
+    Redfish.Login  ${RO_UserName}  ${RO_Pwd} 
 
+    ${payload}=  Create Dictionary
+    ...  ResetType=GracefulRestart 
+    ${resp}=  Redfish.Post  /redfish/v1/Systems/1/Actions/ComputerSystem.Reset  body=&{payload}
+    Should Be Equal As Strings  ${resp.status}  ${HTTP_NOT_FOUND}
+
+    Redfish.Logout
+    Redfish.Login  
+    # Delete Specified User
+    Redfish.Delete  /redfish/v1/AccountService/Accounts/${RO_UserName}
+    Redfish.Logout
 
 *** Keywords ***
-
-#Test Setup Execution
-#    [Documentation]  Do test case setup tasks.
-#    Redfish.Login
-#
-#Test Teardown Execution
-#    [Documentation]  Do the post test teardown.
-#    Redfish.Logout
-
 
 Redfish Enable SessionService 
     [Documentation]  Redfish enable sesssion service 
@@ -294,7 +283,7 @@ Redfish Create User
     ...  valid_status_codes=[${HTTP_CREATED}]
 
 
-Redfish Verify User
+Redfish Verify Enabled User
     [Documentation]  Redfish user verification.
     [Arguments]   ${name}  ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
 
@@ -312,14 +301,13 @@ Redfish Verify User
     # Doing a check of the rerurned status
     Should Be Equal  ${is_redfish}  ${enabled}
 
-    # We do not needed to login with created user (user could be in disabled status)
-     Redfish.Login
 
     # Validate Role Id of created user.
     ${role_config}=  Redfish_Utils.Get Attribute
     ...  /redfish/v1/AccountService/Accounts/${username}  RoleId
     Should Be Equal  ${role_id}  ${role_config}
 
+    Redfish.Logout 
 
 Redfish Verify User With Locked
     [Documentation]  Redfish user verification with locked.
@@ -340,7 +328,7 @@ Redfish Verify User With Locked
     Should Be Equal  ${is_redfish}  ${False}
 
 
-Redfish Create And Verify User
+Redfish Create And Verify Enabled User
     [Documentation]  Redfish create and verify user.
     [Arguments]   ${name}  ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
 
@@ -354,12 +342,52 @@ Redfish Create And Verify User
     # enabled             Indicates whether the username being created
     #                     should be enabled (${True}, ${False}).
 
+    Redfish.Login
     Redfish Create User  ${name}  ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
+    Redfish.Logout
 
-    Redfish Verify User  ${name}  ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
+    ${is_redfish}=  Run Keyword And Return Status  Redfish.Login  ${username}  ${password}
+
+    # Doing a check of the rerurned status
+    Should Be Equal  ${is_redfish}  ${enabled}
+
+    # Validate Role Id of created user.
+    ${role_config}=  Redfish_Utils.Get Attribute
+    ...  /redfish/v1/AccountService/Accounts/${username}  RoleId
+    Should Be Equal  ${role_id}  ${role_config}
+
+    Redfish.Logout
 
     # Delete Specified User
+    Redfish.Login
     Redfish.Delete  /redfish/v1/AccountService/Accounts/${username}
+    Redfish.Logout
+
+Redfish Create And Verify Disabled User
+    [Documentation]  Redfish create and verify user.
+    [Arguments]   ${name}  ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
+
+    # Description of argument(s):
+    # name                The name to be created.
+    # username            The username to be created.
+    # password            The password to be assigned.
+    # role_id             The role id of the user to be created
+    #                     (e.g. "Administrator", "Operator", etc.).
+    # locked              should be enabled (${True}, ${False}).
+    # enabled             Indicates whether the username being created
+    #                     should be enabled (${True}, ${False}).
+
+    Redfish.Login
+    Redfish Create User  ${name}  ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
+    Redfish.Logout
+
+    ${msg}=  Run Keyword And Expect Error  *
+    ...  Redfish.Login  ${username}  ${password}
+
+    # Delete Specified User
+    Redfish.Login
+    Redfish.Delete  /redfish/v1/AccountService/Accounts/${username}
+    Redfish.Logout
 
 Redfish Create And Verify User With Locked
     [Documentation]  Redfish create and verify user with locked.
@@ -382,8 +410,8 @@ Redfish Create And Verify User With Locked
     # Delete Specified User
     Redfish.Delete  /redfish/v1/AccountService/Accounts/${username}
 
-Verify Redfish User with Wrong Password
-    [Documentation]  Verify Redfish User with Wrong Password.
+Verify Create Redfish User with Wrong Password
+    [Documentation]  Verify Create Redfish User with Wrong Password.
     [Arguments]   ${name}   ${username}  ${password}  ${role_id}  ${locked}  ${enabled}  ${wrong_password}
 
     # Description of argument(s):
@@ -397,19 +425,23 @@ Verify Redfish User with Wrong Password
     #                     should be enabled (${True}, ${False}).
     # wrong_password      Any invalid password.
 
+    Redfish.Login
     Redfish Create User   ${name}   ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
+    Redfish.Logout
 
     # Attempt to login with created user with invalid password.
     ${msg}=  Run Keyword And Expect Error  *
     ...  Redfish.Login  ${username}  ${wrong_password}
 
     # Delete newly created user.
+    Redfish.Login
     Redfish.Delete  /redfish/v1/AccountService/Accounts/${username}
+    Redfish.Logout
 
 
 Verify Login with Deleted Redfish User
     [Documentation]  Verify Login with Deleted Redfish User.
-    [Arguments]   ${name}   ${username}  ${password}  ${role_id}  ${locked}  ${enabled}  ${wrong_password}
+    [Arguments]   ${name}   ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
 
     # Description of argument(s):
     # name                The name to be created.
@@ -421,16 +453,18 @@ Verify Login with Deleted Redfish User
     # enabled             Indicates whether the username being created
     #                     should be enabled (${True}, ${False}).
 
+    Redfish.Login
     Redfish Create User  ${name}  ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
 
     # Delete newly created user.
     Redfish.Delete  /redfish/v1/AccountService/Accounts/${username}
+    Redfish.Logout
 
     ${is_redfish}=  Run Keyword And Return Status  Redfish.Login  ${username}  ${password}
 
     # Doing a check of the rerurned status
     Should Be Equal  ${is_redfish}  ${False}
-    Redfish.Login
+    Redfish.Logout
 
 Redfish Create And Patch Parameters 
     [Documentation]  Redfish create and verify user.
@@ -447,45 +481,41 @@ Redfish Create And Patch Parameters
     #                     should be enabled (${True}, ${False}).
 
     # Create specified user.
+    Redfish.Login
     Redfish Create User  ${name}  ${username}  ${password}  ${role_id}  ${locked}  ${enabled}
-
-    # Modify parameters
-    ${payload}=  Create Dictionary
-    ...  Name=TESTNAME
-    Redfish.Patch  /redfish/v1/AccountService/Accounts/${username}  body=&{payload}
-    ...  valid_status_codes=[${HTTP_OK}]
-    ${MO_NAME}=  Redfish_Utils.Get Attribute
-    ...  /redfish/v1/AccountService/Accounts/${username}  Name 
-    Should Be Equal  ${MO_NAME}  TESTNAME
 
     ${payload}=  Create Dictionary
     ...  UserName=TESTUSERNAME
-    Redfish.Patch  /redfish/v1/AccountService/Accounts/${username}  body=&{payload}
-    ...  valid_status_codes=[${HTTP_OK}]
+    ${resp}=  Redfish.Patch  /redfish/v1/AccountService/Accounts/${username}  body=&{payload}
+    Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
+
     ${MO_USERNAME}=  Redfish_Utils.Get Attribute
     ...  /redfish/v1/AccountService/Accounts/TESTUSERNAME  UserName 
     Should Be Equal  ${MO_USERNAME}  TESTUSERNAME
 
     ${payload}=  Create Dictionary
-    ...  RoleId=ReadOnlyUser
-    Redfish.Patch  /redfish/v1/AccountService/Accounts/TESTUSERNAME  body=&{payload}
-    ...  valid_status_codes=[${HTTP_OK}]
+    ...  RoleId=ReadOnly
+    ${resp}=  Redfish.Patch  /redfish/v1/AccountService/Accounts/TESTUSERNAME  body=&{payload}
+    Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
+
     ${MO_ROLEID}=  Redfish_Utils.Get Attribute
     ...  /redfish/v1/AccountService/Accounts/TESTUSERNAME  RoleId 
-    Should Be Equal  ${MO_RoleId}  ReadOnlyUser 
+    Should Be Equal  ${MO_RoleId}  ReadOnly 
 
     ${payload}=  Create Dictionary
     ...  RoleId=Operator
-    Redfish.Patch  /redfish/v1/AccountService/Accounts/TESTUSERNAME  body=&{payload}
-    ...  valid_status_codes=[${HTTP_OK}]
+    ${resp}=  Redfish.Patch  /redfish/v1/AccountService/Accounts/TESTUSERNAME  body=&{payload}
+    Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
+
     ${MO_ROLEID}=  Redfish_Utils.Get Attribute
     ...  /redfish/v1/AccountService/Accounts/TESTUSERNAME  RoleId 
     Should Be Equal  ${MO_RoleId}  Operator 
 
     ${payload}=  Create Dictionary
     ...  Name=${name}  UserName=${username}  Password=${password}  RoleId=${role_id}  Locked=${locked}  Enabled=${enabled}
-    Redfish.Patch  /redfish/v1/AccountService/Accounts/TESTUSERNAME  body=&{payload}
-    ...  valid_status_codes=[${HTTP_OK}]
+    ${resp}=  Redfish.Patch  /redfish/v1/AccountService/Accounts/TESTUSERNAME  body=&{payload}
+    Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
 
     # Delete Specified User
     Redfish.Delete  /redfish/v1/AccountService/Accounts/${username}
+    Redfish.Logout

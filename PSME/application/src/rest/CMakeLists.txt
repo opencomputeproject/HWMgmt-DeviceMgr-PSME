@@ -66,6 +66,7 @@ set(SOURCES
     endpoints/redfish.cpp
     endpoints/root.cpp
     endpoints/odata_service_document.cpp
+    endpoints/rpvfoobar.cpp
     endpoints/metadata_root.cpp
     endpoints/metadata.cpp
     endpoints/utils.cpp
@@ -98,6 +99,7 @@ set(SOURCES
     endpoints/session_collection.cpp    
     endpoints/session_service.cpp
     endpoints/sessions.cpp    
+    endpoints/members.cpp    
     endpoints/task.cpp
     endpoints/message_registry_file_collection.cpp
     endpoints/message_registry_file.cpp

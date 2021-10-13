@@ -29,6 +29,9 @@ else
     #SONIC
     HW_type=`/usr/local/bin/sonic-cfggen -d --print-data | grep "platform" | awk '{print $2}' |awk -F '"' '{print $2}'`
     ONLPDUMP="/usr/bin/decode-syseeprom"
+    if [ ! -f "${ONLPDUMP}" ]; then
+        ONLPDUMP="/usr/local/bin/decode-syseeprom"
+    fi
 fi
 
 . /etc/psme/HW_TYPE

@@ -28,6 +28,7 @@
 #include "agent-framework/module/enum/common.hpp"
 #include "table_interface.hpp"
 #include <list>
+#include <functional>
 
 
 namespace agent_framework {

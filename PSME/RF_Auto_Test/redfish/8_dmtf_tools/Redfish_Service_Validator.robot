@@ -15,7 +15,7 @@ ${rsv_dir_path}    Redfish-Service-Validator
 ${rsv_github_url}  https://github.com/DMTF/Redfish-Service-Validator.git
 ${command_string}  ${DEFAULT_PYTHON} ${rsv_dir_path}${/}RedfishServiceValidator.py
 ...                --ip ${OPENBMC_HOST} --nochkcert --forceauth -u ${OPENBMC_USERNAME}
-...                -p ${OPENBMC_PASSWORD} --logdir ${EXECDIR}${/}logs${/} --debug_logging
+...                -p ${OPENBMC_PASSWORD} --authtype Basic --logdir ${EXECDIR}${/}logs${/} --debug_logging
 
 *** Test Case ***
 
@@ -25,13 +25,13 @@ Test Redfish Using Redfish Service Validator
 
     Redfish.Login  admin  redfish 
 
-    ${payload}=  Create Dictionary
-    ...  ServiceEnabled=${false}  SessionTimeout=${600}
-    Redfish.Post  /redfish/v1/SessionService/  body=&{payload}
-    ...  valid_status_codes=[${HTTP_OK}]
+#    ${payload}=  Create Dictionary
+#    ...  ServiceEnabled=${false}  SessionTimeout=${600}
+#    Redfish.Post  /redfish/v1/SessionService/  body=&{payload}
+#    ...  valid_status_codes=[${HTTP_OK}]
 
-#    Download DMTF Tool  ${rsv_dir_path}  ${rsv_github_url}  "1.3.4"
-    Download DMTF Tool  ${rsv_dir_path}  ${rsv_github_url}  "master"
+    Download DMTF Tool  ${rsv_dir_path}  ${rsv_github_url}  "1.4.1"
+#    Download DMTF Tool  ${rsv_dir_path}  ${rsv_github_url}  "master"
 
     ${output}=  Run DMTF Tool  ${rsv_dir_path}  ${command_string}
 

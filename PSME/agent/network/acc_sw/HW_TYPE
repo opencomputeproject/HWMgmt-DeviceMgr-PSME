@@ -90,6 +90,12 @@ if [ ! -z "${HW_type}" ];then
         "x86"[-_]"64-accton"[-_]"as4630"[-_]"54pe")
         . /etc/psme/HW_NODE_AS4630_54PE
         ;;
+        "x86"[-_]"64-accton"[-_]"as4630"[-_]"54npe")
+        . /etc/psme/HW_NODE_AS4630_54NPE
+        ;;
+        "x86"[-_]"64-accton"[-_]"as4630"[-_]"54te")
+        . /etc/psme/HW_NODE_AS4630_54TE
+        ;;
         "x86"[-_]"64-accton"[-_]"as5835"[-_]"54x")
         . /etc/psme/HW_NODE_AS5835_54X
         ;;

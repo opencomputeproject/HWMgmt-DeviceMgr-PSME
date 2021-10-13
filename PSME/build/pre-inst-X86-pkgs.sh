@@ -16,7 +16,7 @@ PACKAGES=("clang" "libgcrypt20-dev" "libncurses5-dev" "libnl-3-dev" "libudev-dev
           "libxml++2.6-dev" "libgnutls28-dev" "libnl-route-3-dev" "flex" "bison" "doxygen" "cpp" "ccache" "build-essential"
 	  "linux-libc-dev" "libmpc-dev" "libstdc++6" "libcurl4-openssl-dev" "libmicrohttpd-dev" "libjsoncpp-dev"
           "lcov" "libossp-uuid-dev" "libnl-route-3-200" "libsysfs-dev" "libpopt-dev" "libusb-dev" "patch" "libdevmapper-dev" 
-	  "liblvm2-dev" "unzip" "libnl-genl-3-dev" "libblkid-dev" "debsigs" "debsig-verify" "gnupg" "ipmitool"
+	  "liblvm2-dev" "unzip" "libnl-genl-3-dev" "libblkid-dev" "debsigs" "debsig-verify" "gnupg" "ipmitool" "texlive-xetex" "pandoc" "lsb-release"
           )
 
 count="${#PACKAGES[@]}"	  
@@ -34,7 +34,7 @@ done
 CMAKE_VER=`cmake -version | grep "cmake version"  | awk '{print $3}'`
 if [ "$CMAKE_VER" != "$CMAKE_VER_INS" ]; then
     sudo apt-get purge cmake
-    wget https://cmake.org/files/v$CMAKE_DIR_INS/cmake-$CMAKE_VER_INS.tar.gz
+    wget --no-check-certificate  https://cmake.org/files/v$CMAKE_DIR_INS/cmake-$CMAKE_VER_INS.tar.gz
     tar xzvf cmake-$CMAKE_VER_INS.tar.gz
     cd cmake-$CMAKE_VER_INS/
     ./bootstrap

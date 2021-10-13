@@ -14,23 +14,23 @@ ${Pwd}  redfish
 
 ${RO_UserName}  readonly 
 ${RO_Pwd}  readonly 
-${RO_ROLE}  ReadOnlyUser 
+${RO_ROLE}  ReadOnly 
 
 ${TEST_RO_UserName}  testreadonly 
 ${TEST_RO_Pwd}  testreadonly 
 ${TEST1_RO_UserName}  test1readonlypwd 
 ${TEST1_RO_Pwd}  test1readonlypwd 
-${RO_ROLE}  ReadOnlyUser 
+${RO_ROLE}  ReadOnly 
 
 ${OP_UserName}  Operator 
 ${OP_Pwd}  Operator 
 ${OP_ROLE}  Operator 
 
-${TEST_USER_BODY}  {"UserName":"U1","Password":"P1","RoleId":"ReadOnlyUser", "Enabled":true , "Locked":false}
-${TEST1_USER_BODY}  {"UserName":"U2","Password":"P2","RoleId":"ReadOnlyUser", "Enabled":true , "Locked":false}
-${PATCH_PWD_BODY}  { "UserName": "readonly", "Password": "readonlyU2", "Locked": false, "Enabled": true, "RoleId": "ReadOnlyUser" } 
+${TEST_USER_BODY}  {"UserName":"U1","Password":"P1","RoleId":"ReadOnly", "Enabled":true , "Locked":false}
+${TEST1_USER_BODY}  {"UserName":"U2","Password":"P2","RoleId":"ReadOnly", "Enabled":true , "Locked":false}
+${PATCH_PWD_BODY}  { "UserName": "readonly", "Password": "readonlyU2", "Locked": false, "Enabled": true, "RoleId": "ReadOnly" } 
 ${OP_PATCH_PWD_BODY}  { "UserName": "Operator", "Password": "OperatorU2", "Locked": false, "Enabled": true, "RoleId": "Operator" } 
-${PATCH_TEST_PWD_BODY}  { "UserName": "testreadonly", "Password": "testreadonlyU2", "Locked": false, "Enabled": true, "RoleId": "ReadOnlyUser" } 
+${PATCH_TEST_PWD_BODY}  { "UserName": "testreadonly", "Password": "testreadonlyU2", "Locked": false, "Enabled": true, "RoleId": "ReadOnly" } 
 
 
 ** Test Cases **
@@ -50,7 +50,7 @@ Redfish Create and Verify Users
 
     # username    # username     # password    # role_id       #locked    # enabled 
       nameadmin    admin_user     TestPwd123  Administrator    ${False}   ${True}
-      nameadmin_1  admin_user_1   TestPwd123  ReadOnlyUser     ${False}   ${True}
+      nameadmin_1  admin_user_1   TestPwd123  ReadOnly     ${False}   ${True}
       nameopt_1    operator_user_2  TestPwd123  Operator       ${False}   ${True}
 
 Verify Redfish User with Wrong Password
@@ -60,7 +60,7 @@ Verify Redfish User with Wrong Password
 
     # username        # username     # password    # role_id         # locked    # enabled  # wrong_password
     nameadmin         admin_user_3     TestPwd123    Administrator   ${False}    ${True}    aa 
-    nameadmin_1       admin_user_4     TestPwd123    ReadOnlyUser    ${False}    ${True}    bb
+    nameadmin_1       admin_user_4     TestPwd123    ReadOnly    ${False}    ${True}    bb
     nameopt_1         operator_user_5  TestPwd123    Operator        ${False}    ${True}    cc
 
 Verify Login with Deleted Redfish Users
@@ -70,7 +70,7 @@ Verify Login with Deleted Redfish Users
 
      # username       # username     password    role_id  locked  enabled    wrong_password
      nameadmin        admin_user_6   TestPwd123  Administrator    ${False}   ${True}  aa 
-     nameadmin_1      admin_user_7   TestPwd123  ReadOnlyUser     ${False}   ${True}  dd
+     nameadmin_1      admin_user_7   TestPwd123  ReadOnly     ${False}   ${True}  dd
      nameopt_1        operator_user_8  TestPwd123  Operator       ${False}   ${True}  ee
 
 Verify User Creation Without Enabling it
@@ -79,7 +79,7 @@ Verify User Creation Without Enabling it
     [Template]  Redfish Create And Verify User
     # username        # username        password    role_id             locked     enabled
     nameadmin         admin_user_9      TestPwd123  Administrator       ${False}   ${False}
-    nameadmin_1       admin_user_10     TestPwd123  ReadOnlyUser        ${False}   ${False}
+    nameadmin_1       admin_user_10     TestPwd123  ReadOnly        ${False}   ${False}
     nameopt_1         operator_user_11  TestPwd123  Operator            ${False}   ${False}
 
 #Verify Redfish User Persistence After Reboot
@@ -89,7 +89,7 @@ Verify User Creation Without Enabling it
 #
 #    Redfish.Login  ${UserName}  ${Pwd} 
 #    Redfish Create User  newname_1    admin_user_12     TestPwd123  Administrator       ${False}   ${True}
-#    Redfish Create User  newname_2    admin_user_13     TestPwd123  ReadOnlyUser        ${False}   ${True}
+#    Redfish Create User  newname_2    admin_user_13     TestPwd123  ReadOnly        ${False}   ${True}
 #    Redfish Create User  newname_3    operator_user_14  TestPwd123  Operator            ${False}   ${True}
 #
 #    # Reboot Device 
@@ -102,7 +102,7 @@ Verify User Creation Without Enabling it
 #
 #    Redfish.Login  ${UserName}  ${Pwd} 
 #    Redfish Verify User   newname_1   admin_user_12     TestPwd123  Administrator  ${False}  ${True}
-#    Redfish Verify User   newname_2   admin_user_13     TestPwd123  ReadOnlyUser   ${False}  ${True}
+#    Redfish Verify User   newname_2   admin_user_13     TestPwd123  ReadOnly   ${False}  ${True}
 #    Redfish Verify User   newname_3   operator_user_14  TestPwd123  Operator       ${False}  ${True}
 #
 #    # Delete created users.
@@ -118,7 +118,7 @@ Verify User Creation With locking it
 
      # username        # username        password    role_id             locked     enabled
      nameadmin         admin_user_15     TestPwd123  Administrator       ${True}   ${True}
-     nameadmin_1       admin_user_16     TestPwd123  ReadOnlyUser        ${True}   ${True}
+     nameadmin_1       admin_user_16     TestPwd123  ReadOnly        ${True}   ${True}
      nameopt_1         operator_user_17  TestPwd123  Operator            ${True}   ${True}
 
 Verify Create and Patch parameters  
@@ -129,8 +129,8 @@ Verify Create and Patch parameters
     # username    # username     # password    # role_id       #locked    # enabled 
       nameadmin    admin_user     TestPwd123  Administrator    ${False}   ${True}
 
-#Verify AccountService_ReadOnlyUser
-#    [Documentation]  Verify Redfish ReadOnlyUser account can get major service 
+#Verify AccountService_ReadOnly
+#    [Documentation]  Verify Redfish ReadOnly account can get major service 
 #    [Tags]  Verify_AccountService_UserOnlyUser_Enable
 #
 #    Redfish.Login  ${UserName}  ${Pwd} 
@@ -233,9 +233,9 @@ Verify Create and Patch parameters
 #    Redfish.Delete  /redfish/v1/AccountService/Accounts/${RO_UserName}
 #    Redfish.Logout
 #
-#Verify AccountService_ReadOnlyUser_Cannot_POST_PATCH
-#    [Documentation]  Verify Redfish ReadOnlyUser account cannot use patch post action 
-#    [Tags]  Verify_AccountService_ReadOnlyUser_CANNOT_PATCH_POST
+#Verify AccountService_ReadOnly_Cannot_POST_PATCH
+#    [Documentation]  Verify Redfish ReadOnly account cannot use patch post action 
+#    [Tags]  Verify_AccountService_ReadOnly_CANNOT_PATCH_POST
 #
 #    Redfish.Login  ${UserName}  ${Pwd} 
 #    Redfish Create User  ${RO_UserName}  ${RO_Pwd}  ${RO_ROLE}  ${False}  ${True}
@@ -252,24 +252,24 @@ Verify Create and Patch parameters
 #    Redfish.Post  /redfish/v1/Systems/1/Actions/ComputerSystem.Reset  body=&{payload}
 #    ...  valid_status_codes=[${HTTP_UNAUTHORIZED}]
 #
-##   ReadOnlyUser can't create account
+##   ReadOnly can't create account
 #    Redfish Create User  ${TEST1_RO_UserName}  ${TEST1_RO_Pwd}  ${RO_ROLE}  ${False}  ${True}
 #    ${role_config}=  Redfish_Utils.Get Attribute
 #    ...  /redfish/v1/AccountService/Accounts/${TEST1_RO_UserName}  RoleId
 #    Should Not Be Equal  ${RO_ROLE}  ${role_config}
 #
-##   ReadOnlyUser can't get Accounts related info. 
+##   ReadOnly can't get Accounts related info. 
 ##   Check in upper layer
 #
 #    ${resp}=  Redfish.Get  /redfish/v1/AccountService/Accounts/
 #    Should Be Equal As Strings  ${resp.status}  ${HTTP_OK}
 #
-##   ReadOnlyUser can patch its own pasword
+##   ReadOnly can patch its own pasword
 #    ${payload}=  Evaluate  json.loads($PATCH_PWD_BODY)    json 
 #    Redfish.Patch  /redfish/v1/AccountService/Accounts/${RO_UserName}  body=&{payload}
 #    ...  valid_status_codes=[${HTTP_OK}]
 #
-##   ReadOnlyUser can't patch other users pasword
+##   ReadOnly can't patch other users pasword
 #    ${payload}=  Evaluate  json.loads($PATCH_TEST_PWD_BODY)    json 
 #    Redfish.Patch  /redfish/v1/AccountService/Accounts/${TEST_RO_UserName}  body=&{payload}
 #    ...  valid_status_codes=[${HTTP_UNAUTHORIZED}]
@@ -302,7 +302,7 @@ Verify Create and Patch parameters
 #    Redfish.Patch  /redfish/v1/AccountService/Accounts/${OP_UserName}  body=&{payload}
 #    ...  valid_status_codes=[${HTTP_OK}]
 #
-##   ReadOnlyUser can't patch other users pasword
+##   ReadOnly can't patch other users pasword
 #    ${payload}=  Evaluate  json.loads($PATCH_TEST_PWD_BODY)    json 
 #    Redfish.Patch  /redfish/v1/AccountService/Accounts/${TEST_RO_UserName}  body=&{payload}
 #    ...  valid_status_codes=[${HTTP_UNAUTHORIZED}]
@@ -548,12 +548,12 @@ Redfish Create And Patch Parameters
     Should Be Equal  ${MO_USERNAME}  TESTUSERNAME
 
     ${payload}=  Create Dictionary
-    ...  RoleId=ReadOnlyUser
+    ...  RoleId=ReadOnly
     Redfish.Patch  /redfish/v1/AccountService/Accounts/TESTUSERNAME  body=&{payload}
     ...  valid_status_codes=[${HTTP_OK}]
     ${MO_ROLEID}=  Redfish_Utils.Get Attribute
     ...  /redfish/v1/AccountService/Accounts/TESTUSERNAME  RoleId 
-    Should Be Equal  ${MO_RoleId}  ReadOnlyUser 
+    Should Be Equal  ${MO_RoleId}  ReadOnly
 
     ${payload}=  Create Dictionary
     ...  RoleId=Operator

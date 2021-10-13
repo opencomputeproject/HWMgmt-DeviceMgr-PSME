@@ -62,26 +62,15 @@ endpoint::Session::~Session() {}
 
 void endpoint::Session::get(const server::Request &request, server::Response &response)
 {
-
-    uint64_t MaxSessions = SessionManager::get_instance()->GetSessionConfigMaxSessions();
-	
-    uint64_t reqID = atoi(request.params[constants::PathParam::SESSION_ID].c_str());
-	
-    if(reqID > MaxSessions)
-    {
-        response.set_status(server::status_4XX::NOT_FOUND); 
-    }
-    else
-    {
+    std::string reqID = request.params[constants::PathParam::SESSION_ID].c_str();
         json::Value r = make_session_prototype();
         r[constants::Common::ODATA_ID] = PathBuilder(request).build();
         r[constants::Common::ID] = request.params[constants::PathParam::SESSION_ID];
 
-        const auto& Sessions= SessionManager::get_instance()->getSession(reqID);	
+    const auto &Sessions = SessionManager::get_instance()->getSessionByStringId(reqID);
 		
         r[constants::Common::USER_NAME]  = Sessions.get_username();
         set_response(response, r);
-    }
     return;	
 }
 
@@ -89,11 +78,11 @@ void endpoint::Session::get(const server::Request &request, server::Response &re
 
 void endpoint::Session::del(const server::Request& req, server::Response& res) {
 
+        json::Value r ="{}"; 
+        std::string del_id = req.params[constants::PathParam::SESSION_ID].c_str();
 
-        uint64_t deld = atoi(req.params[constants::PathParam::SESSION_ID].c_str());
-
-        SessionManager::get_instance()->delSession(deld);
-
+        SessionManager::get_instance()->delSession_by_string_id(del_id);
+        set_response(res, r);
         res.set_status(server::status_2XX::OK);
     }
 

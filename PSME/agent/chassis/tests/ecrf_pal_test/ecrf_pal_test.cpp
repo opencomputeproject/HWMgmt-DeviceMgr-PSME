@@ -154,7 +154,9 @@ void TestClass1::SetUp()
     //Switch TESTs;
     auto &secrf_pal = Switch::Switch::get_instance();
     int ii = 1;
-    int stress = 30;
+    int stress = 100;
+
+    
     while (ii != 0)
     {
         auto start = std::chrono::system_clock::now();
@@ -169,7 +171,7 @@ void TestClass1::SetUp()
             stress--;
             std::cout << '.' << std::flush;
         }
-        stress = 5;
+        stress = 100;
 
         printf("\r\n////////////////Switch get port oom info. test/////////////////\r\n");
         ProcMemoryUsage MEM_OOM("GET OOM INFO. ");
@@ -215,7 +217,7 @@ void TestClass1::SetUp()
             stress--;
             std::cout << '.'<< std::flush;
         }
-        stress = 30;
+        stress = 100;
         end = std::chrono::system_clock::now();
         elapsed_seconds = end - start;
         end_time = std::chrono::system_clock::to_time_t(end);
@@ -253,7 +255,7 @@ void TestClass1::SetUp()
             stress--;
             std::cout << '.'<< std::flush;
         }
-        stress = 50;
+        stress = 100;
 
         end = std::chrono::system_clock::now();
         elapsed_seconds = end - start;
@@ -273,6 +275,9 @@ void TestClass1::SetUp()
         start = std::chrono::system_clock::now();
         auto &secrf_pal3 = ecrf_pal_helper::Switch::get_instance();
         printf("\r\n////////////////Switch get fan info. test/////////////////\r\n");
+
+        stress = 100;
+
         while (stress != 0)
         {
             ProcMemoryUsage MEM_FAN("GET FAN INFO.");
@@ -283,7 +288,7 @@ void TestClass1::SetUp()
             std::cout << '.'<< std::flush;
         }
         std::cout << std::endl;
-        stress = 30;
+        stress = 100;
 
         end = std::chrono::system_clock::now();
         elapsed_seconds = end - start;

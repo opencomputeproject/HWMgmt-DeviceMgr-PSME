@@ -28,5 +28,5 @@ if [ ! -d "${CERT_PATH}" ] || [ ! -f "$CERT_SERVER_CRT_FILE" ] || [ ! -f "$CERT_
     cd ${CERT_PATH}
     sudo openssl genrsa -out server.key 4096 
     sudo openssl req -sha512 -new -key server.key -out ca.csr -subj "/C=TW/ST=TAICHUNG/L=TAICHUNG/O=selfsignedCA/OU=Personal/CN=192.168.1.99"
-    sudo openssl x509 -sha512 -req -days 3650 -in ca.csr -signkey server.key -out server.crt
+    sudo openssl x509 -sha512  -extfile /etc/ssl/openssl.cnf -extensions v3_req -req -days 3650 -in ca.csr -signkey server.key -out server.crt
 fi

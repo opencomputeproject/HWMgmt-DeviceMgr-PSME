@@ -15,6 +15,7 @@ HTTP Request Methods used in PSME service.
   - Delete (DELETE):  
   The DELETE method is used to remove a resource.  
    
+Because it takes some times to wait PSME service ready, please make sure the "redfish/v1/Chassis/1" is exist then can use HTTP methods.
 
 ## Using RESTful APIs  
 
@@ -23,18 +24,18 @@ HTTP Request Methods used in PSME service.
   
   ## Authentication   
    
-   Enable Session Management          
+   Enable Session based Management          
    Redfish Service uses session management to implement authentication. 
-   Enable session management and change session timeout to 30 seconds(Default is 600 seconds). 
+   Enable session management and change session timeout to 900 seconds(Default is 600 seconds). 
    
       - URL     :  /redfish/v1/SessionService/
       - Required Privilege : ConfigureComponents
-      - Method  :  POST
+      - Method  :  PATCH
       - Payload :   
      
       {
         "ServiceEnabled": true,
-        "SessionTimeout": 30
+        "SessionTimeout": 900
       }
    
       - Response : 200 OK
@@ -42,11 +43,18 @@ HTTP Request Methods used in PSME service.
    Curl command:
 
    Authentication disabled:   
-      curl --insecure -X POST -D headers.txt https://${DUT_IP}/redfish/v1/SessionService/ -d '{"ServiceEnabled":true,"SessionTimeout":30}'
+
+      curl --insecure -X PATCH -D headers.txt https://${DUT_IP}/redfish/v1/SessionService/ -d '{"ServiceEnabled":true,"SessionTimeout":900}'
 
    Authentication enabled:   
-      curl -k -H "X-Auth-Token: gBQpFP2nBQrfnNVP8dZiCZbNIfnjogdX" -X POST https://${DUT_IP}/redfish/v1/SessionService/  -d '{"ServiceEnabled":true,"SessionTimeout":30}' 
 
+   Use session service
+
+      curl -k -H "X-Auth-Token: gBQpFP2nBQrfnNVP8dZiCZbNIfnjogdX" -X PATCH https://${DUT_IP}/redfish/v1/SessionService/  -d '{"ServiceEnabled":true,"SessionTimeout":900}' 
+
+   Use basic authentication
+
+      curl --insecure  --user admin:redfish -X PATCH https://${DUT_IP}/redfish/v1/SessionService/  -d '{"ServiceEnabled":true,"SessionTimeout":900}'
 
 
    Change SessionTimeout to 500 seconds
@@ -65,11 +73,18 @@ HTTP Request Methods used in PSME service.
    Curl command:
 
    Authentication disabled:   
+
       curl --insecure -X POST -D headers.txt https://${DUT_IP}/redfish/v1/SessionService/ -d '{"SessionTimeout":500}'
 
    Authentication enabled:   
+
+   Use session service
+
       curl -k -H "X-Auth-Token: gBQpFP2nBQrfnNVP8dZiCZbNIfnjogdX" -X POST https://${DUT_IP}/redfish/v1/SessionService/  -d '{"SessionTimeout":500}' 
 
+   Use basic authentication
+
+      curl --insecure  --user admin:redfish  -X POST https://${DUT_IP}/redfish/v1/SessionService/  -d '{"SessionTimeout":500}' 
 
 
    After you enable authentication service,you need have correct privilege to do GET/POST/PATCH action.
@@ -92,8 +107,8 @@ HTTP Request Methods used in PSME service.
    Curl command:
 
    Authentication disabled:   
-      curl --insecure -X POST -D headers.txt https://${DUT_IP}/redfish/v1/SessionService/Sessions -d '{"UserName":"admin","Password":"redfish"}' 
       
+      curl --insecure -X POST -D headers.txt https://${DUT_IP}/redfish/v1/SessionService/Sessions -d '{"UserName":"admin","Password":"redfish"}' 
 
 
    X-Auth Token header displays Location and session ID in headers.txt file. 
@@ -114,8 +129,14 @@ HTTP Request Methods used in PSME service.
    Curl command:
 
    Authentication enabled:   
+
+   Use session service
+ 
       curl -k -H "X-Auth-Token: 605c5QiyVFqxLM2uj86Fj83xd0THGGiM" -X DELETE https://${DUT_IP}/redfish/v1/SessionService/Sessions/1
 
+   Use basic authentication
+
+      curl --insecure --user admin:redfish  -X DELETE https://${DUT_IP}/redfish/v1/SessionService/Sessions/1
 
 
    Please note that only "RoleId" as "Administrator" can del others session id (force other user logout) and user himself can del its own session id(logout himself).
@@ -173,10 +194,19 @@ HTTP Request Methods used in PSME service.
    Curl command:
 
    Authentication disabled:   
+
       curl --insecure -X GET https://${DUT_IP}/redfish/v1/AccountService/Accounts/
 
    Authentication enabled:   
+
+   Use session service
+
       curl -k -H "X-Auth-Token: gBQpFP2nBQrfnNVP8dZiCZbNIfnjogdX" -X GET https://${DUT_IP}/redfish/v1/AccountService/Accounts/
+
+   Use basic authentication
+
+      curl --insecure --user admin:redfish -X GET https://${DUT_IP}/redfish/v1/AccountService/Accounts/
+
 
    Create new account (Only administrator can add new user)
       
@@ -186,26 +216,31 @@ HTTP Request Methods used in PSME service.
       - Payload :  
      
         { 
-        "Name":"Name_1", 
         "UserName":"User_Name_1", 
         "Password":"User_Password_1", 
         "RoleId":"Administrator",
-        "Enabled":true ,
-        "Locked":false 
+        "Enabled":true
         }           
 
       - Response : 201 CREATED  
 
-      "RoleId" must be Administrator/Operator/ReadOnlyUser 
+      "RoleId" must be Administrator/Operator/ReadOnly 
 
    Curl command:
 
    Authentication disabled:   
+
       curl --insecure -X POST https://${DUT_IP}/redfish/v1/AccountService/Accounts/ -d '{"Name":"Name_1", "UserName":"User_Name_1","Password":"User_Password_1","RoleId":"Administrator", "Enabled":true , "Locked":false}' 
 
    Authentication enabled:   
+
+   Use session service
+
       curl -k -H "X-Auth-Token: i0g1d8vgqrGE1Yv5Yym3saof2oliM2d7" -X POST -D headers.txt https://${DUT_IP}/redfish/v1/AccountService/Accounts/ -d '{"Name":"Name_1", "UserName":"Name_1","Password":"User_Password_1","RoleId":"Administrator", "Enabled":true , "Locked":false}'
 
+    Use basic authentication
+
+      curl --insecure --user admin:redfish -X POST -D headers.txt https://${DUT_IP}/redfish/v1/AccountService/Accounts/ -d '{"Name":"Name_1", "UserName":"Name_1","Password":"User_Password_1","RoleId":"Administrator", "Enabled":true , "Locked":false}'
   
 
   ## Querying System Status
@@ -661,11 +696,18 @@ HTTP Request Methods used in PSME service.
    Curl command:
 
    Authentication disabled:   
+
       curl --insecure -X POST https://${DUT_IP}/redfish/v1/Systems/1/Actions/ComputerSystem.Reset -d '{ "ResetType":"GracefulRestart" }'
 
    Authentication enabled:   
+
+   Use session service
+
       curl -k -H "X-Auth-Token: i0g1d8vgqrGE1Yv5Yym3saof2oliM2d7" -X POST -D headers.txt https://${DUT_IP}/redfish/v1/Systems/1/Actions/ComputerSystem.Reset -d '{ "ResetType":"GracefulRestart" }'
  
+   Use basic authentication 
+
+      curl --insecure --user admin:redfish -X POST -D headers.txt https://${DUT_IP}/redfish/v1/Systems/1/Actions/ComputerSystem.Reset -d '{ "ResetType":"GracefulRestart" }'
 		  
 
   ## Log service
@@ -688,10 +730,18 @@ HTTP Request Methods used in PSME service.
    Curl command:
 
    Authentication disabled:   
+
       curl --insecure -X PATCH https://${DUT_IP}/redfish/v1/Managers/1/LogServices/1 -d '{"ServiceEnabled": true }'
 
    Authentication enabled:   
+
+   Use session service
+
       curl -k -H "X-Auth-Token: i0g1d8vgqrGE1Yv5Yym3saof2oliM2d7" -X PATCH -D headers.txt https://${DUT_IP}/redfish/v1/Managers/1/LogServices/1 -d '{"ServiceEnabled": true }'
+
+   Use basic authentication 
+
+      curl --insecure --user admin:redfish -X PATCH -D headers.txt https://${DUT_IP}/redfish/v1/Managers/1/LogServices/1 -d '{"ServiceEnabled": true }'
 
 
       

@@ -81,8 +81,8 @@ void RoleConfig::saveRoles() {
 void RoleConfig::loadPreRoles() {
     log_debug(GET_LOGGER("app"), "Loading Predefined Roles : ");
 
-    
-    try {
+    try
+    {
           Role Aadmin{};
           Role Aoperator{};
           Role Areadonlyuser{};
@@ -94,22 +94,30 @@ void RoleConfig::loadPreRoles() {
           APrivTypes.add(PrivilegeType::from_string("ConfigureUsers"));
           APrivTypes.add(PrivilegeType::from_string("ConfigureSelf"));
           APrivTypes.add(PrivilegeType::from_string("ConfigureComponents"));          
-          Aadmin.set_ispredefined(true);Aadmin.set_privilege_types(APrivTypes);Aadmin.set_roleid("Administrator");
+        Aadmin.set_ispredefined(true);
+        Aadmin.set_privilege_types(APrivTypes);
+        Aadmin.set_roleid("Administrator");
+        Aadmin.set_name("Administrator");
           AccountManager::get_instance()->addRole(Aadmin);
                     
           PrivilegeTypes OPrivTypes{};
           OPrivTypes.add(PrivilegeType::from_string("Login"));
           OPrivTypes.add(PrivilegeType::from_string("ConfigureSelf"));
           OPrivTypes.add(PrivilegeType::from_string("ConfigureComponents"));          
-          Aoperator.set_ispredefined(true);Aoperator.set_privilege_types(OPrivTypes);Aoperator.set_roleid("Operator");          
+        Aoperator.set_ispredefined(true);
+        Aoperator.set_privilege_types(OPrivTypes);
+        Aoperator.set_roleid("Operator");
+        Aoperator.set_name("Operator");
           AccountManager::get_instance()->addRole(Aoperator);
  
           PrivilegeTypes RPrivTypes{};
           RPrivTypes.add(PrivilegeType::from_string("Login"));
           RPrivTypes.add(PrivilegeType::from_string("ConfigureSelf"));
-          Areadonlyuser.set_ispredefined(true);Areadonlyuser.set_privilege_types(RPrivTypes);Areadonlyuser.set_roleid("ReadOnlyUser");           
+        Areadonlyuser.set_ispredefined(true);
+        Areadonlyuser.set_privilege_types(RPrivTypes);
+        Areadonlyuser.set_roleid("ReadOnly");
+        Areadonlyuser.set_name("ReadOnly");
           AccountManager::get_instance()->addRole(Areadonlyuser);
-
     }
     catch (const std::exception& ex) {
         log_warning(GET_LOGGER("app"), "Unable to add predefined role: " << ex.what());

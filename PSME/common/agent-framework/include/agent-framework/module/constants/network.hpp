@@ -112,6 +112,11 @@ public:
     static constexpr const char RX_POWER_STATUS_HEALTH[] ="RxPowerHealth";
     static constexpr const char RX_POWER_STATUS_HEALTH_ROLL_UP[] = "RxPowerHealthRollup";
 
+    static constexpr const char SFP_10G_ETHERNET_COMPLIANCE_CODE[] = "10g40gEthernetComplianceCode";
+    static constexpr const char SFP_FIBRE_CHANNEL_LINK_LENGTH[] = "FibreChannelLinkLength";
+    static constexpr const char SFP_FIBRE_CHANNEL_TECHNOLOGY[] = "FibreChannelTechnology";
+    static constexpr const char SFP_FIBRE_CHANNEL_TRANSMISSION_MEDIA[] = "FibreChannelTransmissionMedia";
+    static constexpr const char SFP_FIBRE_CHANNEL_SPEED[] = "FibreChannelSpeed";
 
     static constexpr const char STATUS_STATE[] = "State";
     static constexpr const char STATUS_HEALTH[] ="Health";

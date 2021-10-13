@@ -52,7 +52,7 @@ namespace server {
 /*!
 * @brief ENUM method for HTTP method enumeration
 */
-ENUM(Method, uint32_t, GET, POST, PATCH, HEAD, PUT, DELETE, OPTIONS, UNKNOWN);
+ENUM(Method, uint32_t, GET, POST, PATCH, HEAD, PUT, DELETE, TRACE, OPTIONS, UNKNOWN);
 
 }
 }

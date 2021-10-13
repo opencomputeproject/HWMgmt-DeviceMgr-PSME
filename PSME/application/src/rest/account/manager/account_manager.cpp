@@ -142,12 +142,25 @@ Account AccountManager::getAccount(const std::string& account_username) {
     return getAccount_by_name(account_username);
 }
 
+bool AccountManager::checkAccount(const std::string& account_username) {
+    std::lock_guard<std::mutex> lock{m_mutex};
+    return checkAccount_by_name(account_username);
+}
+
 Account AccountManager::getAccount_by_name(const std::string& account_username) {
     auto account = m_accounts.find(account_username);
     if (m_accounts.end() == account) {
         throw agent_framework::exceptions::NotFound("Account '" + account_username + "' not found.");
     }
     return account->second;
+}
+
+bool AccountManager::checkAccount_by_name(const std::string& account_username) {
+    auto account = m_accounts.find(account_username);
+    if (m_accounts.end() == account) {
+        return false; 
+    }
+    return true; 
 }
 
 Account AccountManager::getAccount(uint64_t account_id) {

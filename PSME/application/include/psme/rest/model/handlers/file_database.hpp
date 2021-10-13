@@ -26,6 +26,7 @@
 #include "psme/rest/model/handlers/database.hpp"
 
 #include <string>
+#include <functional>
 #include <mutex>
 
 namespace psme {

@@ -49,12 +49,12 @@ bool inline comp_by_value(pair<string, Subscription> &p1, pair<string, Subscript
 
 uint64_t SubscriptionManager::get_sub_id()
 {
-    uint64_t id=0;
+    uint64_t t_id=0;
     // Sort increase of m_subscriptions by event member ID //
     vector<pair<string, Subscription>> myVec(m_subscriptions.begin(), m_subscriptions.end());
     sort(myVec.begin(),  myVec.end(), comp_by_value);
     //Get  first not used ID from 1 //
-    for(id = 1 ; (id <= m_MaxEvents ) ; id++)
+    for(t_id = 1 ; (t_id <= m_MaxEvents ) ; t_id++)
     {
         bool found = false;	    
         //Check if can find id in myVec //
@@ -62,7 +62,7 @@ uint64_t SubscriptionManager::get_sub_id()
         {
             const auto& tmp_event = item.second;
             
-            if(tmp_event.get_id() == (id))
+            if(tmp_event.get_id() == (t_id))
             {
                 found = true;
             }
@@ -70,37 +70,39 @@ uint64_t SubscriptionManager::get_sub_id()
         if (found == true)
             continue;
         else
-            return id;
+            return t_id;
     }
     return 0;
 }
 
-uint64_t SubscriptionManager::add(Subscription subscription) {
+uint64_t SubscriptionManager::add(Subscription subscription)
+{
     std::lock_guard<std::mutex> lock{m_mutex};
-    auto sub = m_subscriptions.find(subscription.get_name());
-    if (m_subscriptions.end() != sub) {
+    uint64_t t_id = 0;
+    auto sub = m_subscriptions.find(subscription.get_context());
+    if (m_subscriptions.end() != sub)
+    {
         throw error::ServerException(error::ErrorFactory::create_resource_already_exists_error(
-            "Subscription '" + subscription.get_name() + "' already exists."
-        ));
+            "Subscription '" + subscription.get_context() + "' already exists."));
     }
 	
     if (subscription.get_id() != 0) 
     {
         //From subscription tmp file  //    
-        uint64_t id = subscription.get_id();
+        t_id = subscription.get_id();
 
-        subscription.set_id(id);
-        m_subscriptions[subscription.get_name()] = subscription;
+        subscription.set_id(t_id);
+        m_subscriptions[subscription.get_context()] = subscription;
         return subscription.get_id();
     }
     else  //From web post add //
     {
-        uint64_t id = get_sub_id();
+        t_id = get_sub_id();
     
-        if ( id != 0)
+        if (t_id != 0)
         {
-            subscription.set_id(id);
-            m_subscriptions[subscription.get_name()] = subscription;
+            subscription.set_id(t_id);
+            m_subscriptions[subscription.get_context()] = subscription;
             return subscription.get_id();
         }
         else
@@ -126,7 +128,7 @@ Subscription SubscriptionManager::get(uint64_t subscription_id) {
     for (const auto& item : m_subscriptions) {
         const auto& subscription = item.second;
         if (subscription_id == subscription.get_id()) {
-            return get_by_name(subscription.get_name());
+            return get_by_name(subscription.get_context());
         }
     }
     throw agent_framework::exceptions::NotFound("Subscription (ID: " + std::to_string(subscription_id) + ") not found.");
@@ -155,7 +157,7 @@ void SubscriptionManager::del(uint64_t subscription_id) {
     for (const auto& item : m_subscriptions) {
         const auto& subscription = item.second;
         if (subscription_id == subscription.get_id()) {
-            del_by_name(subscription.get_name());
+            del_by_name(subscription.get_context());
             return;
         }
     }

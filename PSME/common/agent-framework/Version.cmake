@@ -18,5 +18,5 @@
 
 if (NOT DEFINED BUILD_BRANCH)
     set (BUILD_BRANCH MAN)
-    set (VER_STRING "2.1.3.60.00")
+    set (VER_STRING "2.1.3.60.02")
 endif()

@@ -22,13 +22,13 @@
 #
 # </license_header>
 
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/compute)
-    add_subdirectory(compute)
-endif()
+#if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/compute)
+#    add_subdirectory(compute)
+#endif()
 
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/storage)
-    add_subdirectory(storage)
-endif()
+#if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/storage)
+#    add_subdirectory(storage)
+#endif()
 
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/network)
     add_subdirectory(network)

@@ -241,6 +241,46 @@ public:
     }
 
     /*!
+     * @brief Set 10g ethernet compliance code
+     * */
+    void set_10g_ethernet_compliance_code(const OptionalField<std::string> &fiber_10g_ethernet_compliance_code)
+    {
+        m_10g_ethernet_compliance_code = fiber_10g_ethernet_compliance_code;
+    }
+
+    /*!
+     * @brief Set fibre channel link length
+     * */
+    void set_fibre_channel_link_length(const OptionalField<std::string> &fibre_channel_link_length)
+    {
+        m_fibre_channel_link_length = fibre_channel_link_length;
+    }
+
+    /*!
+     * @brief Set fibre channel technology 
+     * */
+    void set_fibre_channel_technology(const OptionalField<std::string> &fibre_channel_technology)
+    {
+        m_fibre_channel_technology = fibre_channel_technology;
+    }
+
+    /*!
+     * @brief Set fibre channel transmission media 
+     * */
+    void set_fibre_channel_transmission_media(const OptionalField<std::string> &fibre_channel_transmission_media)
+    {
+        m_fibre_channel_transmission_media = fibre_channel_transmission_media;
+    }
+
+    /*!
+     * @brief Set fibre channel speed 
+     * */
+    void set_fibre_channel_speed(const OptionalField<std::string> &fibre_channel_speed)
+    {
+        m_fibre_channel_speed = fibre_channel_speed;
+    }
+
+    /*!
      * Gets SFP bias current reading
      * */
     const OptionalField<std::int32_t> &get_bias_current_reading() const
@@ -972,6 +1012,46 @@ public:
     }
 
     /*!
+     * Gets 10g_ethernet_compliance_code 
+     * */
+    const OptionalField<std::string> &get_10g_ethernet_compliance_code() const
+    {
+        return m_10g_ethernet_compliance_code;
+    }
+
+    /*!
+     * Gets fibre_channel_link_length 
+     * */
+    const OptionalField<std::string> &get_fibre_channel_link_length() const
+    {
+        return m_fibre_channel_link_length;
+    }
+
+    /*!
+     * Gets fibre_channel_technology
+     * */
+    const OptionalField<std::string> &get_fibre_channel_technology() const
+    {
+        return m_fibre_channel_technology;
+    }
+
+    /*!
+     * Gets fibre_channel_transmission_media
+     * */
+    const OptionalField<std::string> &get_fibre_channel_transmission_media() const
+    {
+        return m_fibre_channel_transmission_media;
+    }
+
+    /*!
+     * Gets fibre_channel_speed 
+     * */
+    const OptionalField<std::string> &get_fibre_channel_speed() const
+    {
+        return m_fibre_channel_speed;
+    }
+
+    /*!
      * @brief Convert TransInfo to JSON object
      * @return JSON representation of TransInfo object
      * */
@@ -1051,6 +1131,13 @@ private:
     OptionalField<std::string> m_rx_power_state{""};
     OptionalField<std::string> m_rx_power_health{""};
     OptionalField<std::string> m_rx_power_health_rollup{""};
+
+    OptionalField<std::string> m_10g_ethernet_compliance_code{""};
+    OptionalField<std::string> m_fibre_channel_link_length{""};
+    OptionalField<std::string> m_fibre_channel_technology{""};
+    OptionalField<std::string> m_fibre_channel_transmission_media{""};
+    OptionalField<std::string> m_fibre_channel_speed{""};
+
 };
 
 class Onu_Trans_Rx_Pwr_Info

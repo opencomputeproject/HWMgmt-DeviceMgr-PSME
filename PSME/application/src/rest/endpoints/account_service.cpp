@@ -67,6 +67,8 @@ endpoint::AccountService::AccountService(const std::string& path) : EndpointBase
 endpoint::AccountService::~AccountService() {}
 
 void endpoint::AccountService::get(const server::Request& req, server::Response& res) {
+    res.set_header("Link", "<http://redfish.dmtf.org/schemas/AccountService.json>;rel=\"describedby\"");
+
     auto r = make_prototype();
     r[Common::ODATA_ID] = PathBuilder(req).build();
 

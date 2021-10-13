@@ -58,6 +58,7 @@ void PsuCollection::get(const server::Request &req, server::Response &res)
 {
     try
     {
+        int system_power_control_id = 1;
         auto json = ::make_prototype();
 
         json[Common::ODATA_ID] = PathBuilder(req).build();
@@ -78,7 +79,7 @@ void PsuCollection::get(const server::Request &req, server::Response &res)
                 jsonctrl[Common::ODATA_ID] = endpoint::PathBuilder(PathParam::BASE_URL).append(Common::CHASSIS).append(chassis.get_id()).append("Power").build();
 
                 jsonctrl[Common::MEMBER_ID] = std::to_string(psu_.get_psu_id());
-                jsonctrl[Common::NAME] = "System Power Control";
+                jsonctrl[Common::NAME] = std::string("System Power Control ") + std::to_string(system_power_control_id);
 
                 jsonctrl[PowerZone::POWER_CONSUMED] = (psu_.get_power_output() * 0.001);
                 jsonctrl[Common::STATUS][Common::HEALTH] = psu_.get_status_health();
@@ -114,7 +115,7 @@ void PsuCollection::get(const server::Request &req, server::Response &res)
 
                 jsonVoltages[Common::ODATA_ID] = endpoint::PathBuilder(PathParam::BASE_URL).append(Common::CHASSIS).append(chassis.get_id()).append("Power").build();
                 jsonVoltages[Common::MEMBER_ID] = std::to_string(psu_.get_psu_id());
-                jsonVoltages[Common::NAME] = "Voltage";
+                jsonVoltages[Common::NAME] = std::string("Power supply ") + std::to_string(system_power_control_id) + std::string(" Voltage");
                 jsonVoltages[ThermalZone::SENSOR_NUMBER] = id; 
                 jsonVoltages[PowerZone::READING_VOLTS] = (psu_.get_voltage_output() * 0.001); 
                 jsonVoltages[ChassisThreshold::UPPERTHRESHOLDNONCRITICAL] = json::Value::Type::NIL;
@@ -137,7 +138,7 @@ void PsuCollection::get(const server::Request &req, server::Response &res)
                 json_PowerSupplies[Common::ODATA_ID] = endpoint::PathBuilder(PathParam::BASE_URL).append(Common::CHASSIS).append(chassis.get_id()).append("Power").build();
 
                 json_PowerSupplies[Common::MEMBER_ID] = std::to_string(psu_.get_psu_id());
-                json_PowerSupplies[Common::NAME] = "Power Supplies Unit";
+                json_PowerSupplies[Common::NAME] = std::string("Power Supplies Unit ") + std::to_string(system_power_control_id);
                 json_PowerSupplies[Common::OEM] = json::Value::Type::OBJECT;
 
                 switch (psu_.get_psu_type())
@@ -181,6 +182,7 @@ void PsuCollection::get(const server::Request &req, server::Response &res)
             }
 
             json[PowerZone::POWER_SUPPLIES].push_back(std::move(json_PowerSupplies));
+            system_power_control_id++;
         }
         json[Common::OEM] = json::Value::Type::OBJECT;
         set_response(res, json);

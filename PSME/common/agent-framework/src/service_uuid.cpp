@@ -111,7 +111,7 @@ ServiceUuid::ServiceUuid() {
         }
     }
     catch (const std::exception& e) {
-         log_error(LOGUSR, "Error occured while handling persistent service UUID file: " <<
+         log_info(LOGUSR, "Error occured while handling persistent service UUID file: " <<
                           e.what() << ". Using temporary UUID.");
     }
     catch (...) {

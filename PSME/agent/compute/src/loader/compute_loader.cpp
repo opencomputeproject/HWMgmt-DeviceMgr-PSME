@@ -38,17 +38,9 @@ using agent_framework::module::CommonComponents;
 
 namespace {
 
-#define ENABLE_CONFIGURATION_ENCRYPTION // Enable by default.
-
-#ifdef ENABLE_CONFIGURATION_ENCRYPTION
-    inline std::string decrypt_value(const std::string& value) {
-        return configuration::Configuration::get_instance().decrypt_value(value);
-    }
-#else
     inline std::string decrypt_value(const std::string& value) {
         return value;
     }
-#endif
 
     void check_required_fields(const json::Value& config) {
         if (!config["agent"].is_object()) {

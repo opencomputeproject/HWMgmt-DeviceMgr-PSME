@@ -110,6 +110,11 @@ constexpr const char TransInfo::STATUS_STATE[];
 constexpr const char TransInfo::STATUS_HEALTH[];
 constexpr const char TransInfo::STATUS_HEALTH_ROLL_UP[];
 
+constexpr const char TransInfo::SFP_10G_ETHERNET_COMPLIANCE_CODE[];
+constexpr const char TransInfo::SFP_FIBRE_CHANNEL_LINK_LENGTH[];
+constexpr const char TransInfo::SFP_FIBRE_CHANNEL_TECHNOLOGY[];
+constexpr const char TransInfo::SFP_FIBRE_CHANNEL_TRANSMISSION_MEDIA[];
+constexpr const char TransInfo::SFP_FIBRE_CHANNEL_SPEED[];
 
 constexpr const char SwitchPortMembers::PORT[];
 constexpr const char SwitchPortMembers::MEMBERS[];

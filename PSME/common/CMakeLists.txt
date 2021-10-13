@@ -26,7 +26,7 @@
 add_subdirectory(include)
 add_subdirectory(md5)
 add_subdirectory(base64)
-add_subdirectory(ipmi)
+#add_subdirectory(ipmi)
 add_subdirectory(logger)
 add_subdirectory(json-cxx)
 add_subdirectory(configuration)

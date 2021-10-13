@@ -28,6 +28,7 @@
 #include <thread>
 #include <future>
 #include <vector>
+#include <functional>
 
 namespace agent_framework {
 namespace threading {

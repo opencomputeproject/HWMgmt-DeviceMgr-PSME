@@ -33,12 +33,12 @@ const jsonrpc::ProcedureValidator& AccountCollectionPostSchema::get_procedure() 
     static jsonrpc::ProcedureValidator procedure{
         "account_collection_post",
         jsonrpc::PARAMS_BY_NAME,
-        constants::Common::NAME, VALID_JSON_STRING,
-        constants::AccountConst::LOCKED, VALID_JSON_BOOLEAN,
-        constants::AccountConst::ENABLED, VALID_JSON_BOOLEAN,        
-        constants::AccountConst::USERNAME, VALID_JSON_STRING,
-        constants::AccountConst::PASSWORD, VALID_JSON_STRING,
-        constants::AccountConst::ROLEID, VALID_JSON_STRING,
+        constants::Common::NAME, VALID_OPTIONAL(VALID_JSON_STRING),
+        constants::AccountConst::LOCKED,VALID_OPTIONAL(VALID_JSON_BOOLEAN),
+        constants::AccountConst::ENABLED, VALID_OPTIONAL(VALID_JSON_BOOLEAN),        
+        constants::AccountConst::USERNAME, VALID_OPTIONAL(VALID_JSON_STRING),
+        constants::AccountConst::PASSWORD, VALID_OPTIONAL(VALID_JSON_STRING),
+        constants::AccountConst::ROLEID, VALID_OPTIONAL(VALID_JSON_STRING),
         nullptr
     };
     return procedure;

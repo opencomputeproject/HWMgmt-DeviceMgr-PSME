@@ -44,6 +44,7 @@ public:
     static const std::string REDFISH_PATH;
     static const std::string ROOT_PATH;
     static const std::string ODATA_SERVICE_DOCUMENT;
+    static const std::string RPVfoobar;
     static const std::string METADATA_ROOT_PATH;
     static const std::string METADATA_PATH;
     static const std::string EVENT_SERVICE_PATH;
@@ -82,6 +83,7 @@ public:
     static const std::string SESSION_SERVICE_PATH;
     static const std::string SESSION_COLLECTION_PATH;	
     static const std::string SESSION_PATH;
+    static const std::string MEMBERS_PATH;
 	
     static const std::string UPDATE_SERVICE_PATH;	
     static const std::string CHASSIS_RESET_PATH;	

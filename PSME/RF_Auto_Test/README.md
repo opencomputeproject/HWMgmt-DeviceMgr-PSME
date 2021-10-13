@@ -56,7 +56,7 @@ Install the packages and it's dependencies via `pip3`
     For SONiC platform : Port number is 8889
 
     ```
-    $ ./all.sh 172.17.8.5:8889 172.17.8.10:8889 2.1.3.59.25
+    $ ./all.sh 172.17.8.5:8889 172.17.8.10:8889 2.1.3.59.25 sonic
     ```
 
     For ONL platform : Port number is 8888

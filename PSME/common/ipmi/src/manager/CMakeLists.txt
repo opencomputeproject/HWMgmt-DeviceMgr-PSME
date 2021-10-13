@@ -16,4 +16,4 @@
 #
 # </license_header>
 
-add_subdirectory(ipmitool)
+#add_subdirectory(ipmitool)

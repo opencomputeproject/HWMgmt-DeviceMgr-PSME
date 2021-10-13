@@ -50,8 +50,6 @@ using namespace agent_framework::model::attribute;
 using namespace ecsys_helper;
 using namespace ecopenbmc_helper;
 
-#define ENABLE_CONFIGURATION_ENCRYPTION
-
 #ifdef CSUBSYSTEM
 void make_processors(Manager&  manager, const std::string& system_parent_uuid);
 void make_memories(Manager&  manager, const std::string& system_parent_uuid);
@@ -62,19 +60,10 @@ void create_system(Manager&  manager, const std::string& chassis , const json::V
 
 namespace
 {
-#ifdef ENABLE_CONFIGURATION_ENCRYPTION
-
-inline std::string decrypt_value(const std::string &value)
-{
-    return configuration::Configuration::get_instance().decrypt_value(value);
-}
-
-#else
 inline std::string decrypt_value(const std::string &value)
 {
     return value;
 }
-#endif
 
 EthernetSwitchPortVlan make_port_vlan(const std::string &parent, bool tagged = true, int vlan_id = 0, bool enable = false)
 {

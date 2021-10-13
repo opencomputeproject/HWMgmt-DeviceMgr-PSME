@@ -60,5 +60,7 @@ void SystemsCollection::get(const server::Request& req, server::Response& res) {
         json[Collection::MEMBERS].push_back(std::move(link));
     }
 
+    res.set_header("Link", "<http://redfish.dmtf.org/schemas/ComputerSystemCollection.json>;rel=\"describedby\"");
+
     set_response(res, json);
 }

@@ -128,7 +128,7 @@ public:
         if (m_config.good())
         {
             Json::Reader reader;
-            bool isJsonOK = (m_config != NULL && reader.parse(m_config, m_psme_config_content));
+            bool isJsonOK = (reader.parse(m_config, m_psme_config_content));
 
             if (isJsonOK)
                 m_ifname = m_psme_config_content["server"]["network-interface-name"].asString();

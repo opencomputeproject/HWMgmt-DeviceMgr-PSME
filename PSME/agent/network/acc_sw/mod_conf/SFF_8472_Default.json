@@ -10,6 +10,41 @@
 	    }
 	},
 	{
+	    "10G_eth_comp_code": {
+		"Byte_Address": 3,
+		"unit": 1,
+		"Size": 1
+	    }
+	},
+	{
+	    "Fiber_chan_link_len": {
+		"Byte_Address": 7,
+		"unit": 1,
+		"Size": 1
+	    }
+	},
+	{
+	    "Fiber_chan_tx_tec": {
+		"Byte_Address": 7,
+		"unit": 1,
+		"Size": 2
+	    }
+	},
+	{
+	    "Fiber_chan_tx_media": {
+		"Byte_Address": 9,
+		"unit": 1,
+		"Size": 1
+	    }
+	},
+	{
+	    "Fiber_chan_speed": {
+		"Byte_Address": 10,
+		"unit": 1,
+		"Size": 1
+	    }
+	},
+	{
 	    "Vendor_name": {
 		"Byte_Address": 20,
 		"Size": 16,

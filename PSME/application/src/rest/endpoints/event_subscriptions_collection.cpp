@@ -60,26 +60,34 @@ json::Value make_prototype() {
     return r;
 }
 
-
-Subscription to_model(const json::Value& json) {
+Subscription to_model(const json::Value &json)
+{
     Subscription s;
+
+    if (json.is_member(Common::NAME))
+    {
     const auto& name = json[Common::NAME].as_string();
+        s.set_name(name);
+    }
+
     const auto& destination = json[EventSubscription::DESTINATION].as_string();
+    s.set_destination(destination);
+
     const auto& context = json[EventSubscription::CONTEXT].as_string();
+    s.set_context(context);
+
     const auto& protocol = json[EventSubscription::PROTOCOL].as_string();
+    s.set_protocol(protocol);
+
     EventTypes event_types;
-    for (const auto& event_type : json[EventSubscription::EVENT_TYPES]) {
+    for (const auto &event_type : json[EventSubscription::EVENT_TYPES])
+    {
         event_types.add(EventType::from_string(event_type.as_string()));
     }
     s.set_id(0);  //0 means add from subscribe //!0 get from file
-    s.set_name(name);
-    s.set_destination(destination);
-    s.set_context(context);
-    s.set_protocol(protocol);
     s.set_event_types(event_types);
     return s;
 }
-
 }
 
 
@@ -106,6 +114,13 @@ void SubscriptionCollection::get(const server::Request& req, server::Response& r
 void SubscriptionCollection::post(const server::Request &request, server::Response &response)
 {
     const auto& json = JsonValidator::validate_request_body<schema::SubscriptionCollectionPostSchema>(request);
+
+    if(json[EventSubscription::PROTOCOL].as_string() != "Redfish")
+    {
+        response.set_status(server::status_4XX::BAD_REQUEST);
+        return;
+    }
+
     Subscription subscription = to_model(json);
     uint64_t id = SubscriptionManager::get_instance()->add(subscription);
     if(id !=0)

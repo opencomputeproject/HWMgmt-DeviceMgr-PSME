@@ -93,7 +93,7 @@ void AccountRoleCollection::get(const server::Request& req, server::Response& re
     for (const auto& item : AccountManager::get_instance()->getRole()) {
         json::Value link_elem(json::Value::Type::OBJECT);
         const auto& role = item.second;
-        link_elem[Common::ODATA_ID] = PathBuilder(req).append(role.get_id()).build();
+        link_elem[Common::ODATA_ID] = PathBuilder(req).append(role.get_name()).build();
         r[Collection::MEMBERS].push_back(std::move(link_elem));
     }
        

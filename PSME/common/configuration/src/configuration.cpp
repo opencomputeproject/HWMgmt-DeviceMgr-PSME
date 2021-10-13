@@ -52,10 +52,6 @@ constexpr const char Configuration::KEY_FILE[];
 
 static Configuration* g_configuration = nullptr;
 
-std::string Configuration::decrypt_value(const std::string& value) const {
-    return configuration::decrypt(m_encryption_key, value);
-}
-
 std::string Configuration::load_file(const std::string& file_name) const {
     /* Load user defined configuration file */
     std::ifstream file_stream(file_name);

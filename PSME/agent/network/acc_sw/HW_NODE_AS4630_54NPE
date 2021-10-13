@@ -20,28 +20,30 @@
 ###########################################################################################################
 # Support Platform type
 ###########################################################################################################
-fans_type=("S" "S" "S" "S" "S" "S" "P" "P")
-thermals_type=("C" "S" "S" "S" "S" "S" "P" "P")
+fans_type=("S" "S" "S" "P" "P")
+thermals_type=("C" "S" "S" "S" "P" "P")
 psus_type=("S" "S")
-mapping=("QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP" "QSFP"
-"QSFP" "QSFP" )
+mapping=("E" "E" "E" "E" "E" "E" "E" "E" "E" "E"
+"E" "E" "E" "E" "E" "E" "E" "E" "E" "E"
+"E" "E" "E" "E" "E" "E" "E" "E" "E" "E"
+"E" "E" "E" "E" "E" "E" "E" "E" "E" "E"
+"E" "E" "E" "E" "E" "E" "E" "E"
+"SFP" "SFP" "SFP" "SFP" "QSFP" "QSFP")
 
 ###########################################################################################################
 # cpu core temp path
 ###########################################################################################################
-cpu_core_prefix=("/sys/devices/platform/coretemp.0/hwmon/hwmon1/")
+cpu_core_prefix=("/sys/devices/platform/coretemp.0/hwmon/hwmon1")
 
 ###########################################################################################################
 # i2c bus path
 ###########################################################################################################
 i2c_prefix=("/sys/bus/i2c/devices")
-i2c_bus_fan=("54-0066")
-i2c_bus_thermal=("54-004c/hwmon/hwmon*" "55-0049/hwmon/hwmon*" "55-0048/hwmon/hwmon*" "55-004a/hwmon/hwmon*" "55-004b/hwmon/hwmon*")
-i2c_bus_psu_basic=("50-0053" "49-0050")
-i2c_bus_psu_ym2651=("50-005b" "49-0058")
-i2c_bus_port=("11-0060")
+i2c_bus_fan=("3-0060")
+i2c_bus_thermal=("14-0048/hwmon/hwmon*" "24-004b/hwmon/hwmon*" "25-004a/hwmon/hwmon*")
+i2c_bus_psu_basic=("10-0050" "11-0051")
+i2c_bus_psu_ym2651=("10-0058" "11-0059")
+i2c_bus_port=("3-0060")
 i2c_bus_port_map=("")
 
 ###########################################################################################################
@@ -49,9 +51,9 @@ i2c_bus_port_map=("")
 ###########################################################################################################
 i2c_nodes_fan_name=("")
 i2c_nodes_fan_serial=("")
-i2c_nodes_fan_present=("present")
-i2c_nodes_fan_front_speed=("front_speed_rpm")
-i2c_nodes_fan_rear_speed=("rear_speed_rpm")
+i2c_nodes_fan_present=("fan_present_")
+i2c_nodes_fan_front_speed=("fan_speed_rpm_")
+i2c_nodes_fan_rear_speed=("")
 i2c_nodes_fan_front_percentage=("")
 i2c_nodes_fan_rear_percentage=("")
 
@@ -63,7 +65,7 @@ i2c_nodes_thermal_temp=("temp1_input")
 ###########################################################################################################
 # CPU core temp node
 ###########################################################################################################
-cpu_core_temp_node=("temp1_input" "temp2_input" "temp3_input" "temp4_input" "temp5_input")
+cpu_core_temp_node=("temp1_input" "temp2_input" "temp6_input" "temp12_input", "temp16_input")
 
 ###########################################################################################################
 # PSU basic sysfs node
@@ -71,7 +73,7 @@ cpu_core_temp_node=("temp1_input" "temp2_input" "temp3_input" "temp4_input" "tem
 i2c_nodes_psu_basic_name=("psu_model_name")
 i2c_nodes_psu_basic_present=("psu_present")
 i2c_nodes_psu_basic_power_good=("psu_power_good")
-i2c_nodes_psu_basic_serial=("")
+i2c_nodes_psu_basic_serial=("psu_serial_number")
 
 ###########################################################################################################
 # PSU ym2651 sysfs node
@@ -90,11 +92,10 @@ i2c_nodes_psu_v_in=("")
 i2c_nodes_psu_i_in=("")
 i2c_nodes_psu_p_in=("")
 
-
 ###########################################################################################################
 # SFP(QSFP) sysfs node
 ###########################################################################################################
-i2c_nodes_port_present_all=("module_present_all")
+#i2c_nodes_port_present_all=("module_present_all")
 i2c_nodes_port_present=("module_present_")
 i2c_nodes_port_tx_disable=("module_tx_disable_")
-i2c_nodes_port_lp_mode=("")
+i2c_nodes_port_lp_mode=("module_lp_mode_")

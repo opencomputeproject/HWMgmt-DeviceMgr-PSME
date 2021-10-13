@@ -234,5 +234,8 @@ void endpoint::NetworkProtocol::get(const server::Request &req, server::Response
              r[Common::STATUS][Common::HEALTH] = "OK";
              r[Common::STATUS][Common::HEALTH_ROLLUP] = "OK";		
     }
+
+    res.set_header("Link", "<http://redfish.dmtf.org/schemas/ManagerNetworkProtocol.json>;rel=\"describedby\"");
+
     set_response(res, r);
 }

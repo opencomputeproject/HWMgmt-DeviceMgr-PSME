@@ -20,10 +20,6 @@
 * under the License.
  */
 
-#include "ecrf_pal_helper/asxvolt16.hpp"
-#include "ecrf_pal_helper/asgvolt64.hpp"
-#include "ecrf_pal_helper/as5916_54xks.hpp"
-#include "ecrf_pal_helper/as5916_54xk.hpp"
 #include "ecrf_pal_helper/api/ecrf_pal_com.hpp"
 
 #include <iostream>
@@ -51,28 +47,28 @@ ecrf_pal_com_sonic::ecrf_pal_com_sonic()
 int ecrf_pal_com_sonic::rfpal_sys_info_com_get(rfpal_sys_info *p_sys_info)
 {
 	
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Platform Name\" | awk '{print $5}'",p_sys_info->platform_name);
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Product Name\" | awk '{print $5}'",p_sys_info->product_name);
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Part Number\" | awk '{print $5}'",p_sys_info->part_number);
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Serial Number\" | awk '{print $5}'",p_sys_info->serial_number);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Platform Name\" | awk '{print $5}'",p_sys_info->platform_name);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Product Name\" | awk '{print $5}'",p_sys_info->product_name);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Part Number\" | awk '{print $5}'",p_sys_info->part_number);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Serial Number\" | awk '{print $5}'",p_sys_info->serial_number);
     //MAC
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Base MAC Address\" | awk '{print $6}'",p_sys_info->mac);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Base MAC Address\" | awk '{print $6}'",p_sys_info->mac);
     //manufacturer
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Manufacturer\" | awk '{print $4}'",p_sys_info->manufacturer);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Manufacturer\" | awk '{print $4}'",p_sys_info->manufacturer);
     //manufacture_date
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Manufacture Date\" | awk '{print $5, $6}'",p_sys_info->manufacture_date);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Manufacture Date\" | awk '{print $5, $6}'",p_sys_info->manufacture_date);
     //vendor
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Vendor Name\" | awk '{print $5}'",p_sys_info->vendor);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Vendor Name\" | awk '{print $5}'",p_sys_info->vendor);
     //device_version
     //label_revision
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Label Revision\" | awk '{print $5}'",p_sys_info->label_revision);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Label Revision\" | awk '{print $5}'",p_sys_info->label_revision);
     // country_code
     // diag_version           
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"Diag Version\" | awk '{print $5}'",p_sys_info->diag_version);
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"Diag Version\" | awk '{print $5}'",p_sys_info->diag_version);
     // service_tag
     // mac_range
     // onie_version
-    this->rfpal_system_cmd_set("sudo /usr/bin/decode-syseeprom | grep \"ONIE Version\" | awk '{print $5}'",p_sys_info->onie_version);   
+    this->rfpal_system_cmd_set("sudo decode-syseeprom | grep \"ONIE Version\" | awk '{print $5}'",p_sys_info->onie_version);   
     // nos_type
             
     return ECRF_PAL_STATUS_OK;
@@ -86,7 +82,7 @@ int ecrf_pal_com_sonic::rfpal_fan_num_com_get()
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -113,7 +109,7 @@ int ecrf_pal_com_sonic::rfpal_fan_info_com_get(unsigned id, rfpal_fan_info *p_fa
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -230,7 +226,7 @@ int ecrf_pal_com_sonic::rfpal_port_num_com_get()
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -251,7 +247,7 @@ int ecrf_pal_com_sonic::rfpal_port_com_trans_is_present(int id)
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -311,7 +307,7 @@ int ecrf_pal_com_sonic::rfpal_sfp_tx_disable_com_set(unsigned id, int value)
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -360,7 +356,7 @@ int ecrf_pal_com_sonic::rfpal_sfp_tx_disable_com_get(unsigned id)
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -409,7 +405,7 @@ int ecrf_pal_com_sonic::rfpal_thermal_num_com_get()
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -443,7 +439,7 @@ int ecrf_pal_com_sonic:: rfpal_thermal_info_com_get(unsigned id_in, rfpal_therma
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -533,7 +529,7 @@ int ecrf_pal_com_sonic::rfpal_psu_num_com_get()
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -554,7 +550,7 @@ int ecrf_pal_com_sonic::rfpal_psu_info_com_get(unsigned id_in, rfpal_psu_info *p
     if (m_ifile.good())
     {
         Json::Reader reader;
-        bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+        bool isJsonOK = (reader.parse(m_ifile, content));
 
         if (isJsonOK)
         {
@@ -566,7 +562,8 @@ int ecrf_pal_com_sonic::rfpal_psu_info_com_get(unsigned id_in, rfpal_psu_info *p
             // name
             std::string psu_name = s[0]["ecrf_pal"]["psus"][str_psu_node]["name"].asString();
             this->rfpal_sysfs_node_get(psu_name.c_str(), str_node_result);
-            strncpy(p_psu_info->model, str_node_result, strlen(str_node_result));
+            //strncpy(p_psu_info->model, str_node_result, strlen(str_node_result));
+            strncpy(p_psu_info->model, str_node_result, 8);
 	    // type
             if(((strncmp(str_node_result, "YM-2651Y", 8)==0) || (strncmp(str_node_result, "YPEB1200", 8)==0) || (strncmp(str_node_result, "YESM1300", 8)==0))){
                 p_psu_info->psu_type = ecrf_pal_com_s::RFPAL_PSU_TYPE_AC;    
@@ -585,7 +582,8 @@ int ecrf_pal_com_sonic::rfpal_psu_info_com_get(unsigned id_in, rfpal_psu_info *p
             std::string psu_serial = s[0]["ecrf_pal"]["psus"][str_psu_node]["serial"].asString();
             this->rfpal_sysfs_node_get(psu_serial.c_str(), str_node_result);
 	    if(strlen(str_node_result) > 0){
-                strncpy(p_psu_info->serial, str_node_result, strlen(str_node_result)-1);            	  
+                //strncpy(p_psu_info->serial, str_node_result, strlen(str_node_result)-1);            	  
+                strncpy(p_psu_info->serial, str_node_result, 11);            	  
             }
             // present
             str_node_result[0]='\0';

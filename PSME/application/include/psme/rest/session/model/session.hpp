@@ -70,6 +70,15 @@ public:
     }
 
     /*!
+     * @brief Get session string id
+     *
+     * @return session string id
+     */
+    std::string get_string_id() const {
+        return m_string_id;
+    }
+
+    /*!
      * @brief Set session id
      *
      * @param id session id
@@ -78,6 +87,14 @@ public:
         m_id = id;
     }
 
+    /*!
+     * @brief Set session string id
+     *
+     * @param id session string id
+     */
+    void set_string_id(std::string id) {
+        m_string_id = id;
+    }
 
     /*!
      * @brief Set session authe_token
@@ -172,6 +189,7 @@ public:
 
 private:
     uint64_t m_id{};
+    std::string m_string_id{};
     std::string m_authe_token{};
     std::string m_srcip{};
     std::string m_username{};

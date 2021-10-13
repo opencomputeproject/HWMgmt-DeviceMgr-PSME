@@ -64,7 +64,8 @@ void collect_request_params(Request& req, const mux::SegmentsVec& segments,
 }
 
 void execute_handler(MethodsHandler& h, Request& req, Response& res , bool is_exception_uri) {
-    switch (req.get_method()) {
+    switch (req.get_method())
+    {
         case Method::GET:
             if(is_exception_uri  || (true == h.authen_check(req, "GET")))
             h.get(req, res);
@@ -75,13 +76,13 @@ void execute_handler(MethodsHandler& h, Request& req, Response& res , bool is_ex
             if(is_exception_uri  || (true == h.authen_check(req, "POST")))
             h.post(req, res);
             else
-                http_method_not_authorized(req, res);	
+                http_method_not_allowed(req, res);	
             break;
         case Method::PATCH:
             if(is_exception_uri  || (true == h.authen_check(req, "PATCH")))
             h.patch(req, res);
             else
-                http_method_not_authorized(req, res);	
+                http_method_not_allowed(req, res);	
             break;
         case Method::DELETE:
             if(is_exception_uri  || (true == h.authen_check(req, "DELETE")))
@@ -96,6 +97,17 @@ void execute_handler(MethodsHandler& h, Request& req, Response& res , bool is_ex
                 http_method_not_authorized(req, res);	   			
             break;
         case Method::HEAD:
+            if(is_exception_uri  || (true == h.authen_check(req, "HEAD")))
+            h.head(req, res);
+            else
+                http_method_not_authorized(req, res);
+            break;
+        case Method::TRACE:
+            if(is_exception_uri  || (true == h.authen_check(req, "TRACE")))
+            h.trace(req, res);
+            else
+                http_method_not_authorized(req, res);
+            break;
         case Method::OPTIONS:
         case Method::UNKNOWN:
         default:

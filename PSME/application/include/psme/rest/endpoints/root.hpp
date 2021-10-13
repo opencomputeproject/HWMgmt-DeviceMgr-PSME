@@ -45,6 +45,8 @@ public:
     virtual ~Root();
 
     void get(const server::Request& request, server::Response& response) override;
+    void head(const server::Request& request, server::Response& response) override;
+    void trace(const server::Request& request, server::Response& response) override;
 
 private:
     std::string service_root_name{};

@@ -17,19 +17,17 @@ More detailed information can be found at [official Intel Rack Scale Design Site
 
 ### Build NOS OpenNetworkLinux -
 
- Require host PC OS Ubuntu 16.04 TLS with container supported environment.
+ Require host PC OS Ubuntu 18.04 server with container supported environment.
   
- How To Install Docker on Ubuntu 16.04
+ How To Install Docker on Ubuntu 18.04
 ```  
-$ sudo apt-get update
-$ sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-$ sudo apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
-$ sudo apt-get update
-$ apt-cache policy docker-engine
-$ sudo apt-get install -y docker-engine
-$ sudo usermod -aG docker $(whoami)
+$ sudo apt install docker.io
+$ sudo systemctl start docker
+$ sudo systemctl enable docker
+$ sudo apt install python
+
 ```  
- How To Build ONL in Docker on Ubuntu 16.04
+ How To Build ONL in Docker on Ubuntu 18.04
 ```    
 $ cd ~
 $ mkdir NOS
@@ -37,21 +35,54 @@ $ cd NOS
 $ git clone https://github.com/opencomputeproject/OpenNetworkLinux.git 
 $ cd OpenNetworkLinux
 $ git checkout f0bcb230 
+
+```  
+  If switch use NOS ONL(Debian 8 Jessie)
+``` 
 $ sudo docker/tools/onlbuilder -8 
 $ apt-cacher-ng
 $ source setup.env
+$ sed -i "s/wget \$(K_ARCHIVE_URL)/wget --no-check-certificate \$(K_ARCHIVE_URL)/g"  make/kbuild.mk
 $ make amd64  2>&1 | tee  onl.log   
+
+```  
+  Or if switch use ecSONiC (Debian 10 Buster)
+``` 
+
+$ sudo docker/tools/onlbuilder -10
+$ apt update -y
+$ export DEBIAN_FRONTEND=noninteractive
+$ apt install apt-cacher-ng -yq
+$ apt-cacher-ng
+$ source setup.env
+$ cd packages/platforms/
+$ ls  | grep -v "Makefile\|accton" | xargs rm -rf
+$ cd ../../
+$ apt install ca-certificates -y
+$ apt-get install libgnutls30 -y
+$ make amd64  2>&1 | tee  onl.log  
+
 ```    
 ### Build Redfish -
 
  Git clone Redfish source code.
   
+If use OCP baseline git repo.
 ```   
 $ cd ~/NOS/OpenNetworkLinux
 $ mkdir DM-Redfish-PSME
 $ git clone https://github.com/opencomputeproject/DM-Redfish-PSME.git ./DM-Redfish-PSME
 $ cd DM-Redfish-PSME/PSME/build/
 ```  
+
+If use Edge-core internal baseline git repo.
+```   
+$ cd ~/NOS/OpenNetworkLinux
+$ mkdir Redfish
+$ git clone https://edge-core-Redfish.git ./Redfish
+$ cd Redfish/PSME/build/
+``` 
+
  Install necessary packages only at first time and start build
 ```  
 $ ./pre-inst-X86-pkgs.sh
@@ -102,7 +133,7 @@ ex. For ONL platform (Port : 8888)
 curl --insecure -v https://172.17.10.9:8888/redfish/v1/ | json_pp
 ```
 
-ex. For SONiC platform (Port : 8889)
+ex. For ecSONiC platform (Port : 8889)
 ```
 curl --insecure -v https://172.17.10.9:8889/redfish/v1/ | json_pp
 ```
@@ -182,55 +213,55 @@ More detailed information can be found at [Device-Manager](https://github.com/op
 
 ## Support on 
 
-PSME current tested on ONL(OpenNetworkLinux) and SONiC system. 
+PSME current tested on ONL(OpenNetworkLinux) and ecSONiC system. 
    
 
 	+-----------------------------|--------------------+  	+------------------------------|--------------------+		
-	|            Platform         | ONL kernel 4.14.x  |    |            Platform         | SONiC kernel4.9.x  |
+	|            Platform         | ONL kernel 4.14.x  |    |            Platform          | SONiC kernel4.19.x |
  	|-----------------------------|--------------------|    |------------------------------|--------------------|             
-	|x86-64-accton-as5712-54x     |        O           |    |  x86-64-accton-as7712-32x   |         O          | 
+	|x86-64-accton-as5712-54x     |        o           |    |  x86-64-accton-as7712-32x    |         o          | 
 	|-----------------------------|--------------------|    |------------------------------|--------------------|             
-	|x86-64-accton-as5812-54t     |        O           |    |  x86-64-accton-as4630-54pe  |         O          |   
+	|x86-64-accton-as5812-54t     |        o           |    |  x86-64-accton-as4630-54pe   |         o          |   
 	|-----------------------------|--------------------|    |------------------------------|--------------------|             
-	|x86-64-accton-as5812-54x     |        O           |    |  x86-64-accton-as5835-54x   |         O          |     
+	|x86-64-accton-as5812-54x     |        o           |    |  x86-64-accton-as5835-54x    |         o          |     
 	|-----------------------------|--------------------|    |------------------------------|--------------------|             
-	|x86-64-accton-as5912-54x     |        O           |    |  x86-64-accton-as5835-54t   |         O          |
+	|x86-64-accton-as5912-54x     |        o           |    |  x86-64-accton-as5835-54t    |         o          |
 	|-----------------------------|--------------------|    |------------------------------|--------------------|             
-	|x86-64-accton-as5916-54xk    |        O           |    |  x86-64-accton-as7326-56x   |         O          |  
+	|x86-64-accton-as5916-54xk    |        o           |    |  x86-64-accton-as7326-56x    |         o          |  
 	|-----------------------------|--------------------|    |------------------------------|--------------------|             
-	|x86-64-accton-as5916-54xks   |        O           |    |  x86-64-accton-as7726-32x   |         O          |    
+	|x86-64-accton-as5916-54xks   |        o           |    |  x86-64-accton-as7726-32x    |         o          |    
 	|-----------------------------|--------------------|    |------------------------------|--------------------|             
-	|x86-64-accton-as5916-54xm    |        O           |    |  x86-64-accton-as9716-32d   |         O          |   
+	|x86-64-accton-as5916-54xm    |        o           |    |  x86-64-accton-as9716-32d    |         o          |   
 	|-----------------------------|--------------------|    |------------------------------|--------------------|             
-	|x86-64-accton-as6712-32x     |        o           |    |  x86-64-accton-as7816-64x   |         O          |     
+	|x86-64-accton-as6712-32x     |        o           |    |  x86-64-accton-as7816-64x    |         o          |     
 	|-----------------------------|--------------------|    |------------------------------|--------------------|             
-	|x86-64-accton-as6812-32x     |        o           |    |  x86-64-accton-wdge100bf-32X |         O          |
+	|x86-64-accton-as6812-32x     |        o           |    |  x86-64-accton-wdge100bf-32X |         o          |
     |-----------------------------|--------------------|    |------------------------------|--------------------|                                                    
-    |x86-64-accton-as7312-54x     |        o           |    |  x86-64-accton-wdge100bf-65X |         O          | 
+    |x86-64-accton-as7312-54x     |        o           |    |  x86-64-accton-wdge100bf-65X |         o          | 
     |-----------------------------|--------------------|    |------------------------------|--------------------|
-    |x86-64-accton-as7316-26xb    |        o           |    |x86-64-accton-as8000(Minipack)|         O          |                                                            
+    |x86-64-accton-as7316-26xb    |        o           |    |x86-64-accton-as8000(Minipack)|         o          |
     |-----------------------------|--------------------|    |------------------------------|--------------------| 
-	|x86-64-accton-as7326-56x     |        o           |         
-	|-----------------------------|--------------------|    <Not Support functioni on SONiC>             
-	|x86-64-accton-as7712-32x     |        o           |    1. Get/Set thermal threshold and temperature alert function     
-	|-----------------------------|--------------------|                 
+	|x86-64-accton-as7326-56x     |        o           |    |  x86-64-accton-as4630-54te   |         o          | 
+	|-----------------------------|--------------------|    |---------------------------------------------------|
+	|x86-64-accton-as7712-32x     |        o           |    <Not Support functioni on ecSONiC>     
+	|-----------------------------|--------------------|    1. Get/Set thermal threshold and temperature alert function= 
 	|x86-64-accton-as7726-32x     |        o           |         
 	|-----------------------------|--------------------|                 
 	|x86-64-accton-as7816-64x     |        o           |         
 	|-----------------------------|--------------------|                 
 	|x86-64-accton-as7926-40xke   |        o           |         
 	|-----------------------------|--------------------|                 
-	|x86-64-accton-as7926-80xk    |        O           |         
+	|x86-64-accton-as7926-80xk    |        o           |         
 	|-----------------------------|--------------------|                 
 	|x86-64-accton-as9716-32d     |        o           |         
 	|-----------------------------|--------------------|                 
-	|x86-64-accton-asxvolt16      |        O           |         
+	|x86-64-accton-asxvolt16      |        o           |         
 	|-----------------------------|--------------------|                 
-	|x86-64-accton-asgvolt64      |        O           |         
+	|x86-64-accton-asgvolt64      |        o           |
 	|-----------------------------|--------------------|                 
-	|x86-64-accton-as5835-54x     |        O           |
+	|x86-64-accton-as5835-54x     |        o           |
 	|-----------------------------|--------------------|                 
-	|x86-64-accton-as5915-18x     |        O           |
+	|x86-64-accton-as5915-18x     |        o           |
 	|-----------------------------|--------------------|                 
-	|x86-64-accton-as4630-54pe    |        O           |         
+	|x86-64-accton-as4630-54pe    |        o           |         
 	+--------------------------------------------------+

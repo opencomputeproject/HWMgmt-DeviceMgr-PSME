@@ -122,6 +122,14 @@ public:
     Account getAccount(const std::string& account_username);
 
     /*!
+     * @brief Check if account exist 
+     *
+     * @param account_username Account name
+     * @return true/false 
+     */
+    bool checkAccount(const std::string& account_username);
+
+    /*!
      * @brief Get all accounts
      *
      * @return Account collection
@@ -190,8 +198,9 @@ public:
 
 private:
 
-
     Account getAccount_by_name(const std::string& account_username);
+
+    bool checkAccount_by_name(const std::string& account_username);
 
     void delAccount_by_name(const std::string& account_username);
     

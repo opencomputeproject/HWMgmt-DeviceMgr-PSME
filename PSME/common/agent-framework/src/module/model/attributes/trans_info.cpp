@@ -97,6 +97,11 @@ Json::Value TransInfo::to_json() const {
     result[literals::TransInfo::RX_POWER_STATUS_STATE] = get_rx_power_status_state();
     result[literals::TransInfo::RX_POWER_STATUS_HEALTH] = get_rx_power_status_health();
 
+    result[literals::TransInfo::SFP_10G_ETHERNET_COMPLIANCE_CODE] = get_10g_ethernet_compliance_code();
+    result[literals::TransInfo::SFP_FIBRE_CHANNEL_LINK_LENGTH] = get_fibre_channel_link_length();
+    result[literals::TransInfo::SFP_FIBRE_CHANNEL_TECHNOLOGY] = get_fibre_channel_technology();
+    result[literals::TransInfo::SFP_FIBRE_CHANNEL_TRANSMISSION_MEDIA] = get_fibre_channel_transmission_media();
+    result[literals::TransInfo::SFP_FIBRE_CHANNEL_SPEED] = get_fibre_channel_speed();
 	
     return result;
 }
@@ -159,6 +164,13 @@ TransInfo TransInfo::from_json(const Json::Value& json) {
     trnas_info.set_rx_power_lower_th_non_critical(json[literals::TransInfo::RX_POWER_LOWER_THRESH_HOLD_NON_CRITICAL]);
     trnas_info.set_rx_power_status_state(json[literals::TransInfo::RX_POWER_STATUS_STATE]);
     trnas_info.set_rx_power_status_health(json[literals::TransInfo::RX_POWER_STATUS_HEALTH]);	
+	
+
+    trnas_info.set_10g_ethernet_compliance_code(json[literals::TransInfo::SFP_10G_ETHERNET_COMPLIANCE_CODE]);
+    trnas_info.set_fibre_channel_link_length(json[literals::TransInfo::SFP_FIBRE_CHANNEL_LINK_LENGTH]);
+    trnas_info.set_fibre_channel_technology(json[literals::TransInfo::SFP_FIBRE_CHANNEL_TECHNOLOGY]);
+    trnas_info.set_fibre_channel_transmission_media(json[literals::TransInfo::SFP_FIBRE_CHANNEL_TRANSMISSION_MEDIA]);
+    trnas_info.set_fibre_channel_speed(json[literals::TransInfo::SFP_FIBRE_CHANNEL_SPEED]);
 	
     return trnas_info;
 }

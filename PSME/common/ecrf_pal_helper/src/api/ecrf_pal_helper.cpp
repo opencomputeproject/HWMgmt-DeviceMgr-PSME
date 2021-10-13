@@ -1300,7 +1300,7 @@ void Switch::get_board_info()
         if (m_ifile.good())
         {
             Json::Reader reader;
-            bool isJsonOK = (m_ifile != NULL && reader.parse(m_ifile, content));
+            bool isJsonOK = (reader.parse(m_ifile, content));
 
             if (isJsonOK)
             {
@@ -1526,6 +1526,7 @@ void Switch::get_port_present_info()
 
         for (int ii = 1; ii <= m_port_max_num; ii++)
         {
+            usleep(1000);
             for (vector<Port_Info *>::iterator pObj = m_vec_Port_Info.begin(); pObj != m_vec_Port_Info.end(); ++pObj)
             {
                 if ((*pObj)->m_ID == ii)
@@ -2569,7 +2570,6 @@ json::Value Switch::get_port_trans_info_by_(int portid)
     try
     {
         std::lock_guard<std::mutex> lock{m_data_mutex};
-
         for (int ii = 1; ii <= m_port_max_num; ii++)
         {
             for (vector<Port_Info *>::iterator pObj = m_vec_Port_Info.begin(); pObj != m_vec_Port_Info.end(); ++pObj)

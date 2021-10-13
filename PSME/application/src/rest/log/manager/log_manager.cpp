@@ -112,7 +112,6 @@ void LogManager::init()
             {
                 std::string slog = rbuf.mtext;
                 slog.erase(slog.length() - 1);
-                std::cout << "get msg[" << slog << std::endl;
                 RFLogEntry::write_log_entry(slog);
             }
         }

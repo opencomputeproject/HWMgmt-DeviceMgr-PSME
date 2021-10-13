@@ -25,34 +25,24 @@
  *
  * */
 
-#include "psme/rest/endpoints/redfish.hpp"
-#include "psme/rest/endpoints/root.hpp"
 #include "psme/rest/constants/constants.hpp"
-#include "psme/rest/server/methods_handler.hpp"
+#include "psme/rest/endpoints/rpvfoobar.hpp"
 
-using psme::rest::server::Request;
-using psme::rest::server::Response;
-using namespace psme::rest::endpoint;
+#include <utility>
+
+
 using namespace psme::rest;
+using namespace psme::rest::constants;
 
-Base_root::Base_root(const std::string& path) : EndpointBase(path) {}
-Base_root::~Base_root() {}
-void Base_root::get(const Request&, Response& res) {
-    json::Value r(json::Value::Type::OBJECT);
-    res.set_status(server::status_2XX::OK);    
-    set_response(res, r);
+
+namespace {
+    endpoint::RPVfoobar::RPVfoobar(const std::string &path) : EndpointBase(path) {}
+
+    endpoint::RPVfoobar::~RPVfoobar() {}
+
+    void endpoint::RPVfoobar::get(const server::Request &, server::Response &response)
+    {
+        response.set_status(server::status_4XX::NOT_FOUND);
+    }
 }
 
-
-Redfish::Redfish(const std::string& path) : EndpointBase(path) {}
-
-Redfish::~Redfish() {}
-
-void Redfish::get(const Request &, Response &res)
-{
-    json::Value r(json::Value::Type::OBJECT);
-    std::string RF_BASE = constants::PathParam::BASE_URL;
-    RF_BASE=RF_BASE+"/";
-    r[constants::Redfish::V1] = RF_BASE;
-    set_response(res, r);
-}

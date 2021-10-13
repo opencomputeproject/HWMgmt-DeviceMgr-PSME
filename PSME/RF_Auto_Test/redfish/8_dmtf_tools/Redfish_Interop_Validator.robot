@@ -15,7 +15,7 @@ ${rsv_dir_path}    Redfish-Interop-Validator
 ${rsv_github_url}  https://github.com/DMTF/Redfish-Interop-Validator.git 
 ${command_string}  ${DEFAULT_PYTHON} ${rsv_dir_path}${/}RedfishInteropValidator.py
 ...                --ip ${OPENBMC_HOST} --nochkcert --forceauth -u ${OPENBMC_USERNAME}
-...                -p ${OPENBMC_PASSWORD} --logdir ${EXECDIR}${/}logs${/} --debug_logging OCP-Profiles/OCPBaselineHardwareManagement.v1_0_1.json 
+...                -p ${OPENBMC_PASSWORD} --authtype Basic --logdir ${EXECDIR}${/}logs${/} --debug_logging OCP-Profiles/OCPBaselineHardwareManagement.v1_0_1.json 
 
 *** Test Case ***
 
@@ -25,12 +25,13 @@ Test Redfish Using Redfish Service Validator
 
     Redfish.Login  admin  redfish 
 
-    ${payload}=  Create Dictionary
-    ...  ServiceEnabled=${false}  SessionTimeout=${600}
-    Redfish.Post  /redfish/v1/SessionService/  body=&{payload}
-    ...  valid_status_codes=[${HTTP_OK}]
+#    ${payload}=  Create Dictionary
+#    ...  ServiceEnabled=${false}  SessionTimeout=${600}
+#    Redfish.Post  /redfish/v1/SessionService/  body=&{payload}
+#    ...  valid_status_codes=[${HTTP_OK}]
 
-    Download DMTF Tool  ${rsv_dir_path}  ${rsv_github_url}  "master" 
+#    Download DMTF Tool  ${rsv_dir_path}  ${rsv_github_url}  "master"
+    Download DMTF Tool  ${rsv_dir_path}  ${rsv_github_url}  "1.1.8"
 
     ${output}=  Run DMTF Tool  ${rsv_dir_path}  ${command_string}
 

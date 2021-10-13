@@ -62,25 +62,19 @@ void TestEventSubscription::get(const server::Request& req, server::Response& re
     auto r = ::make_prototype();
     r[Common::ODATA_ID] = PathBuilder(req).build();
 	
-    Event event(EventType::ResourceAdded, "////TEST EVENT SUB ////");
-    event.set_message("RESOURCE ADD TEST!!!!!");	
-    event.set_origin_of_condition("Origin of Condition!!!!!");	
-    SubscriptionManager::get_instance()->notify(event);
+    Event event4(EventType::Alert, "////TEST EVENT SUB ////");
+    event4.set_message_id("ResourceEvent.1.0.3.ResourceWarningThresholdExceeded");
+    event4.set_message("The resource property /redfish/v1/EthernetSwitches/1/Ports/1 has exceeded its warning threshold of value 100");
+    event4.set_origin_of_condition("/redfish/v1/EthernetSwitches/1/Ports/1");
+    Json::Value oem;
+    oem["CurrentValue"] = 778;
+    oem["State"] = "TxErrorRateExceededLowerThresholdNonCritical";
+    oem["ThresholdValue"] = 100;
+    event4.set_oem(oem);
+    event4.set_severity("Warning");
+    event4.set_context("Alert notification message");
 
-    Event event1(EventType::ResourceRemoved, "////TEST EVENT SUB ////");
-    event1.set_message("RESOURCE REMOVE  TEST!!!!!");	
-    event1.set_origin_of_condition("Origin of Condition!!!!!");	
-    SubscriptionManager::get_instance()->notify(event1);
-
-    Event event2(EventType::Alert, "////TEST EVENT SUB ////");
-    event2.set_message("RESOURCE ALERT  TEST!!!!!");	
-    event2.set_origin_of_condition("Origin of Condition!!!!!");	
-    SubscriptionManager::get_instance()->notify(event2);
-	
-    Event event3(EventType::ResourceUpdated, "////TEST EVENT SUB ////");
-    event3.set_message("RESOURCE Updated TEST!!!!!");	
-    event3.set_origin_of_condition("Origin of Condition!!!!!");	
-    SubscriptionManager::get_instance()->notify(event3);
+    SubscriptionManager::get_instance()->notify(event4);
 	
     auto &Entry = RFLogEntry::get_instance();
     Entry.get_current_time();

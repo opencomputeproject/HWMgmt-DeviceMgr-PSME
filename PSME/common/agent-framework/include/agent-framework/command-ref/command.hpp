@@ -29,6 +29,7 @@
 #include <bits/stl_bvector.h>
 #include <assert.h>
 #include <memory>
+#include <functional>
 
 /*! Agent Framework */
 namespace agent_framework {

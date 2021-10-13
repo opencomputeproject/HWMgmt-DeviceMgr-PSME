@@ -53,6 +53,9 @@ void EndpointBuilder::build_endpoints(psme::rest::server::Multiplexer& mp) {
     // "/redfish/v1/odata"
     mp.register_handler(Root::UPtr(new OdataServiceDocument(constants::Routes::ODATA_SERVICE_DOCUMENT)), AccessType::ALL);
 
+    // "/redfish/v1/RPVfoobar"
+    mp.register_handler(Root::UPtr(new RPVfoobar(constants::Routes::RPVfoobar)), AccessType::ALL);
+
     // "/redfish/v1/$metadata"
     mp.register_handler(MetadataRoot::UPtr(new MetadataRoot(constants::Routes::METADATA_ROOT_PATH)), AccessType::ALL);
 
@@ -173,7 +176,10 @@ void EndpointBuilder::build_endpoints(psme::rest::server::Multiplexer& mp) {
     // "/redfish/v1/SessionService/Sessions"
     mp.register_handler(SessionCollection::UPtr(new SessionCollection(constants::Routes::SESSION_COLLECTION_PATH)), AccessType::ALL);
 
-    // "/redfish/v1/SessionService/Sessions/{SessionsID:[0-9]+}"
+    // "/redfish/v1/SessionService/Sessions/Members"
+    mp.register_handler(Members::UPtr(new Members(constants::Routes::MEMBERS_PATH)),AccessType::ALL);	
+
+    // "/redfish/v1/SessionService/Sessions/{SessionId:[a-zA-Z0-9_]+}"
     mp.register_handler(Session::UPtr(new Session(constants::Routes::SESSION_PATH)));	
 	
 #ifndef NDEBUG

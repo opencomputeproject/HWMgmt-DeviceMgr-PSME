@@ -98,7 +98,6 @@ typedef enum rfpal_psu_type
 
 typedef struct rfpal_psu_info
 {
-
     int status;                     //present 1, absent 0
     int id;                         //PSU id
     char model[ECRF_PAL_CONST_64];  //PSU module name

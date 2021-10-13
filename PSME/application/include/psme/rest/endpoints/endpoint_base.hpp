@@ -71,6 +71,8 @@ public:
 
     void get(const Request& request, Response& response) override;
 
+    void head(const Request& request, Response& response) override;
+
     void del(const Request& request, Response& response) override;
 
     void post(const Request& request, Response& response) override;
@@ -78,6 +80,8 @@ public:
     void patch(const Request& request, Response& response) override;
 
     void put(const Request& request, Response& response) override;
+
+    void trace(const Request& request, Response& response) override;
 
     bool authen_check(const Request& request,const std::string& method) override;
 

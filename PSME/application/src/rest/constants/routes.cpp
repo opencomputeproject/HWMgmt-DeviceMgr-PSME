@@ -56,6 +56,10 @@ const std::string Routes::ODATA_SERVICE_DOCUMENT =
         .append(constants::PathParam::ODATA)
         .build();
 
+// "/redfish/v1/RPVfoobar"
+    const std::string Routes::RPVfoobar=
+    PathBuilder(constants::PathParam::BASE_URL).append(constants::PathParam::RPVFOOBAR).build();
+
 // "/redfish/v1/$metadata"
 const std::string Routes::METADATA_ROOT_PATH =
     PathBuilder(constants::PathParam::BASE_URL)
@@ -91,7 +95,7 @@ const std::string Routes::ACCOUNT_PATH =
         
 const std::string Routes::ROLE_PATH =
     PathBuilder(ROLE_COLLECTION_PATH)
-        .append_regex(constants::PathParam::ROLE_ID, constants::PathParam::ID_REGEX)
+        .append_regex(constants::PathParam::ROLE_ID, constants::PathParam::ROLENAME_REGEX)
         .build();                
         
 // "/redfish/v1/TaskService"
@@ -231,10 +235,16 @@ const std::string Routes::SESSION_COLLECTION_PATH =
         .append(constants::SessionService::SERVICES)             
         .build();
 
-// "/redfish/v1/SessionService/Services/{SessionId:[0-9]+}"
+// "/redfish/v1/SessionService/Services/Members"
+const std::string Routes::MEMBERS_PATH =
+    endpoint::PathBuilder(SESSION_COLLECTION_PATH)
+        .append(constants::SessionService::MEMBERS)
+        .build();
+
+// "/redfish/v1/SessionService/Services/{SessionId:[a-zA-Z0-9_]+}"
 const std::string Routes::SESSION_PATH =
     endpoint::PathBuilder(SESSION_COLLECTION_PATH)
-        .append_regex(constants::PathParam::SESSION_ID, constants::PathParam::ID_REGEX)
+        .append_regex(constants::PathParam::SESSION_ID, constants::PathParam::STRING_ID_REGEX)
         .build();
 
 // "/redfish/v1/UpdateServices"

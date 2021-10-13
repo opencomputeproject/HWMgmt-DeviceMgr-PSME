@@ -111,14 +111,6 @@ public:
     static Configuration& get_instance();
 
     /*!
-     * @brief Decrypt encrypted value using configuration key.
-     *
-     * @param[in] value Encrypted value
-     * @return Decrypted value
-     * */
-    std::string decrypt_value(const std::string& value) const;
-
-    /*!
      * @brief Load encryption key
      * */
     void load_key_file();

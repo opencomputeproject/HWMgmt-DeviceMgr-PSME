@@ -27,6 +27,8 @@
 
 #include "psme/rest/server/connector/microhttpd/mhd_connector.hpp"
 #include "psme/rest/server/connector/microhttpd/mhd_connector_options.hpp"
+#include "psme/rest/endpoints/utils.hpp"
+#include "psme/rest/constants/constants.hpp"
 
 extern "C" {
 #include "microhttpd.h"
@@ -36,6 +38,9 @@ extern "C" {
 #include <sstream>
 
 using namespace psme::rest::server;
+using namespace psme::rest;
+using namespace psme::rest::endpoint;
+using namespace psme::rest::constants;
 
 namespace {
 
@@ -85,6 +90,7 @@ Method get_request_method(const char* method) {
     }
 }
 
+static bool b_chassis_ready = false;
 /* microhttpd's MHD_AccessHandlerCallback */
 int access_handler_callback(void* cls, struct MHD_Connection *connection,
     const char* url, const char* method, const char* version,
@@ -93,6 +99,20 @@ int access_handler_callback(void* cls, struct MHD_Connection *connection,
     log_debug(GET_LOGGER("rest"), "HTTP Method " << method);
 
     auto* connector = static_cast<MHDConnector*>(cls);
+
+//Check Chassis is ready//
+    if(b_chassis_ready == false)
+    {
+        auto chassis_ids = agent_framework::module::CommonComponents::get_instance()->get_chassis_manager().get_ids();
+        if(std::uint32_t(chassis_ids.size()) > 0)
+            b_chassis_ready = true;
+        else
+        {
+            Response response;
+            response.set_status(psme::rest::server::status_5XX::SERVICE_UNAVAILABLE);
+            return send_response(connection, response);
+        }
+    }
 
     if (!connector->is_access_allowed(connection)) {
         Response response;
@@ -131,7 +151,7 @@ int access_handler_callback(void* cls, struct MHD_Connection *connection,
 
     if(user != NULL)
     {
-        printf("user[%s] pass[%s]\r\n", user, pass);
+        log_info(GET_LOGGER("rest"), "user[" << user << "] pass [" << pass << "]"); 
         request->set_header("UserName", user);	
         request->set_header("Password", pass);	
         free(user);
@@ -150,12 +170,12 @@ int access_handler_callback(void* cls, struct MHD_Connection *connection,
                  addr->sa_data[4] & 0xFF,
                  addr->sa_data[5] & 0xFF);
         request->set_header("SrcIp", ip);	
-        printf("get ClientIp[%s] \r\n", ip);
+        log_info(GET_LOGGER("rest"), "get ClientIp[" << ip << "]"); 
     }
     else
         printf("Can't get client Ip address!\r\n");
     
-    printf("get from header X-Auth-Token[%s]\r\n", request->get_header(xAuth).c_str());    
+    log_info(GET_LOGGER("rest"), "get from header X-Auth-Token[" << request->get_header(xAuth).c_str() << "]"); 
 	
     if(strlen(xAuthGen.c_str()) !=0 || strlen(xAuthGen.c_str()))
     {

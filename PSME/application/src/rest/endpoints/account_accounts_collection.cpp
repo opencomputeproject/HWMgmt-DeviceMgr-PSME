@@ -33,8 +33,11 @@
 
 #include "psme/rest/validators/json_validator.hpp"
 #include "psme/rest/validators/schemas/account_collection.hpp"
+#include "psme/rest/utils/time_utils.hpp"
+#include <sys/time.h>
 
 
+using namespace psme::rest::utils;
 using namespace psme::rest;
 using namespace psme::rest::constants;
 using namespace psme::rest::endpoint;
@@ -58,29 +61,46 @@ json::Value make_prototype() {
     return r;
 }
 
-
-Account to_model(const json::Value& json) {
+Account to_model(const json::Value &json)
+{
     Account s;    
+    if (json.is_member(Common::NAME))
+    {
     const auto& name = json[Common::NAME].as_string();
-    const auto& enabled = json[AccountConst::ENABLED].as_bool();
-    const auto& locked = json[AccountConst::LOCKED].as_bool();
-    const auto& username = json[AccountConst::USERNAME].as_string();
-    const auto& password = json[AccountConst::PASSWORD].as_string();
-    const auto& roleid = json[AccountConst::ROLEID].as_string();
-               
+        s.set_name(name);
+    }
 
-    s.set_name(name);
+    if(json.is_member(AccountConst::ENABLED))
+    {
+    const auto& enabled = json[AccountConst::ENABLED].as_bool();
+        s.set_enabled(enabled);
+    }
+               
+    if(json.is_member(AccountConst::LOCKED))
+    {
+        const auto &locked = json[AccountConst::LOCKED].as_bool();
+        s.set_locked(locked);
+    }
+
+    if(json.is_member(AccountConst::USERNAME))
+    {
+        const auto &username = json[AccountConst::USERNAME].as_string();
     s.set_username(username);
+    }
+
+    if(json.is_member(AccountConst::PASSWORD))
+    {
+        const auto &password = json[AccountConst::PASSWORD].as_string();
     s.set_password(password,true);
-    s.set_roleid(roleid);
-    s.set_enabled(enabled);
-    s.set_locked(locked);
+    }
     
+    if(json.is_member(AccountConst::ROLEID))
+    {
+        const auto &roleid = json[AccountConst::ROLEID].as_string();
+        s.set_roleid(roleid);
+    }
     return s;
 }
-
-
-
 }
 
 
@@ -91,6 +111,7 @@ AccountCollection::~AccountCollection() {}
 
 
 void AccountCollection::get(const server::Request& req, server::Response& res) {
+    std::chrono::steady_clock::time_point m_timestamp{std::chrono::steady_clock::now()};
     auto r = ::make_prototype();
     r[Common::ODATA_ID] = PathBuilder(req).build();
     r[Collection::ODATA_COUNT] = AccountManager::get_instance()->Account_size();
@@ -102,30 +123,26 @@ void AccountCollection::get(const server::Request& req, server::Response& res) {
         r[Collection::MEMBERS].push_back(std::move(link_elem));
     }
     
+    std::string time_s = "W/\"" + TimeUtils::get_time_with_zone(m_timestamp) + '\"';     
+    res.set_header("ETag", time_s);    
+    res.set_header("Link", "<http://redfish.dmtf.org/schemas/ManagerAccountCollection.json>;rel=\"describedby\""); 
     set_response(res, r);
 }
 
-
-void AccountCollection::post(const server::Request& request, server::Response& response) {
-
+void AccountCollection::post(const server::Request &request, server::Response &response)
+{
     using namespace psme::rest::error;
     const auto& json = JsonValidator::validate_request_body<schema::AccountCollectionPostSchema>(request);
-    Account account = to_model(json);
     
-    try {
-       const auto& role=AccountManager::get_instance()->getRole(json[AccountConst::ROLEID].as_string());    	
-    }
-    catch (const agent_framework::exceptions::NotFound& ex) {
-        log_error(GET_LOGGER("rest"), "Not found exception: " << ex.what());
-        ServerError server_error = ErrorFactory::create_error_from_gami_exception(
-            agent_framework::exceptions::NotFound(ex.get_message(), request.get_url())
-        );
-        response.set_status(server_error.get_http_status_code());
-        response.set_body(server_error.as_string());;
+    if (!(json.is_member(AccountConst::ROLEID)) || !json.is_member(AccountConst::USERNAME) || !json.is_member(AccountConst::PASSWORD) || !json.is_member(AccountConst::ENABLED))
+    {
+        log_error(GET_LOGGER("rest"), "POST lack of mandotary field");
+        response.set_header("Allow", "GET HEAD");
+        response.set_status(server::status_4XX::METHOD_NOT_ALLOWED);
         return;
     }    
     
-    
+    Account account = to_model(json);
     
     uint64_t id = AccountManager::get_instance()->addAccount(account);
     AccountConfig::get_instance()->saveAccounts();

@@ -32,9 +32,9 @@ const jsonrpc::ProcedureValidator& SubscriptionCollectionPostSchema::get_procedu
     static jsonrpc::ProcedureValidator procedure{
         "subscription_collection_post",
         jsonrpc::PARAMS_BY_NAME,
-        constants::Common::NAME, VALID_JSON_STRING,
+        constants::Common::NAME, VALID_OPTIONAL(VALID_JSON_STRING),
         constants::EventSubscription::DESTINATION, VALID_JSON_STRING,
-        constants::EventSubscription::EVENT_TYPES, VALID_ARRAY_OF(VALID_ENUM(eventing::EventType)),
+        constants::EventSubscription::EVENT_TYPES, VALID_OPTIONAL(VALID_ARRAY_OF(VALID_ENUM(eventing::EventType))),
         constants::EventSubscription::CONTEXT, VALID_JSON_STRING,
         constants::EventSubscription::PROTOCOL, VALID_JSON_STRING,
         nullptr

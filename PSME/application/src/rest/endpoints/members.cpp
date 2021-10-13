@@ -21,6 +21,7 @@
 */
 
 #include "psme/rest/endpoints/session_collection.hpp"
+#include "psme/rest/endpoints/members.hpp"
 #include "psme/rest/utils/status_helpers.hpp"
 
 #include "agent-framework/module/managers/utils/manager_utils.hpp"
@@ -50,7 +51,7 @@ using namespace psme::rest::account::manager;
 namespace
 {
 auto &gADbg = ADbg::get_instance();
-
+/*
 json::Value make_session_prototype()
 {
     json::Value r(json::Value::Type::OBJECT);
@@ -65,6 +66,7 @@ json::Value make_session_prototype()
 
     return r;
 }
+*/
 
 } // namespace
 
@@ -75,46 +77,13 @@ namespace rest
 namespace endpoint
 {
 
-SessionCollection::SessionCollection(const std::string& path) : EndpointBase(path) { }
+Members::Members(const std::string& path) : EndpointBase(path) { }
 
-SessionCollection::~SessionCollection() { }
+Members::~Members() { }
 
-void SessionCollection::get(const server::Request &req, server::Response &res)
-{
-    bool Enabled = SessionManager::get_instance()->GetSessionConfigEnable();
-    if (Enabled == true)
-    {
-        res.set_header("WWW-Authenticate", "Basic realm=<realm>[, charset=\"UTF-8\"]");
-        if (true == authen_check(req, "GET"))
-        {
-            gADbg.acc_printf(LEVEL_WARN, "SessionCollection get authorized ok!");
-        }
-        else
-        {
-            gADbg.acc_printf(LEVEL_WARN, "SessionCollection get unauthorized");
-            res.set_status(server::status_4XX::UNAUTHORIZED);
-            return;
-        }
-    }
-    auto json = ::make_session_prototype();
-    json[Common::ODATA_ID] = PathBuilder(req).build();
-    json[Collection::ODATA_COUNT] = SessionManager::get_instance()->Session_size();
 
-    for (const auto &item : SessionManager::get_instance()->getSessionMap())
-    {
-        json::Value link_elem(json::Value::Type::OBJECT);
-        const auto& session = item.second;
-        link_elem[Common::ODATA_ID] = PathBuilder(req).append(session.get_string_id()).build();
-        json[Collection::MEMBERS].push_back(std::move(link_elem));
-    }
-
-    res.set_header("Link", "<http://redfish.dmtf.org/schemas/SessionCollection.json>;rel=\"describedby\"");
-
-    set_response(res, json);
-}
-
-Session to_model(const json::Value& json);
-Session to_model(const json::Value &json)
+Session to_members_model(const json::Value& json);
+Session to_members_model(const json::Value &json)
 {
     Session s;    
     const auto& username = json[SessionService::USERNAME].as_string();
@@ -126,8 +95,8 @@ Session to_model(const json::Value &json)
     return s;
 }
 
-json::Value make_session_post_prototype();
-json::Value make_session_post_prototype()
+json::Value make_members_post_prototype();
+json::Value make_members_post_prototype()
 {
     json::Value r(json::Value::Type::OBJECT);
 
@@ -140,15 +109,7 @@ json::Value make_session_post_prototype()
     return r;
 }
 
-void endpoint::SessionCollection::del(const server::Request &request, server::Response &response)
-{
-	std::string id =request.params[constants::PathParam::SESSION_ID];
-       response.set_status(server::status_2XX::NO_CONTENT);    
-    gADbg.acc_printf(LEVEL_INFO, "del session id [%s]", id.c_str() );
-	return;
-}
-
-void endpoint::SessionCollection::post(const server::Request& request, server::Response& response)
+void endpoint::Members::post(const server::Request& request, server::Response& response)
 {
     bool Enabled = SessionManager::get_instance()->GetSessionConfigEnable();
     if (Enabled == false)
@@ -169,13 +130,13 @@ void endpoint::SessionCollection::post(const server::Request& request, server::R
         return;
     }
 
-    json::Value r = make_session_post_prototype();
+    json::Value r = make_members_post_prototype();
 
     std::string username{};
     std::string password{};
 
     const auto &json = JsonValidator::validate_request_body<schema::SessionCollectionPostSchema>(request);
-    Session session = to_model(json);
+    Session session = to_members_model(json);
 
     if (json.is_member(constants::Common::USER_NAME) || json.is_member(constants::Common::PASSWORD))
     {
@@ -184,13 +145,12 @@ void endpoint::SessionCollection::post(const server::Request& request, server::R
         //Setup new session //
         username = json[constants::Common::USER_NAME].as_string();
         password = json[constants::Common::PASSWORD].as_string();
-
         gADbg.acc_printf(LEVEL_INFO, "Login UserName[%s], PassWord[%s] ", username.c_str(), password.c_str());
 
         sprintf(command, "%s", "openssl rand -hex 16");
         EcCommonUtils::exec_shell_(command, AuthenToken, 1);
         AuthenToken.erase(AuthenToken.length() - 1);
-/* Todo , above function create the same token if query in short time ?? 
+        /* Todo , above function create the same token if query in short time ?? 
         srand((unsigned int)time(0L));
         std::string str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         unsigned long int pos;
@@ -294,12 +254,6 @@ void endpoint::SessionCollection::post(const server::Request& request, server::R
     return;
 }
 
-void endpoint::SessionCollection::patch(const server::Request& request, server::Response& response)
-{
-    response.set_header("Allow", "GET");
-    http_method_not_allowed(request, response);
-    return;
-}
 } // namespace endpoint
 } // namespace rest
 } // namespace psme

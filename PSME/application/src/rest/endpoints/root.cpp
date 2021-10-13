@@ -95,12 +95,39 @@ endpoint::Root::Root(const std::string& path) : EndpointBase(path) {
 
 endpoint::Root::~Root() { }
 
+void endpoint::Root::get(const server::Request &request, server::Response &response)
+{
+    std::string o_data_verion = request.get_header("OData-Version");
 
-void endpoint::Root::get(const server::Request&, server::Response& response) {
+    if (o_data_verion != "")
+    {
+        if (o_data_verion != "4.0")
+        {
+            response.set_status(server::status_4XX::PRECONDITION_FAILED);
+            return;
+        }
+    }
+
     auto json = make_prototype();
 
     json[Common::UUID] = ServiceUuid::get_instance()->get_service_uuid();
     json[Common::NAME] = service_root_name;
 
+    response.set_header("Allow", "GET HEAD");
+    response.set_header("Cache-Control", "no-cache");
+    response.set_header("Link", "<http://redfish.dmtf.org/schemas/ServiceRoot.json>;rel=\"describedby\"");
+    response.set_header("OData-Version", "4.0");
     set_response(response, json);
+}
+
+void endpoint::Root::trace(const server::Request& request, server::Response& response)
+{
+    response.set_header("Allow", "GET");
+    http_method_not_allowed(request, response);
+}
+
+void endpoint::Root::head(const server::Request&, server::Response& response) {
+    response.set_header("Allow", "GET HEAD");
+    response.set_header("Cache-Control", "no-cache");
+    response.set_header("Link", "<http://redfish.dmtf.org/schemas/ServiceRoot.json>;rel=\"describedby\"");
 }

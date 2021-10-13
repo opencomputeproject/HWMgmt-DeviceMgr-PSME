@@ -53,8 +53,9 @@ Check Fan
     ${n2}  Set Variable  ${item_count}  
 
     Log to console  "#################################################" 
-    : FOR  ${i}  IN RANGE   ${n1}   ${n2} 
-      \    Plug In Fan  ${i}
+    FOR  ${i}  IN RANGE   ${n1}   ${n2} 
+       Plug In Fan  ${i}
+    END
 
 Check PSU
 

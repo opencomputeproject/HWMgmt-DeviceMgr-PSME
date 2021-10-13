@@ -49,6 +49,9 @@ if [ -f "${PlatformPath}" ];then
 else
     HW_type=`/usr/local/bin/sonic-cfggen -d --print-data | grep "platform" | awk '{print $2}' |awk -F '"' '{print $2}'`
     ONLPDUMP="/usr/bin/decode-syseeprom"
+    if [ ! -f "${ONLPDUMP}" ]; then
+       ONLPDUMP="/usr/local/bin/decode-syseeprom"
+    fi
     REST_SERVER_PORT=8889
 fi
 
@@ -135,7 +138,10 @@ get_mgmt_port_name()
 	    #ONL system
 		echo "ma1"
 	elif [ -f "/usr/bin/decode-syseeprom" ];then
-	    #SONiC system
+	    #SONiC 202006 system
+		echo "eth0"
+	elif [ -f "/usr/local/bin/decode-syseeprom" ];then
+	    #SONiC 202012 system
 		echo "eth0"
 	else
 		echo "ma1"

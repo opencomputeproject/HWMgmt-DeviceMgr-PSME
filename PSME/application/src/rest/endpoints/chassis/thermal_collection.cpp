@@ -78,6 +78,10 @@ ThermalCollection::~ThermalCollection() {}
 
 void ThermalCollection::get(const server::Request &req, server::Response &res)
 {
+    int power_supply_sensor_id = 1;
+    int system_cpu_sensor_id = 1;
+    int chassis_sensor_id = 1;
+
     auto json = ::make_prototype();
 
     json[Common::ODATA_ID] = PathBuilder(req).build();
@@ -99,18 +103,24 @@ void ThermalCollection::get(const server::Request &req, server::Response &res)
 
         if (thermal_type == ecrf_pal_helper::Thermal_Info::PSU_Sensor)
         {
-            jsontmp[Common::NAME] = "PSU Thermal Sensor Temperature";
+            std::string name = "PSU " + std::to_string(power_supply_sensor_id) + " Thermal Sensor 1 Temperature";
+            jsontmp[Common::NAME] = name; 
             jsontmp[constants::ThermalZoneCollection::PHYSICAL_CONTEXT] = "PowerSupply";
+            power_supply_sensor_id ++;
         }
         else if (thermal_type == ecrf_pal_helper::Thermal_Info::CPU_Sensor)
         {
-            jsontmp[Common::NAME] = "System CPU Thermal Sensor Temperature";
+            std::string name = "System CPU Thermal Sensor ";
+            jsontmp[Common::NAME] = name + std::to_string(system_cpu_sensor_id) + std::string(" Temperature");
             jsontmp[constants::ThermalZoneCollection::PHYSICAL_CONTEXT] = "CPU";
+            system_cpu_sensor_id ++;
         }
         else if (thermal_type == ecrf_pal_helper::Thermal_Info::SYSTEM_Sensor)
         {
-            jsontmp[Common::NAME] = "Chassis Thermal Sensor Temperature";
+            std::string name = "Chassis Thermal Sensor ";
+            jsontmp[Common::NAME] = name + std::to_string(chassis_sensor_id) + std::string(" Temperature");
             jsontmp[constants::ThermalZoneCollection::PHYSICAL_CONTEXT] = "SystemBoard";
+            chassis_sensor_id ++;
         }
         else
         {
@@ -159,6 +169,9 @@ void ThermalCollection::get(const server::Request &req, server::Response &res)
     auto &fan_manager = agent_framework::module::ChassisComponents::get_instance()->get_fan_manager();
     auto fan_uuids = fan_manager.get_keys();
 
+    int system_fan_id = 1;
+    int psu_fan_id = 1;
+
     for (const auto &fan_uuid : fan_uuids)
     {
         auto fan_ = fan_manager.get_entry(fan_uuid); //Get Fan object by fan_uuid//
@@ -174,13 +187,15 @@ void ThermalCollection::get(const server::Request &req, server::Response &res)
 
         if (fan_type == ecrf_pal_helper::Fan_Info::PSU_Fan)
         {
-            jsontmp[Common::NAME] = "PSU Fan";
+            jsontmp[Common::NAME] = std::string("PSU ") + std::to_string(psu_fan_id) + " Fan 1" ;
             jsontmp[constants::ThermalZoneCollection::PHYSICAL_CONTEXT] = "PowerSupply";
+            psu_fan_id++;
         }
         else if (fan_type == ecrf_pal_helper::Fan_Info::SYSTEM_Fan)
         {
-            jsontmp[Common::NAME] = "System Fan";
+            jsontmp[Common::NAME] = std::string("System Fan ") + std::to_string(system_fan_id);
             jsontmp[constants::ThermalZoneCollection::PHYSICAL_CONTEXT] = "Back";
+            system_fan_id++;
         }
         else
         {
