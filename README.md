@@ -70,9 +70,9 @@ $ make amd64  2>&1 | tee  onl.log
 If use OCP baseline git repo.
 ```   
 $ cd ~/NOS/OpenNetworkLinux
-$ mkdir DM-Redfish-PSME
-$ git clone https://github.com/opencomputeproject/DM-Redfish-PSME.git ./DM-Redfish-PSME
-$ cd DM-Redfish-PSME/PSME/build/
+$ mkdir HWMgmt-DeviceMgr-PSME
+$ git clone https://github.com/opencomputeproject/HWMgmt-DeviceMgr-PSME.git ./HWMgmt-DeviceMgr-PSME
+$ cd HWMgmt-DeviceMgr-PSME/PSME/build/
 ```  
 
 If use Edge-core internal baseline git repo.
@@ -92,7 +92,7 @@ $ ./pre-inst-X86-pkgs.sh
 ```  
 $ ./Build_all.sh
 ``` 
- Output file will be in ~/NOS/OpenNetworkLinux/DM-Redfish-PSME/PSME/build/install/allinone-deb/bin/psme-allinone.deb
+ Output file will be in ~/NOS/OpenNetworkLinux/HWMgmt-DeviceMgr-PSME/PSME/build/install/allinone-deb/bin/psme-allinone.deb
 
  Clean Build
 ``` 
