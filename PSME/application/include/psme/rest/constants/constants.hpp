@@ -132,6 +132,7 @@ namespace OFlow
 {
 extern const char FLOW_ID[];
 extern const char NNI_ID[];
+extern const char UNI_ID[];
 extern const char PORT_ID[];
 extern const char FLOW_TYPE[];
 extern const char PKT_TAG_TYPE[];

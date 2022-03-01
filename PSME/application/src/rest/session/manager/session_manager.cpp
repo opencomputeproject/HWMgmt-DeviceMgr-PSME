@@ -65,11 +65,14 @@ void SessionManager::CheckSessionTimeout()
 	     uint64_t session_timestamp = session.get_time_stamp();
             uint64_t timediff= (current_timestamp - session_timestamp)/1000; //In second //
 			
+                            if(timeout > 0)
+                            {
             if(timediff >= timeout )
             {
                                 SessionManager::get_instance()->delSession_by_token(session.get_authen_token());
             }
         }
+                       }
 	 usleep(ONE_SECOND);	
     }
 

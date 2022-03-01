@@ -33,6 +33,7 @@ configure_file (
 )
 
 set(PSME_APPLICATION_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(PSME_APPLICATION_INC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 include_directories(
     ${BASE64_INCLUDE_DIRS}

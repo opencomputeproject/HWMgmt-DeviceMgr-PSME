@@ -563,6 +563,11 @@ int ecrf_pal_com_onl::rfpal_psu_info_com_get(unsigned id_in, rfpal_psu_info *p_p
                     p_psu_info->psu_type = ecrf_pal_com_s::RFPAL_PSU_TYPE_DC12;
                 else if (fv.caps & ecrf_pal_com_onl::ECRF_PAL_PSU_ONLP_CAPS_DC48)
                     p_psu_info->psu_type = ecrf_pal_com_s::RFPAL_PSU_TYPE_DC48;
+                else
+                    p_psu_info->psu_type = ecrf_pal_com_s::RFPAL_PSU_TYPE_INVALID;
+
+
+                std::cout << "psu info fv.caps[ " << std::hex << "]" << std::endl;
 
                 p_psu_info->mvin = fv.mvin;
                 p_psu_info->mvout = fv.mvout;

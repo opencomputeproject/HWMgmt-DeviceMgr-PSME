@@ -36,6 +36,7 @@ const jsonrpc::ProcedureValidator &FlowPostSchema::get_procedure()
         constants::OFlow::FLOW_TYPE, VALID_OPTIONAL(VALID_JSON_STRING),
         constants::OFlow::PKT_TAG_TYPE, VALID_OPTIONAL(VALID_JSON_STRING),
         constants::OFlow::NNI_ID, VALID_OPTIONAL(VALID_JSON_INTEGER),
+        constants::OFlow::UNI_ID, VALID_OPTIONAL(VALID_JSON_INTEGER),
         constants::OFlow::PORT_ID, VALID_OPTIONAL(VALID_JSON_INTEGER),
         constants::OFlow::GEMPORT_ID, VALID_OPTIONAL(VALID_JSON_INTEGER),
         constants::OFlow::CLASSIFIER, VALID_OPTIONAL(VALID_ARRAY_OF(VALID_JSON_STRING)),

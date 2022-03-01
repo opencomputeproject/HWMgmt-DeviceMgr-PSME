@@ -111,7 +111,7 @@ int Switch_sys_module::get_psu_info_by_(int psuid, Psu_Content id)
                         break;
                     case Psu_type:
                         if ((*pObj)->m_Present)
-                            return 0; // ONLP cannot provide info. Hardcode to AC type.
+                            return (*pObj)->m_Psu_Type; 
                         else
                             return -1; // Unknown type //
                         break;

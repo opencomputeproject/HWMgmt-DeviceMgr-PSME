@@ -32,7 +32,7 @@ Check Thermal Sensor
     ${n1}  Set Variable  1
     ${n2}  Set Variable  ${item_count} 
 
-    FOR  ${i}  IN RANGE   ${n1}   ${n2} 
+    FOR  ${i}  IN RANGE   ${n1}   ${n2+1} 
         Test Thermal Sensor   ${i}
     END
 
@@ -53,7 +53,7 @@ Check Fan
     ${n2}  Set Variable  ${item_count}  
 
     Log to console  "#################################################" 
-    FOR  ${i}  IN RANGE   ${n1}   ${n2} 
+    FOR  ${i}  IN RANGE   ${n1}   ${n2+1} 
        Plug In Fan  ${i}
     END
 

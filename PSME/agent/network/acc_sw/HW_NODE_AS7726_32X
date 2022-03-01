@@ -38,7 +38,7 @@ cpu_core_prefix=("/sys/devices/platform/coretemp.0/hwmon/hwmon1/")
 ###########################################################################################################
 i2c_prefix=("/sys/bus/i2c/devices")
 i2c_bus_fan=("54-0066")
-i2c_bus_thermal=("54-004c/hwmon/hwmon*" "55-0049/hwmon/hwmon*" "55-0048/hwmon/hwmon*" "55-004a/hwmon/hwmon*" "55-004b/hwmon/hwmon*")
+i2c_bus_thermal=("54-004c/hwmon/hwmon*" "55-0048/hwmon/hwmon*" "55-0049/hwmon/hwmon*" "55-004a/hwmon/hwmon*" "55-004b/hwmon/hwmon*")
 i2c_bus_psu_basic=("50-0053" "49-0050")
 i2c_bus_psu_ym2651=("50-005b" "49-0058")
 i2c_bus_port=("11-0060")

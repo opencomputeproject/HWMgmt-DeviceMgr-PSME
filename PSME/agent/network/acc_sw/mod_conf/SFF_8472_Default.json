@@ -172,7 +172,7 @@
 		"Byte_Address": 272,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit": 0.004,
+		"unit": 0.002,
 		"sunit" : "mA"			
 	    }
 	},
@@ -181,7 +181,7 @@
 		"Byte_Address": 274,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit": 0.004,
+		"unit": 0.002,
 		"sunit" : "mA"			
 	    }
 	},
@@ -190,7 +190,7 @@
 		"Byte_Address": 276,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit": 0.004,
+		"unit": 0.002,
 		"sunit" : "mA"			
 	    }
 	},
@@ -199,7 +199,7 @@
 		"Byte_Address": 278,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit": 0.004,
+		"unit": 0.002,
 		"sunit" : "mA"				
 	    }
 	},
@@ -208,7 +208,7 @@
 		"Byte_Address": 280,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit": 0.0002,
+		"unit": 0.0001,
 		"sunit" : "mW"		
 	    }
 	},
@@ -217,7 +217,7 @@
 		"Byte_Address": 282,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit": 0.0002,
+		"unit": 0.0001,
 		"sunit" : "mW"		
 	    }
 	},
@@ -226,7 +226,7 @@
 		"Byte_Address": 284,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit": 0.0002,
+		"unit": 0.0001,
 		"sunit" : "mW"		
 	    }
 	},
@@ -235,7 +235,7 @@
 		"Byte_Address": 286,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit": 0.0002,
+		"unit": 0.0001,
 		"sunit" : "mW"		
 	    }
 	},
@@ -300,7 +300,7 @@
 		"Byte_Address": 356,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit":  0.004,
+		"unit":  0.002,
 		"sunit" : "mA"		
 	    }
 	},
@@ -309,7 +309,7 @@
 		"Byte_Address": 358,
 		"Size": 2,
 		"Page": "Lo128B",
-		"unit":  0.0002,
+		"unit":  0.0001,
 		"sunit" : "mW"			
 	    }
 	},

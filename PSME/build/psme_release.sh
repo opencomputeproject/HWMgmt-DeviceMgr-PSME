@@ -72,9 +72,11 @@ DB_VER=`lsb_release -c | grep 'buster'`
 if [ "$DB_VER" != "" ];then
     deb_commit_name="psme_allinone_buster_baseline${P_VER}_amd64.deb"
     pandoc $TOP_DIR/PSME_REDFISH_API/README.md --pdf-engine=xelatex -V geometry:"${MD_TO_PDF_OPTIONS}" -o ${DEB_PACKAGE_DIR}/PSME_REDFISH_API.pdf
+    pandoc $TOP_DIR/Release_Notes.md --pdf-engine=xelatex -V geometry:"${MD_TO_PDF_RE_OPTIONS}" -o ${DEB_PACKAGE_DIR}/Release_Notes.pdf
 else
     deb_commit_name="psme_allinone_jessie_baseline${P_VER}_amd64.deb"
     pandoc $TOP_DIR/PSME_REDFISH_API/README.md --latex-engine=xelatex -V geometry:"${MD_TO_PDF_OPTIONS}" -o ${DEB_PACKAGE_DIR}/PSME_REDFISH_API.pdf
+    pandoc $TOP_DIR/Release_Notes.md --latex-engine=xelatex -V geometry:"${MD_TO_PDF_RE_OPTIONS}" -o ${DEB_PACKAGE_DIR}/Release_Notes.pdf
 fi
 
 tar -zcf $PSME_RELEASE_DIR/$deb_tar_name *

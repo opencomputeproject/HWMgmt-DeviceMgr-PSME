@@ -78,6 +78,7 @@ json::Value Event::to_json() const {
     j[OEM]["CurrentValue"] = m_oem["CurrentValue"].asString();
     j[OEM]["State"] = m_oem["State"].asString();
     j[OEM]["ThresholdValue"] = m_oem["ThresholdValue"].asString();
+    j[OEM]["IpAddress"] = m_oem["IpAddress"].asString();
 
     return j;
 }

@@ -246,6 +246,7 @@ void OltFlow::post(const server::Request &req, server::Response &res)
         int flow_id = 0; 
         int nni_id = 0; 
         int onu_id = 0; 
+        int uni_id = 0; 
         int port_id = 0; 
         int gem_id = 0; 
         int action_in = 0;
@@ -289,6 +290,11 @@ void OltFlow::post(const server::Request &req, server::Response &res)
             nni_id = json[constants::OFlow::NNI_ID].as_int();
         }
 
+        if (json.is_member(constants::OFlow::UNI_ID))
+        {
+            uni_id = json[constants::OFlow::UNI_ID].as_int();
+        }
+
         if (json.is_member(constants::OFlow::GEMPORT_ID))
         {
             gem_id = json[constants::OFlow::GEMPORT_ID].as_int();
@@ -323,7 +329,7 @@ void OltFlow::post(const server::Request &req, server::Response &res)
         auto &OLT = Olt_Device::Olt_Device::get_instance();
         if (OLT.is_bal_lib_init() == true)
         {
-            bool result = OLT.flow_add(onu_id, flow_id, sft, sptt, port_id, nni_id, gem_id, classifier_in,
+            bool result = OLT.flow_add(onu_id, flow_id, uni_id, sft, sptt, port_id, nni_id, gem_id, classifier_in,
                                     action_in, action_cmd_in, action_val_a_val, class_val_c_val);
 
             if (result)

@@ -116,17 +116,15 @@ bool ecOpenBmc_helper::get_ipv4_info(ipv4_info_t &ipv4info)
         HelperTools::exec_shell_(cmd, result, 3);
         if (result.find("IP Address") != std::string::npos)
         {
-            REMOVE_RETURN_CHAR(result); 
-            std::string type = get_str_between_two_str(result, "IP Address Source       : ", "IP Address");
+            std::string type = get_str_between_two_str(result, "IP Address Source       : ", "\n");
             if (type == "DHCP Address")
                 m_ipv4_info.m_ipv4_type = "DHCP";
             else
                 m_ipv4_info.m_ipv4_type = "Static";
-
-            m_ipv4_info.m_ipv4_address = get_str_between_two_str(result, "IP Address              : ", "Subnet Mask");
-            m_ipv4_info.m_ipv4_subnetmask = get_str_between_two_str(result, "Subnet Mask             : ", "MAC Address");
-            m_ipv4_info.m_mac_address = get_str_between_two_str(result, "MAC Address             : ", "Default Gateway IP");
-            m_ipv4_info.m_default_gateway = get_str_between_two_str(result, "Default Gateway IP      : ", "802.1q VLAN ID");
+            m_ipv4_info.m_ipv4_address = get_str_between_two_str(result, "IP Address              : ", "\n");
+            m_ipv4_info.m_ipv4_subnetmask = get_str_between_two_str(result, "Subnet Mask             : ", "\n");
+            m_ipv4_info.m_mac_address = get_str_between_two_str(result, "MAC Address             : ", "\n");
+            m_ipv4_info.m_default_gateway = get_str_between_two_str(result, "Default Gateway IP      : ", "\n");
 
             gADBG.acc_printf(LEVEL_INFO, "[OpenBMC Helper] ip type[%s]", m_ipv4_info.m_ipv4_type.c_str());
             gADBG.acc_printf(LEVEL_INFO, "[OpenBMC Helper] ipaddr[%s]", m_ipv4_info.m_ipv4_address.c_str());

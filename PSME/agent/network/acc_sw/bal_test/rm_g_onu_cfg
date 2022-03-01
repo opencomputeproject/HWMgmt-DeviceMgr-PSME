@@ -1,9 +1,13 @@
 {
   "Mode": "RM",
   "Sleep": 7,
-  "Cir": 1000000,
+  "Cir": 150000,
   "Pir": 1000000,
   "Burst": 8000,
+  "RangingOnly": 0,
+  "UNI_PORT":1,
+  "PON_Num":0,
+  "MapleDLTest":0,
   "ONUs": [
   {
   	"onu_id": 1,

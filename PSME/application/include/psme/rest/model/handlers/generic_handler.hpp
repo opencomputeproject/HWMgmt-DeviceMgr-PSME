@@ -377,9 +377,8 @@ bool GenericHandler<Request, Model, IdPolicy>::handle(JsonAgentSPtr agent, const
                     A.set_message(event.get_event_content());	
                     A.set_origin_of_condition(event.get_event_origin_of_condition());	
                     A.set_message_id(event.get_event_message_id());	
-
+                    A.set_oem(event.get_event_oem());
                     events.emplace_back(A);
-					
                     SubscriptionManager::get_instance()->notify(events);
                     return true;
             }
@@ -393,8 +392,8 @@ bool GenericHandler<Request, Model, IdPolicy>::handle(JsonAgentSPtr agent, const
                     A.set_message(event.get_event_content());	
                     A.set_origin_of_condition(event.get_event_origin_of_condition());	
                     A.set_message_id(event.get_event_message_id());	
+                    A.set_oem(event.get_event_oem());
                     events.emplace_back(A);
-					
                     SubscriptionManager::get_instance()->notify(events);					
                     return true;
             }
@@ -421,9 +420,9 @@ bool GenericHandler<Request, Model, IdPolicy>::handle(JsonAgentSPtr agent, const
 
                     EventVec events{};
                     Event A(EventType::Alert,event.get_event_old_state());
+                    A.set_oem(event.get_event_oem());
                     A.set_message(event.get_event_content());	
                     events.emplace_back(A);			
-					
                     SubscriptionManager::get_instance()->notify(events);
                     return true;
             }

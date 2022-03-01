@@ -30,6 +30,8 @@
 #include <eclog_helper/eclog_helper.hpp>
 #include <ecsys_helper/ecsys_helper.hpp>
 #include <sys/sysinfo.h>
+#include <cctype>
+#include <algorithm>
 using namespace eclog_helper;
 using namespace ecsys_helper;
 using namespace ecrf_pal_helper;
@@ -46,6 +48,25 @@ using namespace ecrf_pal_com_api;
 #include <ctime>
 
 #define UNUSED(x) (void)(x)
+
+bool invalidChar (char c); 
+void stripUnicode(string & str); 
+void remove_control_characters(std::string &s);
+
+bool invalidChar (char c) 
+{  
+    return !isprint( static_cast<unsigned char>( c ) );
+} 
+void stripUnicode(string & str) 
+{ 
+    str.erase(remove_if(str.begin(),str.end(), invalidChar), str.end());  
+}
+
+void remove_control_characters(std::string &s)
+{
+    s.erase(std::remove_if(s.begin(), s.end(), [](char c) { return std::iscntrl(c); }), s.end());
+    stripUnicode(s);
+}
 
 namespace ecrf_pal_helper
 {
@@ -629,35 +650,34 @@ void e_oom::refresh_rx_pwr()
         /* get RX_Power_High_Alarm */
         if (m_current_status["RxPower"]["UpperThresholdFatal"] == 0)
         {
-            ff = get_value("RX_Power_High_Alarm");
+                ff = get_value_u("RX_Power_High_Alarm");
             m_current_status["RxPower"]["UpperThresholdFatal"] = FF3(ff);
         }
 
         /* get RX_Power_Low_Alarm */
         if (m_current_status["RxPower"]["LowerThresholdFatal"] == 0)
         {
-            ff = get_value("RX_Power_Low_Alarm");
+                ff = get_value_u("RX_Power_Low_Alarm");
             m_current_status["RxPower"]["LowerThresholdFatal"] = FF3(ff);
         }
 
         /* get RX_Power_High_Warning */
         if (m_current_status["RxPower"]["UpperThresholdCritical"] == 0)
         {
-            ff = get_value("RX_Power_High_Warning");
+                ff = get_value_u("RX_Power_High_Warning");
             m_current_status["RxPower"]["UpperThresholdCritical"] = FF3(ff);
         }
 
         /* get RX_Power_Low_Warning */
         if (m_current_status["RxPower"]["LowerThresholdCritical"] == 0)
         {
-            ff = get_value("RX_Power_Low_Warning");
+                ff = get_value_u("RX_Power_Low_Warning");
             m_current_status["RxPower"]["LowerThresholdCritical"] = FF3(ff);
         }
 
         /* get Rx_Power */
-        ff = get_value("Rx_Power");
+            ff = get_value_u("Rx_Power");
         m_current_status["RxPower"]["Reading"] = FF3(ff);
-
         /*
     
                Critical
@@ -1718,7 +1738,9 @@ void Psu_Info::set_info(int ID, std::string Model, std::string SN, int Vin, int 
         m_ID = ID;
         if (!Model.empty() && Model[Model.size() - 1] == '\n')
             Model.erase(Model.size() - 1);
+            remove_control_characters(Model);
         m_Model = Model;
+            remove_control_characters(SN);
         m_SN = SN;
         m_Vin = Vin;
         m_Vout = Vout;
@@ -1792,7 +1814,10 @@ void Fan_Info::set_info(int ID, std::string Model, std::string SN, int RPM, int 
     {
         auto & Entry = RFLogEntry::get_instance();
         m_ID = ID;
+
+            remove_control_characters(Model);
         m_Model = Model;
+            remove_control_characters(SN);
         m_SN = SN;
         m_RPM = RPM;
         m_Per = Per;

@@ -114,6 +114,7 @@ namespace OFlow
 {
 const char FLOW_ID[] = "FlowId";
 const char NNI_ID[] = "NniId";
+const char UNI_ID[] = "UniId";
 const char PORT_ID[] = "PortId";
 const char FLOW_TYPE[] = "FlowType";
 const char PKT_TAG_TYPE[] = "PktTagType";

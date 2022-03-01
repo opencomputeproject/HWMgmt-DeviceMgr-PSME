@@ -341,6 +341,7 @@ int ecrf_pal_com::rfpal_sysfs_node_get(const char* sysfsnode_path, char* sysfsno
     }
     if ((fgets(sysfsnode_value, 64, node_read)) == NULL)
     {
+        fclose(node_read);
         return ECRF_PAL_STATUS_E_INVALID;
     }
     fclose(node_read);

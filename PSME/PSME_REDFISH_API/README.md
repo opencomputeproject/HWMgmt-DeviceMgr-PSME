@@ -27,6 +27,7 @@ Because it takes some times to wait PSME service ready, please make sure the "re
    Enable Session based Management          
    Redfish Service uses session management to implement authentication. 
    Enable session management and change session timeout to 900 seconds(Default is 600 seconds). 
+   "SessionTimeout" : 0  to disable session timeout. 
    
       - URL     :  /redfish/v1/SessionService/
       - Required Privilege : ConfigureComponents
