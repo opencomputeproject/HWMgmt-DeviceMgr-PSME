@@ -86,6 +86,11 @@ public:
     static const std::string MEMBERS_PATH;
 	
     static const std::string UPDATE_SERVICE_PATH;	
+    static const std::string UPDATE_SERVICE_FIRMWARE_INVENTORY_PATH;	
+    static const std::string UPDATE_SERVICE_SOFTWARE_INVENTORY_PATH;	
+    static const std::string UPDATE_SERVICE_FIRMWARE_INVENTORY_MU_PATH;	
+    static const std::string UPDATE_SERVICE_FIRMWARE_INVENTORY_NOS_PATH;	
+    static const std::string UPDATE_SERVICE_SOFTWARE_INVENTORY_PACKAGE_PATH;	
     static const std::string CHASSIS_RESET_PATH;	
     static const std::string MANAGER_SERIAL_INTERFACE_COLLECTION_PATH;
     static const std::string MANAGER_SERIAL_INTERFACE_PATH;

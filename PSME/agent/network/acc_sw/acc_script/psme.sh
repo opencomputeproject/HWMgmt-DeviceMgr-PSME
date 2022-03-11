@@ -47,12 +47,17 @@ if [ -f "${PlatformPath}" ];then
     ONLPDUMP="/lib/platform-config/${HW_type}/onl/bin/onlpdump"
     REST_SERVER_PORT=8888
 else
+    if [ -f "/usr/local/bin/sonic-cfggen" ];then
     HW_type=`/usr/local/bin/sonic-cfggen -d --print-data | grep "platform" | awk '{print $2}' |awk -F '"' '{print $2}'`
     ONLPDUMP="/usr/bin/decode-syseeprom"
     if [ ! -f "${ONLPDUMP}" ]; then
        ONLPDUMP="/usr/local/bin/decode-syseeprom"
     fi
     REST_SERVER_PORT=8889
+    else
+       HW_type="x86-64-accton-mockup-r0"
+       REST_SERVER_PORT=8888
+    fi
 fi
 
 # Common Used #
@@ -144,7 +149,9 @@ get_mgmt_port_name()
 	    #SONiC 202012 system
 		echo "eth0"
 	else
-		echo "ma1"
+	    # DEBIAN JESSE MOCKP in CONTAINER
+		#echo "enp2s0"
+		echo "eth0"
 	fi
 }
 
@@ -154,11 +161,23 @@ get_mgmt_port_name()
 get_nos_type()
 {
 	PlatformPath="/etc/onl/platform"
+        SONIC_VER=`show version  2>/dev/null |grep 'SONiC Software'`
+
 	if [ -f "${PlatformPath}" ];then
 	    #ONL system
 		echo "onl"
-	else
+	elif [ -f "/usr/bin/decode-syseeprom" ];then
+	    #SONiC 202006 system
 		echo "sonic"
+	elif [ -f "/usr/local/bin/decode-syseeprom" ];then
+	    #SONiC 202012 system
+		echo "sonic"
+	elif [[ "$SONIC_VER" == *"SONiC.Edgecore-SONiC"* ]];then
+	    #SONiC system
+		echo "sonic"
+	else
+	    # DEBIAN JESSE MOCKP
+		echo "mockup"
 	fi
 }
 

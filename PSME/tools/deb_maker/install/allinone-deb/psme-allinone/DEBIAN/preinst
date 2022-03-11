@@ -24,9 +24,51 @@ function get_cur_nos()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function get_nos() 
 {   
-    echo 10 
+    echo 8 
 }
 
 

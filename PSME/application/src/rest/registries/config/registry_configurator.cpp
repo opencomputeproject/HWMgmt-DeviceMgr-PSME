@@ -22,6 +22,9 @@
  * @file registry_configurator.cpp
  * */
 
+#include <iostream>
+#include <string>
+using namespace std;
 
 #include "psme/rest/registries/config/registry_configurator.hpp"
 #include "psme/rest/registries/managers/message_registry_file_manager.hpp"

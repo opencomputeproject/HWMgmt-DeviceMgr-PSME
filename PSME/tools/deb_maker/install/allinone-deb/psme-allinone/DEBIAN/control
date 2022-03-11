@@ -4,6 +4,6 @@ Section: utils
 Priority: optional
 Architecture: amd64
 Maintainer: guanglin.shen <guanglingx.shen@intel.com>
-Description:psme_allinone_2.1.3.60.02-7cbd93a
-OS_Ver:Description:	Debian GNU/Linux 10 (buster)
-commit_id:7cbd93a
+Description:psme_allinone_2.1.3.60.02-fc4e3ad
+OS_Ver:Description:	Debian GNU/Linux 8.11 (jessie)
+commit_id:fc4e3ad

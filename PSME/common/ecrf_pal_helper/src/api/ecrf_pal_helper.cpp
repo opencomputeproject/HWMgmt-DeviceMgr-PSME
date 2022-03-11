@@ -2392,8 +2392,6 @@ int Switch::get_psu_info_by_(int psuid, Psu_Content id)
 {
     try
     {
-        for (int ii = 1; ii <= get_psu_num(); ii++)
-        {
             for (vector<Psu_Info *>::iterator pObj = m_vec_Psu_Info.begin(); pObj != m_vec_Psu_Info.end(); ++pObj)
             {
                 if ((*pObj)->m_ID == psuid)
@@ -2430,7 +2428,6 @@ int Switch::get_psu_info_by_(int psuid, Psu_Content id)
                     }
                 }
             }
-        }
         return 0;
     }
     catch (const std::exception &e)
@@ -2444,8 +2441,6 @@ std::string Switch::get_psu_info_by_(int psuid, std::string type)
 {
     try
     {
-        for (int ii = 1; ii <= get_psu_num(); ii++)
-        {
             for (vector<Psu_Info *>::iterator pObj = m_vec_Psu_Info.begin(); pObj != m_vec_Psu_Info.end(); ++pObj)
             {
                 if ((*pObj)->m_ID == psuid)
@@ -2462,8 +2457,6 @@ std::string Switch::get_psu_info_by_(int psuid, std::string type)
                         return "na";
                 }
             }
-        }
-
         return "na";
     }
     catch (const std::exception &e)
@@ -2477,8 +2470,6 @@ std::string Switch::get_thermal_info_by_(int thermalid, std::string type)
 {
     try
     {
-        for (int ii = 1; ii <= get_thermal_num(); ii++)
-        {
             for (vector<Thermal_Info *>::iterator pObj = m_vec_Thermal_Info.begin(); pObj != m_vec_Thermal_Info.end(); ++pObj)
             {
                 if ((*pObj)->m_ID == thermalid)
@@ -2491,8 +2482,6 @@ std::string Switch::get_thermal_info_by_(int thermalid, std::string type)
                         return "na";
                 }
             }
-        }
-
         return "na";
     }
     catch (const std::exception &e)
@@ -2506,8 +2495,6 @@ double Switch::get_thermal_info_by_(int thermalid, Thermal_Content id)
 {
     try
     {
-        for (int ii = 1; ii <= get_thermal_num(); ii++)
-        {
             for (vector<Thermal_Info *>::iterator pObj = m_vec_Thermal_Info.begin(); pObj != m_vec_Thermal_Info.end(); ++pObj)
             {
                 if ((*pObj)->m_ID == thermalid)
@@ -2541,7 +2528,6 @@ double Switch::get_thermal_info_by_(int thermalid, Thermal_Content id)
                     }
                 }
             }
-        }
         return 0;
     }
     catch (const std::exception &e)
@@ -2556,9 +2542,6 @@ int Switch::get_port_info_by_(int portid, Port_Content id)
     try
     {
         std::lock_guard<std::mutex> lock{m_data_mutex};
-
-        for (int ii = 1; ii <= m_port_max_num; ii++)
-        {
             for (vector<Port_Info *>::iterator pObj = m_vec_Port_Info.begin(); pObj != m_vec_Port_Info.end(); ++pObj)
             {
                 if ((*pObj)->m_ID == portid)
@@ -2580,7 +2563,6 @@ int Switch::get_port_info_by_(int portid, Port_Content id)
                     }
                 }
             }
-        }
         return 0;
     }
     catch (const std::exception &e)
@@ -2595,8 +2577,6 @@ json::Value Switch::get_port_trans_info_by_(int portid)
     try
     {
         std::lock_guard<std::mutex> lock{m_data_mutex};
-        for (int ii = 1; ii <= m_port_max_num; ii++)
-        {
             for (vector<Port_Info *>::iterator pObj = m_vec_Port_Info.begin(); pObj != m_vec_Port_Info.end(); ++pObj)
             {
                 if ((*pObj)->m_ID == portid)
@@ -2604,7 +2584,6 @@ json::Value Switch::get_port_trans_info_by_(int portid)
                     return (*pObj)->get_trans_status();
                 }
             }
-        }
         return json::Value::Type::NIL;
     }
     catch (const std::exception &e)
@@ -2849,8 +2828,6 @@ int Switch::get_fan_info_by_(int fanid, Fan_Content id)
 {
     try
     {
-        for (int ii = 1; ii <= get_fan_num(); ii++)
-        {
             for (vector<Fan_Info *>::iterator pObj = m_vec_Fan_Info.begin(); pObj != m_vec_Fan_Info.end(); ++pObj)
             {
                 if ((*pObj)->m_ID == fanid)
@@ -2876,7 +2853,6 @@ int Switch::get_fan_info_by_(int fanid, Fan_Content id)
                     }
                 }
             }
-        }
         return 0;
     }
     catch (const std::exception &e)
@@ -2890,8 +2866,6 @@ std::string Switch::get_fan_info_by_(int fanid, std::string type)
 {
     try
     {
-        for (int ii = 1; ii <= get_fan_num(); ii++)
-        {
             for (vector<Fan_Info *>::iterator pObj = m_vec_Fan_Info.begin(); pObj != m_vec_Fan_Info.end(); ++pObj)
             {
                 if ((*pObj)->m_ID == fanid)
@@ -2904,7 +2878,6 @@ std::string Switch::get_fan_info_by_(int fanid, std::string type)
                         return "na";
                 }
             }
-        }
         return "na";
     }
     catch (const std::exception &e)
@@ -2979,7 +2952,6 @@ void Switch::update_thermal_present_event()
     try
     {
         int id = 0;
-
         for (id = 0; id < get_thermal_num(); id++)
         {
 

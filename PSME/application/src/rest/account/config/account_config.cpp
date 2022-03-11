@@ -21,9 +21,12 @@
 */
 
 #include "psme/rest/account/config/account_config.hpp"
+#include "psme/rest/utils/time_utils.hpp"
 
 #include <json/json.hpp>
 #include <fstream>
+
+using namespace psme::rest::utils;
 
 namespace psme {
 namespace rest {
@@ -70,7 +73,8 @@ void AccountConfig::saveAccounts() {
 
 void AccountConfig::load_admin() {
     log_debug(GET_LOGGER("app"), "Loading admin Account : ");
-
+    std::chrono::steady_clock::time_point m_timestamp{std::chrono::steady_clock::now()};
+    std::string time_s = "W/\"" + TimeUtils::get_time_with_zone(m_timestamp) + '\"';
     
     try {
 
@@ -80,6 +84,7 @@ void AccountConfig::load_admin() {
        account.set_enabled(true);
        account.set_locked(false);
        account.set_roleid("Administrator");
+       account.set_etag(time_s);
        AccountManager::get_instance()->addAccount(account);
 
     }

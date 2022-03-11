@@ -253,6 +253,43 @@ const std::string Routes::UPDATE_SERVICE_PATH =
         .append(constants::UpdateService::UPDATE_SERVICE)      
         .build();
 
+// "/redfish/v1/UpdateServices/FirmwareInventory"
+const std::string Routes::UPDATE_SERVICE_FIRMWARE_INVENTORY_PATH=
+    endpoint::PathBuilder(constants::PathParam::BASE_URL)
+        .append(constants::UpdateService::UPDATE_SERVICE)      
+        .append(constants::UpdateService::FIRMWARE_INVENTORY)      
+        .build();
+
+// "/redfish/v1/UpdateServices/SoftwareInventory"
+const std::string Routes::UPDATE_SERVICE_SOFTWARE_INVENTORY_PATH=
+    endpoint::PathBuilder(constants::PathParam::BASE_URL)
+        .append(constants::UpdateService::UPDATE_SERVICE)      
+        .append(constants::UpdateService::SOFTWARE_INVENTORY)      
+        .build();
+
+// "/redfish/v1/UpdateServices/FirmwareInventory/MU"
+const std::string Routes::UPDATE_SERVICE_FIRMWARE_INVENTORY_MU_PATH=
+    endpoint::PathBuilder(constants::PathParam::BASE_URL)
+        .append(constants::UpdateService::UPDATE_SERVICE)      
+        .append(constants::UpdateService::FIRMWARE_INVENTORY)      
+        .append(constants::UpdateService::MULTI_UPDATER)      
+        .build();
+
+// "/redfish/v1/UpdateServices/FirmwareInventory/NOS"
+const std::string Routes::UPDATE_SERVICE_FIRMWARE_INVENTORY_NOS_PATH=
+    endpoint::PathBuilder(constants::PathParam::BASE_URL)
+        .append(constants::UpdateService::UPDATE_SERVICE)      
+        .append(constants::UpdateService::FIRMWARE_INVENTORY)      
+        .append(constants::UpdateService::NOS)      
+        .build();
+
+// "/redfish/v1/UpdateServices/SoftwareInventory/PACKAGE"
+const std::string Routes::UPDATE_SERVICE_SOFTWARE_INVENTORY_PACKAGE_PATH=
+    endpoint::PathBuilder(constants::PathParam::BASE_URL)
+        .append(constants::UpdateService::UPDATE_SERVICE)      
+        .append(constants::UpdateService::SOFTWARE_INVENTORY)      
+        .append(constants::UpdateService::PACKAGE)      
+        .build();
 
 // "/redfish/v1/Chassis/{chassisId:[0-9]+}/Actions/Chassis.Reset"
 const std::string Routes::CHASSIS_RESET_PATH =

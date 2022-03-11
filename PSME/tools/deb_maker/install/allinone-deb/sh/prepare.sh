@@ -34,13 +34,13 @@ del_file $ITEM_PATH/usr/local/bin/
 del_file $ITEM_PATH/usr/local/lib/
 del_file $ITEM_PATH/etc/
 
-mkdir -p $ITEM_PATH/etc/psme/certs   
+mkdir -p $ITEM_PATH/etc/psme/RegistryFiles
 mkdir -p $ITEM_PATH/broadcom   
 
 cp ${PSME_EC_SCRIPT_DIR}/*                              $ITEM_PATH/usr/local/bin
 cp -rf ${PSME_EC_SW_DIR}/mod_conf                       $ITEM_PATH/usr/local/bin
-cp ${PSME_EC_SW_DIR}/server.key                         $ITEM_PATH/etc/psme/certs
-cp ${PSME_EC_SW_DIR}/server.crt                         $ITEM_PATH/etc/psme/certs
+cp ${PSME_EC_SW_DIR}/PrivilegeRegistry             	    $ITEM_PATH/etc/psme/RegistryFiles/PrivilegeRegistry
+cp ${PSME_EC_SW_DIR}/AcctonFirmwareUpdateRegistry       $ITEM_PATH/etc/psme/RegistryFiles/AcctonFirmwareUpdateRegistry
 cp ${PSME_EC_SW_DIR}/*                                  $ITEM_PATH/etc/psme 2>/dev/null  
 
 #cp from runtime build

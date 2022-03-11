@@ -61,6 +61,59 @@ static std::string make_base_configuration() {
     return base_configuration;
 }
 
+/*!
+ * Make configuration string for privilege registry as defined by DMTF.
+ *
+ * @return String containing a json object with privilege registry configuration.
+ * */
+static std::string make_privilege_configuration() {
+    std::string privilege_configuration = R"({
+        "MessageRegistryFiles": [
+            {
+                "Name" : "Privilege Registry File",
+                "Description" : "Privilege Registry File locations",
+                "Registry" : "Redfish_1.0.1_PrivilegeRegistry",
+                "MessageRegistries" : [
+                    {
+                        "Language" : "en",
+                        "Type" : "Privilege",
+                        "Uri": "/redfish/v1/Registries/PrivilegeRegistry"
+                    }
+                ],
+                "Oem" : {}
+            }
+        ]
+    })";
+
+    return privilege_configuration;
+}
+
+/*!
+ * Make configuration string for AcctonSoftwareUpdateRegistry message registry as defined by Accton.
+ *
+ * @return String containing a json object with base registry configuration.
+ * */
+static std::string make_AcctonFirmwareUpdateRegistry_configuration() {
+    std::string base_configuration = R"({
+        "MessageRegistryFiles": [
+            {
+                "Name" : "AcctonFirmwareUpdateRegistry Message Registry File",
+                "Description" : "AcctonFirmwareUpdate Message Registry File locations",
+                "Registry" : "AcctonFirmwareUpdateRegistry.1.0",
+                "MessageRegistries" : [
+                    {
+                        "Language" : "en",
+                        "Uri": "/redfish/v1/Registries/AcctonFirmwareUpdateRegistry"
+                    }
+                ],
+                "Oem" : {}
+            }
+        ]
+    })";
+
+    return base_configuration;
+}
+
 }
 }
 }

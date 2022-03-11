@@ -1,0 +1,109 @@
+{
+  "@odata.type": "#MessageRegistry.v1_0_0.MessageRegistry",
+  "Id": "AcctonFirmwareUpdateRegistry.v1.0.0",
+  "Name": "Accton FirmwareUpdate Registry Message Registry",
+  "Description": "This registry defines the messages for Accton Firmware Update Registry",
+  "@Redfish.Copyright": "Copyright 2019-2020 Accton. All rights reserved.",
+  "Language": "en",
+  "RegistryPrefix": "AcctonFirmwareUpdateRegistry",
+  "RegistryVersion": "1.0.0",
+  "OwningEntity": "Accton",
+  "Messages": {
+    "UpdateSuccessful": {
+      "Description": "Indicates that software update result is successful.",
+      "Message": "[%1][%2] %3 Update Successful.",
+      "Severity": "OK",
+      "NumberOfArgs": 3,
+      "ParamTypes": [
+        "string",
+        "string",
+        "string"
+      ],
+      "Resolution": "None"
+    },
+    "UpdateFailed": {
+      "Description": "Indicates that software update result is failure.",
+      "Message": "[%1][%2] %3 Update Failure.",
+      "Severity": "Warning",
+      "NumberOfArgs": 3,
+      "ParamTypes": [
+        "string",
+        "string",
+        "string"
+      ],
+      "Resolution": "None"
+    },
+    "UpdateInProgress": {
+      "Description": "Indicates that device is parparing update procedure.",
+      "Message": "[%1][%2] %3 InProcess.",
+      "Severity": "OK",
+      "NumberOfArgs": 3,
+      "ParamTypes": [
+        "string",
+        "string",
+        "string"
+      ],
+     "Resolution": "None"
+    },
+    "DownloadSuccessful": {
+      "Description": "Indicates that software update download Successful.",
+      "Message": "[%1][%2] %3 Download Successful.",
+      "Severity": "OK",
+      "NumberOfArgs": 3,
+      "ParamTypes": [
+        "string",
+        "string",
+        "string"
+      ],
+     "Resolution": "None"
+    },
+    "DownloadFailure": {
+      "Description": "Indicates that software update download failure.",
+      "Message": "[%1][%2] %3 Download Failure.",
+      "Severity": "Warning",
+      "NumberOfArgs": 3,
+      "ParamTypes": [
+        "string",
+        "string",
+        "string"
+      ],
+     "Resolution": "None"
+    },    
+    "DownloadStart": {
+      "Description": "Indicates that software update download Successful.",
+      "Message": "[%1][%2] %3 Downloading...",
+      "Severity": "OK",
+      "NumberOfArgs": 3,
+      "ParamTypes": [
+        "string",
+        "string",
+        "string"
+      ],
+     "Resolution": "None"
+    },
+    "BadPackage": {
+      "Description": "Indicates that software update failure because some error in preparing update procedure.",
+      "Message": "[%1][%2] %3  InProcess Failure.",
+      "Severity": "Warning",
+      "NumberOfArgs": 3,
+      "ParamTypes": [
+        "string",
+        "string",
+        "string"
+      ],
+     "Resolution": "None"
+    },
+    "Reboot": {
+      "Description": "Indicates that device is going to reboot and enter ONIE environment and enter to update mode.",
+      "Message": "[%1][%2] %3  Rebooting.",
+      "Severity": "OK",
+      "NumberOfArgs": 3,
+      "ParamTypes": [
+        "string",
+        "string",
+        "string"
+      ],
+     "Resolution": "None"
+    }
+  }
+}

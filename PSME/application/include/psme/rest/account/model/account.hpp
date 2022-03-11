@@ -346,6 +346,24 @@ public:
     }
 
     /*!
+     * @brief Get etag 
+     *
+     * @return etag value 
+     */
+    const std::string& get_etag() const {
+        return m_etag;
+    }
+
+    /*!
+     * @brief Set etag 
+     *
+     * @param etag value 
+     */
+    void set_etag(const std::string& etag) {
+        m_etag= etag;
+    }
+
+    /*!
      * @brief Get account privilege 
      *
      * @return account privilege 
@@ -398,7 +416,7 @@ private:
     int m_loginf{0};
     std::chrono::steady_clock::time_point m_loginftime{};
     std::chrono::steady_clock::time_point m_lastkick{};
-
+    std::string m_etag{};
 };
 
 

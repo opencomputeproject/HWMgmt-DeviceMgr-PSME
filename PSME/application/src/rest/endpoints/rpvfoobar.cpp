@@ -45,4 +45,3 @@ namespace {
         response.set_status(server::status_4XX::NOT_FOUND);
     }
 }
-

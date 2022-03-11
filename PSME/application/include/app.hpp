@@ -93,8 +93,6 @@ private:
     void init();
     void init_logger();
     void init_ec_log_helper();
-    void init_network_change_notifier();
-    void init_ssdp_service();
     void init_registration_server();
     void init_eventing_server();
     void init_rest_event_service();
@@ -115,8 +113,6 @@ private:
     std::unique_ptr<psme::app::registration::RegistrationServer> m_registration_server{};
     std::unique_ptr<psme::rest::server::RestServer> m_rest_server{};
     std::unique_ptr<psme::rest::eventing::EventService> m_rest_event_service{};
-    std::unique_ptr<net::NetworkChangeNotifier> m_network_change_notifier{};
-    std::shared_ptr<ssdp::SsdpService> m_ssdp_service{};
     std::unique_ptr<rest::model::Watcher> m_model_watcher{};
 };
 

@@ -34,6 +34,7 @@
 #include "psme/rest/account/model/accountservice.hpp" 
 #include "eclog_helper/eclog_helper.hpp"
 #include "psme/rest/utils/ec_common_utils.hpp"
+#include "psme/rest/utils/time_utils.hpp"
 #include <iostream>
 #include <string>
 #include <stdlib.h>
@@ -111,6 +112,9 @@ json::Value make_members_post_prototype()
 
 void endpoint::Members::post(const server::Request& request, server::Response& response)
 {
+    std::chrono::steady_clock::time_point m_timestamp{std::chrono::steady_clock::now()};
+    std::string time_s = "W/\"" + TimeUtils::get_time_with_zone(m_timestamp) + '\"';
+ 
     bool Enabled = SessionManager::get_instance()->GetSessionConfigEnable();
     if (Enabled == false)
     {
@@ -231,6 +235,7 @@ void endpoint::Members::post(const server::Request& request, server::Response& r
                 snprintf(cxlocation, sizeof(cxlocation), "%s/%s", loginuri, id.c_str());
                 const std::string XLOCID = LOC_ID;
                 response.set_header(XLOCID, cxlocation);
+                response.set_header("ETag", time_s);
                 response.set_status(server::status_2XX::CREATED);
 
                 set_response(response, r);

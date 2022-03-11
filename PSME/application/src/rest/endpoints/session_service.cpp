@@ -82,3 +82,22 @@ void endpoint::SessionService::post(const server::Request& request, server::Resp
 
     response.set_status(server::status_2XX::OK);
 }
+
+void endpoint::SessionService::patch(const server::Request &request, server::Response &response)
+{
+    const auto &json = JsonValidator::validate_request_body<SessionServicePatchSchema>(request);
+    using session::model::Sessionservice;
+
+    if (json.is_member(constants::SessionService::SERVICE_TIMEOUT))
+    {
+        SessionManager::get_instance()->SetSessionConfigTimeOut(json[constants::SessionService::SERVICE_TIMEOUT].as_uint64());
+    }
+
+    if (json.is_member(constants::SessionService::SERVICE_ENABLED))
+    {
+        SessionManager::get_instance()->SetSessionConfigEnable(json[constants::SessionService::SERVICE_ENABLED].as_bool());
+    }
+
+    SessionConfig::get_instance()->saveSessionsConfig();
+    response.set_status(server::status_2XX::OK);
+}

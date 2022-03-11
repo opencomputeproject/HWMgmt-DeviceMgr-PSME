@@ -26,11 +26,15 @@ if [ "$os_type" == "onl" ];then
     HW_type=`cat  ${PlatformPath}`
     ONLPDUMP="/lib/platform-config/${HW_type}/onl/bin/onlpdump"
 else
+    if [ "$os_type" == "sonic" ];then
     #SONIC
     HW_type=`/usr/local/bin/sonic-cfggen -d --print-data | grep "platform" | awk '{print $2}' |awk -F '"' '{print $2}'`
     ONLPDUMP="/usr/bin/decode-syseeprom"
     if [ ! -f "${ONLPDUMP}" ]; then
         ONLPDUMP="/usr/local/bin/decode-syseeprom"
+    fi
+    else
+        HW_type="x86-64-accton-mockup-r0"
     fi
 fi
 
@@ -396,45 +400,9 @@ psu_i=0
 echo "
 \"thermals\" :{" >> ${Config_File}
 
-#if [ -f "${Thermal_Threshold_File}" ]; then
-#    create_thermal_theshold_file=0        
-#else
-#echo "{" > ${Thermal_Threshold_File}        
-#fi
-
 while [ "$i" -lt "${THERMAL_SEN_MAX}" ];do
     type=${thermals_type[${i}]}
     ii=$(($i+1))
-   
-    #if [ $create_thermal_theshold_file == 1 ];then
-    #echo "\"${ii}\" : {" >> ${Thermal_Threshold_File}
-    #    if [ "${Thermal_Error_Value[$i]}" == "" ];then
-    #        echo "    \"error\" : ${Thermal_Default_Error_Value}," >> ${Thermal_Threshold_File}
-    #    else
-    #        echo "    \"error\" : ${Thermal_Error_Value[$i]}," >> ${Thermal_Threshold_File}
-    #    fi
-    #
-    #    if [ "${Thermal_Shutdown_Value[$i]}" == "" ];then
-    #        echo "    \"shutdown\" : ${Thermal_Default_Shutdown_Value}," >> ${Thermal_Threshold_File}
-    #    else
-    #        echo "    \"shutdown\" : ${Thermal_Shutdown_Value[$i]}," >> ${Thermal_Threshold_File}
-    #    fi
-    #
-    #    if [ "${Thermal_Warning_Upper_Value[$i]}" == "" ];then
-    #        echo "    \"warning_upper\" : ${Thermal_Default_Warning_Upper_Value}," >> ${Thermal_Threshold_File}
-    #    else
-    #        echo "    \"warning_upper\" : ${Thermal_Warning_Upper_Value[$i]}," >> ${Thermal_Threshold_File}
-    #    fi
-    #
-    #    if [ "${Thermal_Warning_Lower_Value[$i]}" == "" ];then
-    #        echo "    \"warning_lower\" : ${Thermal_Default_Warning_Lower_Value}" >> ${Thermal_Threshold_File}
-    #    else
-    #        echo "    \"warning_lower\" : ${Thermal_Warning_Lower_Value[$i]}" >> ${Thermal_Threshold_File}
-    #    fi
-
-    #echo "}" >> ${Thermal_Threshold_File}
-    #fi
-                    
     if [ "$type" == "C" ];then
         echo " \"thermal$ii\":\"CPU\"   " >> ${Config_File}
         echo "," >> ${Config_File}
@@ -512,17 +480,11 @@ while [ "$i" -lt "${THERMAL_SEN_MAX}" ];do
         psu_i=$(($psu_i+1))
     fi
     if [ "$ii" != "${THERMAL_SEN_MAX}" ];then
-        #if [ $create_thermal_theshold_file == 1 ];then
-        #echo "," >> ${Thermal_Threshold_File}    
-        #fi    
         echo "," >> ${Config_File}
     fi            
     i=$(($i+1))
 done
 
-#if [ $create_thermal_theshold_file == 1 ];then
-#    echo "}" >> ${Thermal_Threshold_File}
-#fi
 echo "}" >> ${Config_File}
 }
 
@@ -717,8 +679,10 @@ echo "
 ECRF_PAL_FANS
 J_COMMA
 
-echo "
-                                \"port_max_num\" : "${PORT_MAX}", "  >> ${Config_File}
+echo " \"port_max_num\" : "${PORT_MAX}", "  >> ${Config_File}
+echo " \"port_oom_get\" : {"  >> ${Config_File}
+echo " \"enable\" : 1,"  >> ${Config_File}
+echo " \"polling_interval\" : 500000 },"  >> ${Config_File}    
 if [ "$i2c_nodes_port_present" == "" ];then
 echo " 													\"present\":\"\",   " >> ${Config_File}
 else

@@ -98,9 +98,11 @@ extern const char STORAGE_ID[];
 extern const char ACL_ID[];
 extern const char STATIC_MAC_ID[];
 extern const char TASK_ID[];
-extern const char RPVFOOBAR[];
 extern const char ODATA[];
+extern const char RPVFOOBAR[];
 extern const char MESSAGE_REGISTRY_FILE_ID[];
+extern const char MESSAGE_PRIVILEGE_REGISTRY_FILE[];
+extern const char MESSAGE_ACCTON_FIRMWARE_UPDATE_REGISTRY_FILE[];
 
 extern const char PATH_SEP;
 extern const char VARIABLE_BEGIN;
@@ -471,6 +473,7 @@ extern const char USERNAME[];
 extern const char ROLEID[];
 extern const char LOCKED[];
 extern const char ROLE[];
+extern const char ETAG[];
 } // namespace AccountConst
 
 namespace AccountRole
@@ -585,6 +588,8 @@ namespace UpdateService
 {
 extern const char UPDATE_SERVICE[];
 extern const char FIRMWARE_INVENTORY[];
+extern const char SOFTWARE_INVENTORY[];
+extern const char PACKAGE[];
 extern const char MULTI_UPDATER[];
 extern const char NOS[];
 extern const char UPDATE_STATE[];

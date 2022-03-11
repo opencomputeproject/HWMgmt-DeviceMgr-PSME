@@ -25,8 +25,12 @@
 #include "psme/rest/registries/model/message_registry_file.hpp"
 
 #include <uuid++.hh>
-
-
+#include <iostream>
+#include <istream>
+#include <ostream>
+#include <fstream>
+#include <string>
+using namespace std;
 
 namespace psme {
 namespace rest {
@@ -68,6 +72,25 @@ void MessageRegistryFile::set_registry(const OptionalField<std::string>& registr
 
 void MessageRegistryFile::set_locations(const Locations& locations) {
     m_locations = locations;
+
+    for (const auto &lo : m_locations)
+    {
+        json::Value s = json::Value::Type::OBJECT;
+        if (lo.get_uri().has_value())
+        {
+            std::string full_path(PRI_REG_JSON_FULL_PATH);
+            std::string url = lo.get_uri();
+            std::string json_file = url.substr(url.find_last_of("/\\") + 1);
+            std::string json_file_full_path = full_path + json_file;
+            std::ifstream m_source_files = {};
+            m_source_files.open(json_file_full_path);
+            Json::Reader reader;
+            if (reader.parse(m_source_files, m_reg_file))
+                m_reg_file_status = true;
+            else
+                std::cout << " NG!!" << std::endl;
+        }
+    }
 }
 
 

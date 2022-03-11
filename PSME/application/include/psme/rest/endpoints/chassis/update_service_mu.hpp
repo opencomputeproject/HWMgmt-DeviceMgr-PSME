@@ -1,6 +1,6 @@
 /*!
  * @copyright
- * Copyright (c) 2015-2017 Intel Corporation
+ * Copyright (c) 2016-2017 Intel Corporation
  *
  * @copyright
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,37 +22,35 @@
 
 
 
-#include "endpoint_base.hpp"
+#include "psme/rest/endpoints/endpoint_base.hpp"
+#include <ecnet_helper/ecnet_helper.hpp>
 
 
 
 namespace psme {
-    namespace rest {
-        namespace endpoint {
+namespace rest {
+namespace endpoint {
 
-            /*!
- * A class representing the rest api OdataServiceDocument endpoint
+/*!
+ * A class representing the rest api UpdateServiceMU endpoint
  */
-            class RPVfoobar: public EndpointBase {
-                public:
+class UpdateServiceMU : public EndpointBase {
+public:
 
-                    /*!
-     * @brief Constructor
+    /*!
+     * @brief The constructor for UpdateServiceMU class
      */
-                    explicit RPVfoobar(const std::string& path);
-
-                    /*!
-     * @brief OdataServiceDocument class destructor
+    explicit UpdateServiceMU(const std::string& path);
+    /*!
+     * @brief UpdateServiceMU class destructor
      */
-                    virtual ~RPVfoobar();
+    virtual ~UpdateServiceMU(){};
 
-                    void get(const server::Request& request, server::Response& response) override;
-            };
+    void post(const server::Request& request, server::Response& response) override;
+    void get(const server::Request& request, server::Response& response) override;	
+};
 
 
-
-
-        }
-    }
 }
-
+}
+}

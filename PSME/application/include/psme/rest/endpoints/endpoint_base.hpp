@@ -85,6 +85,10 @@ public:
 
     bool authen_check(const Request& request,const std::string& method) override;
 
+    unsigned int privilege_check(const Request &request, std::string method, unsigned int user_privilege, std::string role);
+
+    unsigned int privilege_ov_check(const Request &request, std::string method, Json::Value PrOv, unsigned int user_privilege);
+
 protected:
 
     /*!
@@ -110,6 +114,8 @@ protected:
     void set_response(server::Response& response, const json::Value& json) {
         response << json::Serializer(json);
     }
+
+    Json::Value m_pri_reg_file{};
 
 private:
     std::string m_modified_time{};

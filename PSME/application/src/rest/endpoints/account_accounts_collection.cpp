@@ -132,9 +132,12 @@ void AccountCollection::get(const server::Request& req, server::Response& res) {
 void AccountCollection::post(const server::Request &request, server::Response &response)
 {
     using namespace psme::rest::error;
+    std::chrono::steady_clock::time_point m_timestamp{std::chrono::steady_clock::now()};
+    std::string time_s = "W/\"" + TimeUtils::get_time_with_zone(m_timestamp) + '\"';
     const auto& json = JsonValidator::validate_request_body<schema::AccountCollectionPostSchema>(request);
+    json::Value r(json::Value::Type::OBJECT);
     
-    if (!(json.is_member(AccountConst::ROLEID)) || !json.is_member(AccountConst::USERNAME) || !json.is_member(AccountConst::PASSWORD) || !json.is_member(AccountConst::ENABLED))
+    if (!(json.is_member(AccountConst::ROLEID)) || !json.is_member(AccountConst::USERNAME) || !json.is_member(AccountConst::PASSWORD))
     {
         log_error(GET_LOGGER("rest"), "POST lack of mandotary field");
         response.set_header("Allow", "GET HEAD");
@@ -143,10 +146,12 @@ void AccountCollection::post(const server::Request &request, server::Response &r
     }    
     
     Account account = to_model(json);
-    
-    uint64_t id = AccountManager::get_instance()->addAccount(account);
+    account.set_etag(time_s);
+    AccountManager::get_instance()->addAccount(account);
     AccountConfig::get_instance()->saveAccounts();
-    endpoint::utils::set_location_header(response, PathBuilder(request).append(id).build());
+    endpoint::utils::set_location_header(response, PathBuilder(request).append(json[AccountConst::USERNAME].as_string()).build());
    
+    set_response(response, r);
+    response.set_header("ETag", time_s);
     response.set_status(server::status_2XX::CREATED);
 }

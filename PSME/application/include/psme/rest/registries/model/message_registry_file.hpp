@@ -43,6 +43,7 @@ namespace registries {
 /*!
  * Class representing redfish message registry file in the data model.
  * */
+static constexpr const char PRI_REG_JSON_FULL_PATH[] = "/etc/psme/RegistryFiles/";
 class MessageRegistryFile {
 public:
     using Languages = std::vector<std::string>;
@@ -165,6 +166,19 @@ public:
      * */
     const std::string& get_uuid() const;
 
+    /*!
+     * Get privilege file read status 
+     *
+     * @return true or false 
+     * */
+    bool get_reg_file_status() {return m_reg_file_status;};
+
+    /*!
+     * Get privilege json format data 
+     *
+     * @return privilege json data 
+     * */
+    Json::Value get_reg_file_json() const{return m_reg_file;};
 
 private:
     std::uint64_t m_id{};
@@ -173,6 +187,8 @@ private:
     Languages m_languages{};
     OptionalField<std::string> m_registry{};
     Locations m_locations{};
+    Json::Value m_reg_file{};
+    bool m_reg_file_status=false;
 
     std::string m_uuid{};
 };

@@ -83,6 +83,8 @@ const char TASK_ID[] = "taskId";
 const char ODATA[] = "odata";
 const char RPVFOOBAR[] = "RPVfoobar";
 const char MESSAGE_REGISTRY_FILE_ID[] = "messageRegistryFileId";
+const char MESSAGE_PRIVILEGE_REGISTRY_FILE[] = "PrivilegeRegistry";
+const char MESSAGE_ACCTON_FIRMWARE_UPDATE_REGISTRY_FILE[] = "AcctonFirmwareUpdateRegistry";
 
 const char PATH_SEP = '/';
 const char VARIABLE_BEGIN = '{';
@@ -407,7 +409,7 @@ const char USERNAME[] = "UserName";
 const char ROLEID[] = "RoleId";
 const char LOCKED[] = "Locked";
 const char ROLE[] = "Role";
-
+const char ETAG[] = "Etag";
 }
 
 namespace AccountRole {
@@ -458,8 +460,10 @@ const char TIMESTAMP[] = "TimeStamp";
 namespace UpdateService {
 const char UPDATE_SERVICE[] = "UpdateService";
 const char FIRMWARE_INVENTORY[] = "FirmwareInventory";
+const char SOFTWARE_INVENTORY[] = "SoftwareInventory";
 const char MULTI_UPDATER[] = "MU";
 const char NOS[] = "NOS";
+const char PACKAGE[] = "PACKAGE";
 const char UPDATE_STATE[] = "UpdateState";
 const char IMAGE_URI[] = "ImageURI";
 }

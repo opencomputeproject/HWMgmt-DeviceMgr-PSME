@@ -112,22 +112,7 @@ void App::init_logger() {
     logger_cpp::LoggerFactory::set_main_logger_name("app");
 }
 
-void App::init_network_change_notifier() {
-    try {
-        m_network_change_notifier = net::NetworkChangeNotifier::create();
-    } catch (const std::exception&) {
-        log_error(GET_LOGGER("app"), "Failed to initialize NetworkChangeNotifier.");
-    }
-}
 
-void App::init_ssdp_service() {
-    const auto& service_uuid = agent_framework::generic::ServiceUuid::get_instance()->get_service_uuid();
-    m_ssdp_service.reset(
-        new ssdp::SsdpService{ssdp::load_ssdp_config(m_configuration, service_uuid)});
-    if (m_network_change_notifier) {
-        m_network_change_notifier->add_listener(m_ssdp_service);
-    }
-}
 
 void App::init_eventing_server() {
     using psme::app::eventing::EventingServer;
@@ -189,6 +174,10 @@ void App::init_registries() {
     using namespace rest::registries;
     const std::string& base_configuration{make_base_configuration()};
     RegistryConfigurator::get_instance()->load(base_configuration);
+    const std::string& privilege_configuration{make_privilege_configuration()};
+    RegistryConfigurator::get_instance()->load(privilege_configuration);
+    const std::string& AcctonFirmwareUpdateRegistry_configuration{make_AcctonFirmwareUpdateRegistry_configuration()};
+    RegistryConfigurator::get_instance()->load(AcctonFirmwareUpdateRegistry_configuration);
 }
 
 void App::init_ec_log_helper() 
@@ -202,8 +191,6 @@ void App::init() {
         init_logger();
         init_ec_log_helper();
         agent_framework::generic::ServiceUuid::get_instance();
-        init_network_change_notifier();
-        init_ssdp_service();
         init_eventing_server();
         init_rest_event_service();
         init_registration_server();
@@ -215,13 +202,15 @@ void App::init() {
         init_rest_server();
         m_model_watcher.reset(new rest::model::Watcher());
     }
-    catch (std::exception& e) {
+    catch (std::exception &e)
+    {
         log_error(GET_LOGGER("app"),
                 "Failed to initialize Application: " << e.what());
         cleanup();
         exit(-1);
     }
-    catch (...) {
+    catch (...)
+    {
         log_error(GET_LOGGER("app"),
                 "Failed to initialize Application: Unknown exception.");
         cleanup();
@@ -242,27 +231,27 @@ void App::init_bal()
 }
 void App::init_ecrf_pal()
 {
-    auto &pecRF_Pal = Switch::Switch::get_instance();
+    ;
 }
 
-void App::run() {
-    try {
-        if (m_network_change_notifier) {
-            m_network_change_notifier->start();
-        }
+void App::run()
+{
+    try
+    {
         m_eventing_server->start();
         m_rest_event_service->start();
         m_registration_server->start();
         m_rest_server->start();
         m_model_watcher->start();
-        m_ssdp_service->start();
         wait_for_termination();
         log_info(LOGUSR, "Stopping PSME Application...");
     }
-    catch (std::exception& e) {
+    catch (std::exception &e)
+    {
         log_error(GET_LOGGER("app"), e.what());
     }
-    catch (...) {
+    catch (...)
+    {
         log_error(GET_LOGGER("app"), "Unknown exception.");
     }
 }
@@ -287,34 +276,32 @@ void App::statics_cleanup() {
     logger_cpp::LoggerFactory::cleanup();
 }
 
-void App::cleanup() {
-    if (m_registration_server) {
+void App::cleanup()
+{
+    if (m_registration_server)
+    {
         m_registration_server->stop();
         m_registration_server.reset();
     }
-    if (m_eventing_server) {
+    if (m_eventing_server)
+    {
         m_eventing_server->stop();
         m_eventing_server.reset();
     }
-    if (m_rest_event_service) {
+    if (m_rest_event_service)
+    {
         m_rest_event_service->stop();
         m_rest_event_service.reset();
     }
-    if (m_rest_server) {
+    if (m_rest_server)
+    {
         m_rest_server->stop();
         m_rest_server.reset();
     }
-    if (m_ssdp_service) {
-        m_ssdp_service->stop();
-        m_ssdp_service.reset();
-    }
-    if (m_model_watcher) {
+    if (m_model_watcher)
+    {
         m_model_watcher->stop();
         m_model_watcher.reset();
-    }
-    if (m_network_change_notifier) {
-        m_network_change_notifier->stop();
-        m_network_change_notifier.reset();
     }
     statics_cleanup();
 }

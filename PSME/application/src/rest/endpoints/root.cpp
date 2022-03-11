@@ -71,10 +71,6 @@ json::Value make_prototype() {
     r[SessionService::SESSION_SERVICE][Common::ODATA_ID] = "/redfish/v1/SessionService";
 #endif
 
-#ifdef CUPDATE
-    r[UpdateService::UPDATE_SERVICE][Common::ODATA_ID] = "/redfish/v1/UpdateService";
-#endif
-
     r[Root::MANAGERS][Common::ODATA_ID] = "/redfish/v1/Managers";
 
 #ifdef CFABRICS

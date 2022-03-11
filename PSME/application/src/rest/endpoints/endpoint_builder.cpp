@@ -182,6 +182,15 @@ void EndpointBuilder::build_endpoints(psme::rest::server::Multiplexer& mp) {
     // "/redfish/v1/SessionService/Sessions/{SessionId:[a-zA-Z0-9_]+}"
     mp.register_handler(Session::UPtr(new Session(constants::Routes::SESSION_PATH)));	
 	
+    // "/redfish/v1/UpdateService"
+    mp.register_handler(UpdateService::UPtr(new UpdateService(constants::Routes::UPDATE_SERVICE_PATH)));
+
+    // "/redfish/v1/UpdateService/FirmwareInventory/MU"
+    mp.register_handler(UpdateService::UPtr(new UpdateServiceMU(constants::Routes::UPDATE_SERVICE_FIRMWARE_INVENTORY_MU_PATH)));
+
+    // "/redfish/v1/UpdateService/FirmwareInventory/NOS"
+    mp.register_handler(UpdateService::UPtr(new UpdateServiceNOS(constants::Routes::UPDATE_SERVICE_FIRMWARE_INVENTORY_NOS_PATH)));
+
 #ifndef NDEBUG
     // "/redfish/v1/Chassis/{chassisId:[0-9]+}/PCIeDevices"
     mp.register_handler(PcieDevicesCollection::UPtr(

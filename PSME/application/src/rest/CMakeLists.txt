@@ -102,6 +102,8 @@ set(SOURCES
     endpoints/members.cpp    
     endpoints/task.cpp
     endpoints/message_registry_file_collection.cpp
+    endpoints/message_privilege_registry_file.cpp
+    endpoints/message_Accton_Firmware_Update_Registry_file.cpp
     endpoints/message_registry_file.cpp
     endpoints/monitor.cpp
     endpoints/monitor_content_builder.cpp
@@ -171,6 +173,9 @@ set(SOURCES
     endpoints/chassis/pcie_function.cpp
     endpoints/chassis/pcie_functions_collection.cpp
     endpoints/chassis/chassis_reset.cpp
+    endpoints/chassis/update_service.cpp
+    endpoints/chassis/update_service_nos.cpp
+    endpoints/chassis/update_service_mu.cpp
 
     endpoints/fabric/fabric.cpp
     endpoints/fabric/fabrics_collection.cpp

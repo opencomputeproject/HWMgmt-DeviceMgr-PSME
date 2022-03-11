@@ -35,19 +35,19 @@
 #include "metadata.hpp"
 #include "event_service.hpp"
 
-//viclin add begin
 #include "account_service.hpp"
 #include "account_accounts_collection.hpp"
 #include "account_roles_collection.hpp"
 #include "account.hpp"
 #include "role.hpp"
 #include "olt.hpp"
-//viclin add end
 
 #include "task_service.hpp"
 #include "task_collection.hpp"
 #include "task.hpp"
 #include "message_registry_file_collection.hpp"
+#include "message_privilege_registry_file.hpp"
+#include "message_Accton_Firmware_Update_Registry_file.hpp"
 #include "message_registry_file.hpp"
 #include "event_subscriptions_collection.hpp"
 #include "event_subscription.hpp"
@@ -126,6 +126,9 @@
 #include "chassis/psu_collection.hpp"
 #include "chassis/temperature_collection.hpp"
 #include "chassis/chassis_reset.hpp"
+#include "chassis/update_service.hpp"
+#include "chassis/update_service_mu.hpp"
+#include "chassis/update_service_nos.hpp"
 #include "session_service.hpp"
 #include "sessions.hpp"
 #include "members.hpp"

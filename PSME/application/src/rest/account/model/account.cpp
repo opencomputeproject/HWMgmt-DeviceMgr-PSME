@@ -23,10 +23,12 @@
 
 #include "psme/rest/account/model/account.hpp"
 #include "psme/rest/constants/constants.hpp"
+#include "psme/rest/utils/time_utils.hpp"
 #include <json/json.hpp>
 #include <stdexcept>
 
 using namespace psme::rest::constants;
+using namespace psme::rest::utils;
 
 namespace psme {
 namespace rest {
@@ -42,10 +44,13 @@ json::Value Account::to_json() const {
     json[AccountConst::ROLEID] = m_roleid;
     json[AccountConst::LOCKED] = m_locked;
     json[AccountConst::ENABLED] = m_enabled;
+    json[AccountConst::ETAG] = m_etag;
     return json;
 }
 
 Account Account::from_json(const json::Value& json) {
+    std::chrono::steady_clock::time_point m_timestamp{std::chrono::steady_clock::now()};
+    std::string time_s = "W/\"" + TimeUtils::get_time_with_zone(m_timestamp) + '\"';
     const auto& name = json[Common::NAME].as_string();
     const auto& username = json[AccountConst::USERNAME].as_string();
     const auto& salt     = json[AccountConst::SALT].as_string();
@@ -62,6 +67,7 @@ Account Account::from_json(const json::Value& json) {
     account.set_enabled(enabled);
     account.set_locked(locked);
     account.set_roleid(roleid);
+    account.set_etag(time_s);
     return account;
 }
 

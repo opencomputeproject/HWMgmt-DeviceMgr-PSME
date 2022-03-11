@@ -6,6 +6,9 @@ if [ ! -z "${HW_type}" ];then
     HW_TYPE_R=`echo $HW_TYPE_R_T | sed -e s/_/-/g`
 
     case "${HW_TYPE_R}" in
+        "x86"[-_]"64-accton"[-_]"mockup")
+        . /etc/psme/HW_NODE_MOCKUP
+        ;;    
         "x86"[-_]"64-accton"[-_]"as5915"[-_]"18x")
         . /etc/psme/HW_NODE_AS5915_18X        
         ;;

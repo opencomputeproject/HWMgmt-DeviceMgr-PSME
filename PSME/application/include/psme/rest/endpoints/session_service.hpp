@@ -49,6 +49,7 @@ public:
 
     void get(const server::Request& request, server::Response& response) override;
     void post(const server::Request& request, server::Response& response) override;
+    void patch(const server::Request& request, server::Response& response) override;
 };
 
 }
