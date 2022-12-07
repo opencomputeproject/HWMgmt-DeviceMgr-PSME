@@ -439,6 +439,10 @@ public:
     int get_fan_info_by_(int fanid, Fan_Content id);
     int get_fan_num() { return m_fan_max_num; };
     int get_psu_num() { return m_psu_max_num; };
+    /* Support more than one thermal sensor in PSU */
+    int get_thermal_sen_num_in_psu() { return m_thermal_sen_num_in_psu; };
+    /* End */
+
     double get_thermal_info_by_(int thermalid, Thermal_Content id);
     int get_thermal_num() { return m_thermal_sen_max_num; };
     int get_port_info_by_(int portid, Port_Content id);
@@ -503,6 +507,11 @@ protected:
     int m_port_max_num = 0;
     int m_thermal_sen_max_num = 0;
     int m_psu_max_num = 0;
+    /* Support more than one thermal sensor in PSU */
+    int m_thermal_sen_of_psu_diff_psu_num = 0;
+    int m_thermal_sen_num_in_psu = 0;
+    /* End */
+
     int m_cpu_stepping = 0;
     int m_cpu_max_speed = 0;
     int m_cpu_total_core = 0;

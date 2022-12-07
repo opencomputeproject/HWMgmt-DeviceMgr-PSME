@@ -69,12 +69,12 @@ update_sw_volt()
 
 set_forceoff()
 {
-    echo "NOT support."
+    set_platform_forceoff || echo "NOT support."
 }
 
 set_forcerestart()
 {
-    echo "NOT support."
+    set_platform_forcerestart || echo "NOT support."
 }
 
 get_max_fan_num()

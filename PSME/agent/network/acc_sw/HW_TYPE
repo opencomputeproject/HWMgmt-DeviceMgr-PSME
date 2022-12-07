@@ -108,6 +108,10 @@ if [ ! -z "${HW_type}" ];then
         "x86"[-_]"64-accton"[-_]"as5835"[-_]"54t")
         . /etc/psme/HW_NODE_AS5835_54T
         ;;                
+        "x86"[-_]"64-cel"[-_]"belgite")
+        . /etc/psme/HW_NODE_CELBELGITE
+        . /etc/psme/platform/celestica/x86_64/belgite/script/power_ctl.sh
+        ;;
         "arm-accton-as4610-54")
         . /etc/psme/HW_NODE_AS4610_54T
         ;;

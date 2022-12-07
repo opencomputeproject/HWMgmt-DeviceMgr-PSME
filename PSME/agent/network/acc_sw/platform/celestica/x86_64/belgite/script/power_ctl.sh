@@ -1,0 +1,17 @@
+CPLD_I2C_BUS=2
+CPLD_I2C_ADDR=0x32
+
+PWR_COME_CTTL_REG=0x11
+PWR_COME_OFF=0x00
+
+RST_COME_CTTL_REG=0x12
+RST_COME_OFF=0x00
+
+set_platform_forceoff()
+{    
+    i2cset -y -f $CPLD_I2C_BUS $CPLD_I2C_ADDR $PWR_COME_CTTL_REG $PWR_COME_OFF 
+}
+set_platform_forcerestart()
+{
+    i2cset -y -f $CPLD_I2C_BUS $CPLD_I2C_ADDR $RST_COME_CTTL_REG $RST_COME_OFF  
+}
