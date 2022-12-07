@@ -42,6 +42,7 @@ cp -rf ${PSME_EC_SW_DIR}/mod_conf                       $ITEM_PATH/usr/local/bin
 cp ${PSME_EC_SW_DIR}/PrivilegeRegistry             	    $ITEM_PATH/etc/psme/RegistryFiles/PrivilegeRegistry
 cp ${PSME_EC_SW_DIR}/AcctonFirmwareUpdateRegistry       $ITEM_PATH/etc/psme/RegistryFiles/AcctonFirmwareUpdateRegistry
 cp ${PSME_EC_SW_DIR}/*                                  $ITEM_PATH/etc/psme 2>/dev/null  
+cp -rf ${PSME_EC_SW_DIR}/platform                       $ITEM_PATH/etc/psme
 
 #cp from runtime build
 cp $PSME_PROJ_PATH/bin/psme-rest-server                  $ITEM_PATH/usr/local/bin
@@ -51,6 +52,7 @@ cp $PSME_PROJ_PATH/lib/libmicrohttpd.so                  $ITEM_PATH/usr/local/li
 cp $PSME_PROJ_PATH/lib/libjsonrpccpp-server.so.999       $ITEM_PATH/usr/local/lib
 cp $PSME_PROJ_PATH/lib/libjsonrpccpp-client.so.999       $ITEM_PATH/usr/local/lib
 cp $PSME_PROJ_PATH/lib/libjsonrpccpp-common.so.999       $ITEM_PATH/usr/local/lib
+cp $PSME_PROJ_PATH/lib/libnghttp2.so.14                  $ITEM_PATH/usr/local/lib
 
 #For SONiC lib 
 cp ${PSME_EC_SW_DIR}/x_86_sonic_lib/*                   $ITEM_PATH/usr/local/lib

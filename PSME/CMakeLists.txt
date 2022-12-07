@@ -143,6 +143,7 @@ ENDIF()
 ###############################################################################
 # Find packages provided by us or by system
 
+install_third_party(Nghttp2)
 install_third_party(SpdLog)
 #error( "Just for debug" )
 # will not link if not ENABLE_HTTPS: some symbols are referenced directly
@@ -191,6 +192,10 @@ if (NOT CMAKE_CROSSCOMPILING)
     install_third_party(GoogleTest)
     install_third_party(GoogleMock)
     enable_testing()
+endif()
+
+if (NOT CMAKE_CROSSCOMPILING)
+    install_third_party(Nghttp2)
 endif()
 
 # Enable sanitizers

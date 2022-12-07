@@ -1443,8 +1443,21 @@ void Switch::get_board_info()
                 {
                     m_thermal_sen_max_num = t_rv;
                 }
+
+                /* Support more than one thermal sensor in PSU */
+                m_thermal_sen_max_num = s[0]["ecrf_pal"]["thermal_sen_max_num"].asInt();
+                if (m_thermal_sen_max_num < t_rv)
+                {
+                    m_thermal_sen_max_num = t_rv;
+                }
                 else
-                    m_thermal_sen_max_num = s[0]["ecrf_pal"]["thermal_sen_max_num"].asInt();
+                {
+                    /* t_rv = chassis thermal sensors num + PSU num
+		     * m_thermal_sen_of_psu_diff_psu_num is the difference between total PSU thermal sensors number
+                     * and total PSU number */
+                    m_thermal_sen_of_psu_diff_psu_num = m_thermal_sen_max_num - t_rv;
+                }
+                /* End */
 
                 if (get_thermal_num() > 0)
                 {
@@ -1489,6 +1502,10 @@ void Switch::get_board_info()
                 }
                 else
                     m_psu_max_num = s[0]["ecrf_pal"]["psu_max_num"].asInt();
+
+                /* Support more than one thermal sensor in PSU */
+                m_thermal_sen_num_in_psu = m_thermal_sen_of_psu_diff_psu_num / m_psu_max_num + 1;
+                /* End */
 
                 if (get_psu_num() > 0)
                 {
