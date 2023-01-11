@@ -81,6 +81,10 @@ void ThermalCollection::get(const server::Request &req, server::Response &res)
     int power_supply_sensor_id = 1;
     int system_cpu_sensor_id = 1;
     int chassis_sensor_id = 1;
+    /* Support more than one thermal sensor in PSU */
+    int thermal_sen_num_in_psu = 1;
+    int thermal_sen_id_in_psu = 1;
+    /* End */
 
     auto json = ::make_prototype();
 
@@ -89,6 +93,10 @@ void ThermalCollection::get(const server::Request &req, server::Response &res)
     auto &tz_manager = agent_framework::module::ChassisComponents::get_instance()->get_thermal_zone_manager();
     auto tz_uuids = tz_manager.get_keys();
     auto chassis = psme::rest::model::Find<agent_framework::model::Chassis>(req.params[PathParam::CHASSIS_ID]).get();
+    /* Support more than one thermal sensor in PSU */
+    auto &secrf_pal = ecrf_pal_helper::Switch::get_instance();
+    thermal_sen_num_in_psu = secrf_pal.get_thermal_sen_num_in_psu();
+    /* End */
 
     for (const auto &tz_uuid : tz_uuids)
     {
@@ -103,10 +111,18 @@ void ThermalCollection::get(const server::Request &req, server::Response &res)
 
         if (thermal_type == ecrf_pal_helper::Thermal_Info::PSU_Sensor)
         {
-            std::string name = "PSU " + std::to_string(power_supply_sensor_id) + " Thermal Sensor 1 Temperature";
+            /* Support more than one thermal sensor in PSU */
+            std::string name = "PSU " + std::to_string(power_supply_sensor_id) + " Thermal Sensor " + std::to_string(thermal_sen_id_in_psu) + " Temperature";
             jsontmp[Common::NAME] = name; 
             jsontmp[constants::ThermalZoneCollection::PHYSICAL_CONTEXT] = "PowerSupply";
-            power_supply_sensor_id ++;
+            thermal_sen_id_in_psu ++;
+
+            if (1 == thermal_sen_id_in_psu % thermal_sen_num_in_psu)
+            {
+                power_supply_sensor_id ++;
+                thermal_sen_id_in_psu = 1;
+            }
+            /* End */
         }
         else if (thermal_type == ecrf_pal_helper::Thermal_Info::CPU_Sensor)
         {
